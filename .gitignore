@@ -1,0 +1,16 @@
+node_modules
+.nuxt
+.output
+.data
+.nitro
+.cache
+dist
+.vercel
+.env
+.env.*
+!.env.example
+.DS_Store
+*.log
+test-results
+playwright-report
+.claude/

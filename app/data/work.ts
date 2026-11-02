@@ -1,0 +1,143 @@
+import type { Work } from './types'
+
+/**
+ * Ordered as they appear on the home page. Each entry has a page at /work/<slug>.
+ * Titles name the engineering problem; `context` keeps the original product and feature.
+ */
+export const work: Work[] = [
+  {
+    slug: 'workflow-engineering',
+    title: 'Workflow engineering across two companies',
+    context: 'Acelab · requests for information between architects and manufacturers',
+    headline: 'Engineering a workflow that runs between two companies',
+    metaTitle: 'Workflow engineering across two companies',
+    metaDescription: 'Led the frontend of a request-for-information workflow between architects and manufacturers: a guided send wizard and an autosaving response grid.',
+    outcome: 'Led the frontend of a request-for-information workflow between architects and manufacturers, building its guided send wizard and its autosaving response workspace. I also wrote .NET endpoints for its paging, cancellation and live updates.',
+    org: 'Acelab · Material Hub',
+    evidence: 'employer',
+    role: 'Frontend lead',
+    roleDetail: 'Frontend lead; second contributor to the workflow’s .NET backend',
+    period: 'Jul – Oct 2026',
+    years: '2026',
+    team: 'Three engineers on the integration branch; a teammate led the backend',
+    stack: ['Nuxt', 'Vue 3', 'TypeScript', 'Pinia', 'Tailwind', 'Pusher', '.NET'],
+    links: [
+      { label: 'Public feature page', href: 'https://www.acelabusa.com/solutions/project-delivery/automated-rfis', kind: 'public-page' },
+    ],
+    themes: ['Multi-party workflow', 'Autosave', 'Server-side paging', 'Permissions'],
+  },
+  {
+    slug: 'enderase',
+    title: 'A product from definition to a working platform',
+    context: 'Enderase · my own home-services marketplace: web, mobile and API',
+    headline: 'Enderase: a marketplace taken from product definition to a working platform',
+    metaTitle: 'Enderase: building a two-sided marketplace',
+    metaDescription: 'Enderase, my home-services marketplace for Ethiopia, in development: web, mobile and API on one backend, built with AI coding agents under my direction.',
+    outcome: 'A two-sided home-services marketplace for Ethiopia, in development: a web app, a Flutter app and an API on one Postgres backend, in English and Amharic. Built with AI coding agents under my direction; I own the product, architecture, data model, security and verification.',
+    org: 'Own product',
+    evidence: 'product',
+    role: 'Owner & engineer',
+    roleDetail: 'Sole owner: product, architecture, data model, security and verification',
+    period: 'Mar 2026 – present',
+    years: '2026',
+    team: 'Solo, working with AI coding agents',
+    stack: ['Next.js 15', 'React 19', 'TypeScript', 'Fastify', 'PostgreSQL', 'Supabase', 'Flutter', 'next-intl'],
+    links: [],
+    themes: ['Two-sided marketplace', 'Bilingual', 'Web and mobile on one API', 'Independent verification'],
+  },
+  {
+    slug: 'data-interfaces',
+    title: 'Complex data interfaces and the components behind them',
+    context: 'Acelab · spreadsheet-style product schedules',
+    headline: 'A spreadsheet-style data interface and the components behind it',
+    metaTitle: 'Spreadsheet-style data interfaces',
+    metaDescription: 'Core parts I built for a spreadsheet-style product schedule: the cell save path, undo and redo, most of view sharing, catalog search and product replacement.',
+    outcome: 'Built core parts of a spreadsheet-style grid for specifying building products: how cell edits save, undo and redo, most of view sharing, catalog search with product replacement, and a bulk “report missing products” action across the web app and the .NET API.',
+    org: 'Acelab · Material Hub',
+    evidence: 'employer',
+    role: 'Core contributor',
+    roleDetail: 'Core contributor; wrote its undo/redo and the bulk missing-product report, and built most of view sharing',
+    period: '2024 – 2026',
+    years: '2024–26',
+    team: 'Shared: teammates built the grid’s rendering, virtual scrolling, keyboard movement, copy and paste, and row selection',
+    stack: ['Vue', 'Nuxt', 'JavaScript', 'TypeScript', 'Pinia', 'Tailwind', '.NET'],
+    links: [
+      { label: 'Finish schedules (public page)', href: 'https://www.acelabusa.com/solutions/project-delivery/finish-schedule', kind: 'public-page' },
+    ],
+    themes: ['Data grid', 'Undo/redo', 'Component architecture'],
+  },
+  {
+    slug: 'realtime-sync',
+    title: 'Event-driven interfaces and real-time sync',
+    context: 'Acelab · presence, live cells, comments and notifications',
+    headline: 'Keeping every open screen current as shared data changes',
+    metaTitle: 'Event-driven interfaces and real-time sync',
+    metaDescription: 'My part in keeping shared schedules current: collaborator presence, live cell updates, the first in-app notification center, and finishing threaded comments.',
+    outcome: 'Built collaborator presence and live cell updates for a shared spreadsheet-style schedule and the product’s first notification center; later finished and released threaded comments a teammate had started, and took the frontend of a teammate’s new notification engine through review to release.',
+    org: 'Acelab · Material Hub',
+    evidence: 'employer',
+    role: 'Core contributor',
+    roleDetail: 'Built presence, live cells and the first notification center; finished and released comments; built the engine’s real-time event and took its frontend to release',
+    period: '2024 – 2026',
+    years: '2024–26',
+    team: 'Shared: teammates introduced the websocket provider, built row, column and category events and published cell and selection events from the server; a teammate started comments; a teammate built the notification engine and its first frontend',
+    stack: ['Vue', 'Nuxt', 'TypeScript', 'Pinia', 'Pusher', 'TipTap', '.NET'],
+    links: [
+      { label: 'Finish schedules (public page)', href: 'https://www.acelabusa.com/solutions/project-delivery/finish-schedule', kind: 'public-page' },
+    ],
+    themes: ['Presence', 'Live updates', 'Comments', 'Notification engine'],
+  },
+  {
+    slug: 'browser-extensions',
+    title: 'Browser-extension architecture and data extraction',
+    context: 'Acelab · two Manifest V3 extensions, one public on the Chrome Web Store',
+    headline: 'Two browser extensions that turn web pages into structured product data',
+    metaTitle: 'Two browser extensions for product data',
+    metaDescription: 'Two Manifest V3 extensions built end to end with their API and web-app pieces; the internal one is scored against frozen ground truth on an 11-page benchmark.',
+    outcome: 'Built two Manifest V3 extensions end to end, with the API, web-app and review-platform pieces they connect to. The internal one collects product data without AI and is scored by a Playwright harness against frozen ground truth: on an 11-page benchmark it found all 245 reachable files.',
+    org: 'Acelab · Material Hub',
+    evidence: 'employer',
+    role: 'Built end to end',
+    roleDetail: 'Built both extensions end to end, with their API, web-app and review-platform pieces; sole author of the internal one',
+    period: 'Jun – Nov 2026',
+    years: '2026',
+    team: 'A teammate added three commits to the public extension; sole author of the internal one',
+    stack: ['Manifest V3', 'React 19', 'TypeScript', 'Vite', 'Tailwind', 'pdf.js', 'Playwright', '.NET', 'OpenAI API', 'Next.js'],
+    links: [
+      { label: 'AceClipper on the Chrome Web Store', href: 'https://chromewebstore.google.com/detail/aceclipper/kpljfojfnempmahijdcncjbopekfcjag', kind: 'store' },
+    ],
+    themes: ['Manifest V3', 'Token handoff', 'Deterministic extraction', 'Evaluation harness'],
+  },
+  {
+    slug: 'modernization',
+    title: 'Application modernization and maintainability',
+    context: 'Acelab · Nuxt 2 to Nuxt 3, then TypeScript, composables and Pinia',
+    headline: 'Upgrading a large Vue application, then paying down what came across',
+    metaTitle: 'Application modernization and maintainability',
+    metaDescription: 'A major contributor to moving a large Vue app from Nuxt 2 to Nuxt 3 and Vue 3, then wrote 11 of ~39 cleanup PRs toward TypeScript, composables and Pinia.',
+    outcome: 'A major contributor to moving the main application from Nuxt 2 to Nuxt 3 and Vue 3, working on the projects, account, schedules, comments and notifications areas; then wrote 11 of the roughly 39 pull requests in a cleanup that moved its plugins, mixins and stores toward TypeScript, composables and Pinia.',
+    org: 'Acelab · Material Hub',
+    evidence: 'employer',
+    role: 'Major contributor',
+    roleDetail: 'Major contributor to the upgrade, which a teammate led, and to the cleanup that followed',
+    period: '2025 – 2026',
+    years: '2025–26',
+    team: 'Five engineers on the upgrade, led by a teammate; the cleanup spread across the frontend team',
+    stack: ['Nuxt 3', 'Vue 3', 'TypeScript', 'Pinia', 'vee-validate', 'Vitest'],
+    links: [],
+    themes: ['Migration', 'TypeScript', 'Composables'],
+  },
+]
+
+export function findWork(slug: string): Work {
+  const entry = work.find(w => w.slug === slug)
+  if (!entry) throw new Error(`Unknown work slug: ${slug}`)
+  return entry
+}
+
+export const evidenceLabel: Record<Work['evidence'], string> = {
+  employer: 'Shipped at work',
+  product: 'Own product · in development',
+  showcase: 'Open source · live demo',
+  client: 'Client work',
+}
