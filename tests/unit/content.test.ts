@@ -8,6 +8,7 @@ import { journey } from '../../app/data/journey'
 import { lab } from '../../app/data/lab'
 import { platform } from '../../app/data/platform'
 import { mailto, profile } from '../../app/data/profile'
+import { resume } from '../../app/data/resume'
 import { work } from '../../app/data/work'
 
 // The wiring between what the site claims and the evidence behind it. These
@@ -164,6 +165,13 @@ describe('ownership tiers', () => {
     const shipped = new Set(capabilities.flatMap(cap => cap.tools.map(tool => tool.toLowerCase())))
     const both = capabilities.flatMap(cap => (cap.workingKnowledge ?? []).filter(item => shipped.has(item.toLowerCase())).map(item => `${cap.id}: ${item}`))
     expect(both).toEqual([])
+  })
+
+  it('lists only shipped tools in the résumé skills, and nothing shipped as studied', () => {
+    const shipped = new Set(capabilities.flatMap(cap => cap.tools))
+    expect(resume.skills.flatMap(group => group.tools.filter(tool => !shipped.has(tool)))).toEqual([])
+    const lower = new Set([...shipped].map(tool => tool.toLowerCase()))
+    expect(resume.studied.filter(item => lower.has(item.toLowerCase()))).toEqual([])
   })
 
   it('says what every case study touched', () => {

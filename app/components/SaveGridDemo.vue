@@ -51,6 +51,11 @@ const undoStack: Change[] = []
 const redoStack: Change[] = []
 const canUndo = ref(false)
 const canRedo = ref(false)
+/** The scripted walkthrough: its caption, the cell it plays on, and a token Reset can cancel. */
+const story = ref('')
+const spotlight = ref<string | null>(null)
+const running = ref(false)
+let runs = 0
 
 const grid = useTemplateRef<HTMLTableElement>('grid')
 const editor = useTemplateRef<HTMLInputElement[]>('editor')
@@ -77,10 +82,10 @@ function note(text: string, tone: Entry['tone'] = 'plain') {
 // which is the case worth seeing. Reset bumps the epoch, so saves sent before it are dropped.
 let requests = 0
 let epoch = 0
-function save(key: string, value: string, label: string) {
+function save(key: string, value: string, label: string, latency?: number) {
   const id = ++requests
   const sentIn = epoch
-  const delay = (inFlight[key] ?? 0) > 0 ? 350 : 1500
+  const delay = latency ?? ((inFlight[key] ?? 0) > 0 ? 350 : 1500)
   inFlight[key] = (inFlight[key] ?? 0) + 1
   note(`Save ${id} sent: ${label} = “${value || 'empty'}”`)
   setTimeout(() => {
@@ -102,7 +107,7 @@ function save(key: string, value: string, label: string) {
   }, delay)
 }
 
-function write(row: Row, col: Column, value: string, record = true) {
+function write(row: Row, col: Column, value: string, record = true, latency?: number) {
   const key = cellKey(row, col)
   const before = values[key] ?? ''
   const after = col.numeric ? value.replace(/\D/g, '').slice(0, 3) : value.trim().slice(0, 40)
@@ -113,7 +118,60 @@ function write(row: Row, col: Column, value: string, record = true) {
     redoStack.length = 0
     syncHistory()
   }
-  save(key, after, labelOf(row, col))
+  save(key, after, labelOf(row, col), latency)
+}
+
+const pause = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+// Plays the case worth seeing without asking the visitor to race the network: two edits
+// to one cell, the second sent while the first save is still out, so the saves return in
+// the wrong order. It sets its own, slower latencies so each caption stays up long enough
+// to read: the first save takes 5 s, the second, sent 2 s later, 0.7 s.
+async function showConflict() {
+  if (running.value) return
+  const run = ++runs
+  const row = rows[0]
+  const col = columns[0]
+  if (!row || !col) return
+  const key = cellKey(row, col)
+  running.value = true
+  // A save the visitor started on this cell would land mid-story; let it finish first.
+  while ((inFlight[key] ?? 0) > 0) {
+    await pause(100)
+    if (run !== runs) return
+  }
+  query.value = ''
+  editing.value = false
+  active.value = { row: 0, col: 0 }
+  spotlight.value = key
+  // Start from the seeded value so both edits register as changes.
+  values[key] = seed[key] ?? ''
+  saved[key] = seed[key] ?? ''
+  const steps: Array<[number, () => void]> = [
+    [0, () => {
+      write(row, col, 'Satin', true, 5000)
+      story.value = `1. You type “Satin” into ${labelOf(row, col)}. Its save goes out and is slow.`
+    }],
+    [2000, () => {
+      write(row, col, 'Gloss', true, 700)
+      story.value = '2. Before it returns, you change your mind: “Gloss”. That save is fast.'
+    }],
+    [900, () => {
+      story.value = '3. The newer save comes back first and is confirmed. The older one is still out…'
+    }],
+    [2300, () => {
+      story.value = guard.value
+        ? '4. The older save finally returns. Its value no longer matches the cell, so it’s ignored: the cell keeps “Gloss”, the last thing you typed.'
+        : '4. The older save finally returns and is treated as the truth, so the cell flips back to “Satin”: your newer edit is lost. That’s the bug the guard prevents.'
+    }],
+  ]
+  for (const [wait, step] of steps) {
+    await pause(wait)
+    if (run !== runs) return
+    step()
+  }
+  running.value = false
+  spotlight.value = null
 }
 
 function syncHistory() {
@@ -263,6 +321,10 @@ function state(row: Row, col: Column) {
 }
 
 function reset() {
+  runs++
+  running.value = false
+  spotlight.value = null
+  story.value = ''
   epoch++
   for (const key of Object.keys(inFlight)) inFlight[key] = 0
   for (const key of new Set([...Object.keys(values), ...Object.keys(seed)])) {
@@ -290,6 +352,14 @@ function reset() {
           Interactive rebuild · made-up data
         </p>
         <div class="tools">
+          <button
+            type="button"
+            class="primary"
+            :aria-disabled="running"
+            @click="showConflict"
+          >
+            Show conflicting saves
+          </button>
           <label class="filter">
             <span class="visually-hidden">Filter products</span>
             <input
@@ -355,7 +425,7 @@ function reset() {
                 :data-state="state(row, col)"
                 :tabindex="active.row === r && active.col === c && !editing ? 0 : -1"
                 :aria-selected="active.row === r && active.col === c"
-                :class="{ num: col.numeric, active: active.row === r && active.col === c }"
+                :class="{ num: col.numeric, active: active.row === r && active.col === c, spotlight: spotlight === cellKey(row, col) }"
                 @keydown="onCellKeydown"
                 @pointerdown="onCellPointerdown(r, c)"
                 @click="onCellClick(r, c)"
@@ -397,6 +467,13 @@ function reset() {
         </table>
       </div>
 
+      <p
+        class="story"
+        :class="{ empty: !story }"
+        aria-live="polite"
+      >
+        {{ story || 'Press “Show conflicting saves” to watch two edits race, or edit any cell yourself.' }}
+      </p>
       <div class="foot">
         <label class="guard">
           <input
@@ -417,7 +494,7 @@ function reset() {
         class="log data"
         role="log"
         aria-label="Save activity"
-        aria-live="polite"
+        aria-live="off"
       >
         <ol>
         <li
@@ -431,14 +508,14 @@ function reset() {
           v-if="!log.length"
           class="hint"
         >
-          Saves appear here. Edit one cell twice quickly: the first save is slow and comes back last.
+          Each save appears here as it’s sent and as it returns.
         </li>
         </ol>
       </div>
     </div>
     <figcaption>
       <slot>
-        Click a cell or use the arrow keys; type to replace a value, Enter to save, Escape to cancel, {{ '⌘/Ctrl' }}+Z to undo. Each cell saves on its own over a deliberately unreliable fake network. Untick the box to see the bug the guard prevents. On a touch screen, tap a selected cell again to edit it. Undo and redo come from my product-schedule work, not the response grid. Built for this site with made-up data; not Acelab’s code or design.
+        “Show conflicting saves” plays the race for you. To try it by hand, click a cell or use the arrow keys; type to replace a value, Enter to save, Escape to cancel, {{ '⌘/Ctrl' }}+Z to undo. Each cell saves on its own over a deliberately unreliable fake network. Untick the box to see the bug the guard prevents. On a touch screen, tap a selected cell again to edit it. Undo and redo come from my product-schedule work, not the response grid. Built for this site with made-up data; not Acelab’s code or design.
       </slot>
     </figcaption>
   </figure>
@@ -476,7 +553,11 @@ function reset() {
 }
 .tools {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
+}
+.primary {
+  white-space: nowrap;
 }
 .filter input {
   width: 7.5rem;
@@ -492,6 +573,16 @@ button {
   padding: 0 0.75rem;
   font: inherit;
   cursor: pointer;
+}
+button.primary {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+button.primary[aria-disabled="true"] {
+  background: transparent;
+  color: var(--muted);
+  cursor: progress;
 }
 button:disabled {
   border-color: var(--hair);
@@ -580,6 +671,19 @@ td input {
 .empty {
   color: var(--muted);
 }
+td.spotlight {
+  background: var(--signal-soft);
+}
+.story {
+  margin: 0;
+  padding: 0.7rem 0.75rem;
+  border-top: 1px solid var(--hair);
+  min-height: 3.6rem;
+  line-height: 1.45;
+}
+.story.empty {
+  color: var(--muted);
+}
 .dot {
   position: absolute;
   top: 50%;
@@ -619,6 +723,20 @@ td[data-state="unsaved"] .dot {
   height: 1.05rem;
   accent-color: var(--signal);
 }
+/* Bigger targets where the pointer is a finger. */
+@media (pointer: coarse) {
+  button,
+  .filter input {
+    min-height: 2.75rem;
+  }
+  .guard {
+    min-height: 2.75rem;
+  }
+  .guard input {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+}
 .log {
   padding: 0.55rem 0.75rem 0.7rem;
   border-top: 1px solid var(--hair);
@@ -637,9 +755,6 @@ td[data-state="unsaved"] .dot {
 }
 .log .bad {
   color: var(--signal);
-}
-.log li + li {
-  opacity: 0.75;
 }
 figcaption {
   margin-top: 0.625rem;

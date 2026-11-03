@@ -131,7 +131,7 @@ const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? sl
             v-if="item.slug === 'workflow-engineering'"
             compact
           >
-            A rebuild with made-up data of the response grid’s autosave: arrow keys move, typing edits, Enter saves. Edit one cell twice quickly and watch the late save get ignored. Not Acelab’s code or design.
+            A rebuild with made-up data of the response grid’s autosave. Press “Show conflicting saves” to watch a late save get ignored, or edit cells yourself: arrow keys move, typing edits, Enter saves. Not Acelab’s code or design.
           </SaveGridDemo>
           <ClipDemo
             v-else-if="item.slug === 'browser-extensions'"

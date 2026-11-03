@@ -23,7 +23,7 @@ Claims and the evidence behind them live in typed data files, not scattered thro
 | [`app/data/work.ts`](app/data/work.ts) | Case-study index: role, period, stack, evidence type, public links; the first three are featured with a visual |
 | [`app/data/capabilities.ts`](app/data/capabilities.ts) | Capability groups: tools I ship with, platform technology I have working knowledge of (kept separate), and evidence links |
 | [`app/data/experience.ts`](app/data/experience.ts) | Roles and education |
-| [`app/data/resume.ts`](app/data/resume.ts) | Résumé summary and the grouped working-knowledge list |
+| [`app/data/resume.ts`](app/data/resume.ts) | Résumé summary, compact skills (shipped tools only) and a one-line list of what I have studied but not shipped |
 | [`app/data/lab.ts`](app/data/lab.ts) | Experiments and older public code, kept apart from the case studies (shown at `/lab`) |
 
 `tests/unit/content.test.ts` fails if a capability points at a case study that doesn't exist, if a technology is listed both as shipped and as working knowledge, if any page still holds placeholder text, or if a ticket ID, PR number, staging URL or phone number slips into the source. Internal names are checked against a private denylist passed in at test time (`CONTENT_DENYLIST=<file>`).

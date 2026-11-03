@@ -1,12 +1,13 @@
 <script setup lang="ts">
 /**
  * An illustration of the public extension's flow with made-up data: a click captures
- * the page, the server turns it into products in a fixed shape, and the clip pastes
- * into a schedule as rows. Nothing here talks to a real service.
+ * the page, the server parses it into products, the popup shows them for review and
+ * copies a clip, and pasting into a schedule creates the products with their images.
+ * Nothing here talks to a real service.
  */
 defineProps<{ compact?: boolean }>()
 
-// Starts on the finished state so the whole flow reads at a glance; the button replays it.
+// Starts on the finished state so the result reads at a glance; the button replays it.
 const step = ref(2)
 
 const swatches = [
@@ -16,8 +17,8 @@ const swatches = [
 ]
 
 const products = [
-  { tag: 'TZ1', name: 'Terrazzo Field Tile', size: '24 × 24 in' },
-  { tag: 'TZ2', name: 'Terrazzo Bullnose Trim', size: '3 × 24 in' },
+  { tag: 'TZ1', name: 'Terrazzo Field Tile', size: '24 × 24 in', shape: 'square' },
+  { tag: 'TZ2', name: 'Terrazzo Bullnose Trim', size: '3 × 24 in', shape: 'strip' },
 ]
 
 const clip = `{
@@ -42,8 +43,8 @@ const clip = `{
 const actions = ['Clip this page', 'Paste into the schedule', 'Replay from the start']
 const status = [
   'A manufacturer’s product page. Nothing is read until you click.',
-  'Captured on click; the server parses it into products of a fixed shape, and the popup shows them for review before copying them as a versioned clip.',
-  'Pasted into a schedule: the import creates the products and brings their images across.',
+  'Captured on click and parsed on the server into products of a fixed shape. The popup shows them for review, then copies them as a versioned clip.',
+  'Pasted into a project schedule: two new products, each with its image, ready to specify.',
 ]
 
 function advance() {
@@ -97,8 +98,15 @@ function advance() {
                 :key="product.tag"
                 class="field"
               >
-                <span class="name">{{ product.name }}</span>
-                <span class="size data">{{ product.size }}</span>
+                <span
+                  class="thumb"
+                  :class="product.shape"
+                  aria-hidden="true"
+                />
+                <span class="text">
+                  <span class="name">{{ product.name }}</span>
+                  <span class="size data">{{ product.size }}</span>
+                </span>
               </li>
             </ul>
             <ul
@@ -120,61 +128,105 @@ function advance() {
         </div>
 
         <div class="out">
-          <pre
-            v-if="step >= 1"
-            class="clip data"
-            role="region"
-            tabindex="0"
-            aria-label="The copied clip, simplified"
-          >{{ clip }}</pre>
           <p
-            v-else
+            v-if="step === 0"
             class="placeholder"
           >
-            The clip appears here.
+            The products appear here once the page is clipped.
           </p>
 
-          <table
-            v-if="step >= 2"
-            class="sched"
+          <div
+            v-else-if="step === 1"
+            class="panel"
           >
-            <caption class="visually-hidden">
-              Schedule rows created from the clip
-            </caption>
-            <thead>
-              <tr>
-                <th scope="col">
-                  Tag
-                </th>
-                <th scope="col">
-                  Product
-                </th>
-                <th scope="col">
-                  Size
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
+            <p class="panel-head label">
+              Extension popup · 2 products found
+            </p>
+            <ul class="found">
+              <li
                 v-for="product in products"
                 :key="product.tag"
               >
-                <td class="data">
-                  {{ product.tag }}
-                </td>
-                <td>{{ product.name }}</td>
-                <td class="data">
-                  {{ product.size }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <p
+                <span
+                  class="thumb"
+                  :class="product.shape"
+                  aria-hidden="true"
+                />
+                <span class="text">
+                  <span class="name">{{ product.name }}</span>
+                  <span class="size data">{{ product.size }} · 3 colors · 1 image</span>
+                </span>
+              </li>
+            </ul>
+            <p class="panel-foot">
+              Copied to the clipboard <span aria-hidden="true">✓</span>
+            </p>
+          </div>
+
+          <div
             v-else
-            class="placeholder"
+            class="panel destination"
           >
-            Schedule rows appear here.
-          </p>
+            <p class="panel-head label">
+              Project schedule · 2 products added
+            </p>
+            <table class="sched">
+              <caption class="visually-hidden">
+                Schedule rows created from the clip
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">
+                    <span class="visually-hidden">Image</span>
+                  </th>
+                  <th scope="col">
+                    Tag
+                  </th>
+                  <th scope="col">
+                    Product
+                  </th>
+                  <th scope="col">
+                    Size
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="product in products"
+                  :key="product.tag"
+                >
+                  <td>
+                    <span
+                      class="thumb large"
+                      :class="product.shape"
+                      role="img"
+                      :aria-label="`Imported image of ${product.name}`"
+                    />
+                  </td>
+                  <td class="data">
+                    {{ product.tag }}
+                  </td>
+                  <td>{{ product.name }}</td>
+                  <td class="data">
+                    {{ product.size }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <details
+            v-if="step >= 1"
+            class="json"
+          >
+            <summary>The clip behind it (simplified JSON)</summary>
+            <pre
+              class="data"
+              role="region"
+              tabindex="0"
+              aria-label="The copied clip, simplified"
+            >{{ clip }}</pre>
+          </details>
         </div>
       </div>
 
@@ -253,12 +305,13 @@ function advance() {
 }
 @media (width >= 36rem) {
   .stage {
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
   }
 }
 .page {
   border: 1px solid var(--hair);
   background: var(--paper-2);
+  align-self: start;
 }
 .url {
   margin: 0;
@@ -286,24 +339,58 @@ function advance() {
   box-shadow: 0 0 0 2px var(--signal);
   background: var(--signal-soft);
 }
-.items {
+.items,
+.found {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
-.items li {
+.items li,
+.found li {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 0 0.75rem;
+  align-items: center;
+  gap: 0.6rem;
   padding: 0.3rem 0.2rem;
+}
+.text {
+  display: grid;
+  min-width: 0;
 }
 .name {
   font-weight: 600;
   line-height: 1.25;
 }
 .size {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--muted);
+}
+/* Terrazzo drawn in CSS: chips of the three colors on a pale ground. */
+.thumb {
+  flex-shrink: 0;
+  display: inline-block;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--hair);
+  background:
+    radial-gradient(circle at 22% 30%, #b4694a 0 9%, transparent 10%),
+    radial-gradient(circle at 70% 24%, #7d8a63 0 7%, transparent 8%),
+    radial-gradient(circle at 55% 68%, #b4694a 0 6%, transparent 7%),
+    radial-gradient(circle at 18% 78%, #7d8a63 0 8%, transparent 9%),
+    radial-gradient(circle at 84% 72%, #8f8a80 0 7%, transparent 8%),
+    radial-gradient(circle at 42% 45%, #8f8a80 0 5%, transparent 6%),
+    #e3ded3;
+}
+.thumb.strip {
+  height: 0.9rem;
+  background-size: 100% 250%;
+}
+.thumb.large {
+  width: 2.75rem;
+  height: 2.75rem;
+  vertical-align: middle;
+}
+.thumb.large.strip {
+  height: 1.1rem;
 }
 .swatches {
   display: flex;
@@ -323,19 +410,31 @@ function advance() {
 }
 .out {
   display: grid;
-  gap: 0.75rem;
+  gap: 0.6rem;
   align-content: start;
   min-width: 0;
 }
-.clip {
-  margin: 0;
-  padding: 0.6rem;
+.panel {
   border: 1px solid var(--hair);
+}
+.destination {
+  border-color: var(--ink);
+}
+.panel-head {
+  margin: 0;
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid var(--hair);
   background: var(--paper-2);
   font-size: 0.7rem;
-  line-height: 1.45;
-  overflow-x: auto;
-  white-space: pre;
+}
+.found {
+  padding: 0.35rem 0.4rem;
+}
+.panel-foot {
+  margin: 0;
+  padding: 0.4rem 0.6rem;
+  border-top: 1px solid var(--hair);
+  font-size: 0.85rem;
 }
 .placeholder {
   margin: 0;
@@ -347,20 +446,41 @@ function advance() {
 .sched {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
 }
 .sched th,
 .sched td {
-  padding: 0.35rem 0.5rem;
+  padding: 0.45rem 0.5rem;
   border-bottom: 1px solid var(--hair);
   text-align: left;
+  vertical-align: middle;
+}
+.sched td.data {
+  white-space: nowrap;
+}
+.sched tr:last-child td {
+  border-bottom: 0;
 }
 .sched th {
   font-family: var(--font-mono);
   font-size: 0.7rem;
   font-weight: 400;
   color: var(--muted);
+}
+.json summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.json pre {
+  margin: 0.5rem 0 0;
+  padding: 0.6rem;
+  border: 1px solid var(--hair);
   background: var(--paper-2);
+  font-size: 0.7rem;
+  line-height: 1.45;
+  overflow-x: auto;
+  white-space: pre;
 }
 .status {
   margin: 0;

@@ -165,6 +165,32 @@ test.describe('demos', () => {
     await expect(cell).toHaveAttribute('data-state', 'saved')
   })
 
+  test('the grid demo plays the conflicting-saves walkthrough in one click', async ({ page }) => {
+    await visit(page, '/')
+    await hydrated(page)
+    const demo = page.locator('.grid-demo').first()
+    await demo.getByRole('button', { name: 'Show conflicting saves' }).click()
+    await expect(demo.locator('.story')).toContainText('the cell keeps “Gloss”', { timeout: 10_000 })
+    await expect(demo.locator('[data-cell="0-0"]')).toContainText('Gloss')
+    await expect(page.getByRole('log', { name: 'Save activity' })).toContainText('came back after a newer edit, so it was ignored')
+  })
+
+  test('the Enderase screens open full size, step with the arrow keys and close with Escape', async ({ page }) => {
+    await visit(page, '/work/enderase')
+    await hydrated(page)
+    const first = page.locator('.shots .shot').first()
+    await first.click()
+    const viewer = page.getByRole('dialog', { name: 'Enderase screens, full size' })
+    await expect(viewer).toBeVisible()
+    await expect(viewer.locator('img')).toHaveAttribute('src', /-lg\.webp$/)
+    await expect(viewer).toContainText('1 / 5')
+    await page.keyboard.press('ArrowRight')
+    await expect(viewer).toContainText('2 / 5')
+    await page.keyboard.press('Escape')
+    await expect(viewer).toBeHidden()
+    await expect(first).toBeFocused()
+  })
+
   test('the clip demo replays from the start', async ({ page }) => {
     await visit(page, '/')
     await hydrated(page)

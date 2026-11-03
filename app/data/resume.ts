@@ -1,38 +1,18 @@
 /**
- * Résumé-only copy. The working-knowledge list is platform technology I work beside and
- * have studied, grouped the way a change travels. It is printed apart from the tools I ship
- * with, and every item also appears on a capability group on /how-i-work.
+ * Résumé-only copy. Experience leads, so the summary and skills stay short.
+ * `skills` lists only tools from capabilities.ts (tests/unit/content.test.ts checks it),
+ * grouped more tightly than on the site. `studied` is one line of platform technology
+ * I've learned but not shipped; the fuller list with context lives on /how-i-work.
  */
 export const resume = {
-  summary: 'Software engineer with 8+ years on the web, deepest in frontend (TypeScript, Vue, Nuxt) and also shipping React, Next.js, .NET, Node.js and Python. I build complex product interfaces and the API, data and release work behind them. At Acelab since 2023, where my role grew from frontend to full-stack in mid-2026; before that, full-stack web roles in Node.js, React, Vue and Angular.',
-  workingKnowledgeNote: 'Technology I’ve studied and work alongside but haven’t owned, listed apart from the tools I ship with.',
-  workingKnowledge: [
-    {
-      group: 'Ship and run',
-      items: [
-        'CI/CD pipeline internals (release-triggered deploys, environments, previews)',
-        'Container images for production (multi-stage builds, registries)',
-        'Serverless containers (Google Cloud Run)',
-        'Kubernetes (deployments, health probes, Kustomize overlays)',
-        'Infrastructure as code (Terraform, Gateway API)',
-        'Error tracking & tracing (Sentry, OpenTelemetry)',
-      ],
-    },
-    {
-      group: 'Behind the request',
-      items: [
-        'Workflow-engine design (orchestration topology, fan-out, concurrency limits)',
-        'MongoDB (document modeling, read caches)',
-        'Agentic LLM features (tool calling, MCP, RAG)',
-        'Hybrid vector & keyword search (pgvector, BM25, rank fusion)',
-      ],
-    },
-    {
-      group: 'Trust and collaboration',
-      items: [
-        'Identity & SSO (OIDC, SAML)',
-        'CRDT co-editing (Yjs, Durable Objects)',
-      ],
-    },
+  summary: 'Software engineer with 8+ years on the web, deepest in Vue and Nuxt (JavaScript and TypeScript). I build complex product interfaces and carry them through the API, data and release, most recently on Acelab’s materials platform for architects and manufacturers.',
+  skills: [
+    { label: 'Frontend', tools: ['Vue 3', 'Nuxt', 'TypeScript', 'React', 'Next.js', 'Pinia', 'Tailwind CSS', 'TipTap'] },
+    { label: 'Backend & data', tools: ['.NET / C#', 'PostgreSQL', 'Node.js', 'Python', 'Supabase', 'Fastify', 'Cloudflare Workers', 'Hatchet'] },
+    { label: 'Clients & real-time', tools: ['Chrome Manifest V3', 'Flutter', 'Pusher', 'Supabase Realtime', 'Firebase Cloud Messaging'] },
+    { label: 'Testing & delivery', tools: ['Playwright', 'Vitest', 'NUnit', 'pytest', 'GitHub Actions (PR checks)', 'Feature flags', 'Vercel'] },
+    { label: 'AI', tools: ['OpenAI API', 'Claude Code', 'Codex'] },
   ],
+  studiedNote: 'Worked alongside or studied, not owned',
+  studied: ['Kubernetes', 'Terraform', 'Google Cloud Run', 'Sentry & OpenTelemetry', 'MongoDB', 'vector search', 'SSO (OIDC, SAML)', 'CRDTs (Yjs)'],
 }

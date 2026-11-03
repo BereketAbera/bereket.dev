@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { capabilities } from '~/data/capabilities'
 import { education, experience } from '~/data/experience'
 import { facts, mailto, profile } from '~/data/profile'
 import { resume } from '~/data/resume'
@@ -33,11 +32,11 @@ function fact(label: (typeof facts)[number]['label']) {
   return entry
 }
 
-// Tools I ship with, by capability group. Working knowledge gets its own block
-// below, so the two never blur.
+// Tools I ship with, grouped tightly so experience starts high on the first page.
+// What I've only studied gets one line at the end, never a skills row.
 const skills = [
   { label: 'Deepest in', value: fact('Deepest in').value },
-  ...capabilities.map(cap => ({ label: cap.short, value: cap.tools.join(', ') })),
+  ...resume.skills.map(group => ({ label: group.label, value: group.tools.join(', ') })),
 ]
 
 // Work that an experience entry already describes only needs a pointer to its
@@ -47,7 +46,7 @@ const described = new Set(experience.flatMap(role => role.work ?? []))
 // scripts/resume-pdf.mjs makes them absolute for the PDF.
 const projects = work.map(item => ({
   slug: item.slug,
-  headline: item.headline,
+  title: item.title,
   path: `/work/${item.slug}`,
   url: `${siteUrl}/work/${item.slug}`,
   role: item.role,
@@ -148,35 +147,6 @@ const projects = work.map(item => ({
 
     <section
       class="part sheet"
-      aria-labelledby="knowledge"
-    >
-      <h2
-        id="knowledge"
-        class="label heading"
-      >
-        Working knowledge
-      </h2>
-      <div class="main">
-        <p class="note">
-          {{ resume.workingKnowledgeNote }}
-        </p>
-        <dl class="skills">
-          <div
-            v-for="row in resume.workingKnowledge"
-            :key="row.group"
-            class="skill"
-          >
-            <dt class="label">
-              {{ row.group }}
-            </dt>
-            <dd>{{ row.items.join(' · ') }}</dd>
-          </div>
-        </dl>
-      </div>
-    </section>
-
-    <section
-      class="part sheet"
       aria-labelledby="experience"
     >
       <h2
@@ -237,7 +207,7 @@ const projects = work.map(item => ({
           class="project"
         >
           <h3 class="project-title">
-            <NuxtLink :to="item.path">{{ item.headline }}</NuxtLink>
+            <NuxtLink :to="item.path">{{ item.title }}</NuxtLink>
           </h3>
           <p class="project-meta">
             {{ item.role }} · {{ item.org }} · <span class="data">{{ item.years }}</span>
@@ -275,6 +245,21 @@ const projects = work.map(item => ({
           </p>
         </div>
       </div>
+    </section>
+
+    <section
+      class="part sheet"
+      aria-labelledby="studied"
+    >
+      <h2
+        id="studied"
+        class="label heading"
+      >
+        Studied
+      </h2>
+      <p class="main studied">
+        <span class="text-muted">{{ resume.studiedNote }}:</span> {{ resume.studied.join(', ') }}
+      </p>
     </section>
   </article>
 </template>
@@ -364,10 +349,9 @@ const projects = work.map(item => ({
   margin-right: 0.5rem;
 }
 
-.note {
-  margin-bottom: 0.6rem;
+.studied {
   font-size: 0.9375rem;
-  color: var(--muted);
+  line-height: 1.5;
 }
 
 .skill {
@@ -615,9 +599,9 @@ const projects = work.map(item => ({
     font-size: 9.4pt;
     line-height: 1.38;
   }
-  .note {
-    margin-bottom: 2.5pt;
-    font-size: 8.6pt;
+  .studied {
+    font-size: 9pt;
+    line-height: 1.38;
   }
 
   .entry {
@@ -629,9 +613,14 @@ const projects = work.map(item => ({
   .entry:not(.brief) {
     break-inside: auto;
   }
-  .entry-head,
-  .entry-summary {
+  /* The summary stays with the first bullet through that bullet's break-before.
+     break-after: avoid on the summary itself made Chromium push the whole entry
+     to the next page even when it fit. */
+  .entry-head {
     break-after: avoid;
+  }
+  .bullets li:first-child {
+    break-before: avoid;
   }
   .entry:first-child {
     padding-top: 0;

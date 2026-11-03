@@ -3,7 +3,7 @@
     slug="browser-extensions"
     problem="Product data lives on third-party web pages that each hide it differently, and it has to reach an application as structured records that people can trust."
     part="I built both extensions end to end and the pieces they connect to: token handoff and LLM parsing in the .NET API, the web app’s import flow, and the review platform’s paste dialogs."
-    result="Architects can paste products from manufacturer pages into a project schedule with a public Chrome extension; the internal one found all 245 reachable files in a benchmark of the 11 pages it was developed against."
+    result="Architects paste products from manufacturer pages into a project schedule with a public Chrome extension; in an offline replay of 23 reviewed products, the internal one’s recall of reviewer-approved files rose 14 points, to 71% (117 of 164)."
   >
     <h2>The problem</h2>
     <p>
@@ -439,7 +439,10 @@
 
     <h2>Outcome</h2>
     <p>
-      Architects can paste products from manufacturer pages into schedules with AceClipper, public on the Chrome Web Store. On an 11-page benchmark of the pages it was developed against, the internal extension’s documents mode found all 245 reachable files (linked without a click), against a 95% target, and 96% of suggested file types were right, against 90%. Replayed offline against reviewers’ decisions on 23 products, it found 117 of 164 approved files (71%, up from 57%).
+      Architects can paste products from manufacturer pages into schedules with AceClipper, public on the Chrome Web Store.
+    </p>
+    <p>
+      For the internal extension, the number that matters is recall: of the files reviewers ended up approving, how many the tool had already found. Replayed offline against reviewers’ decisions on 23 products, it found 117 of 164 (71%), up 14 points from 94 (57%) before a round of fixes. Higher recall means more of the files reviewers keep are already collected when they open a product; the replay measured recall, not reviewer time. Recall isn’t precision either: it doesn’t count the wrong files the tool also suggests, which is why reviewers still approve or reject every one. On a separate 11-page benchmark of the pages it was developed against, it found all 245 files those pages link to directly, against a 95% target, and suggested the right file type 96% of the time, against 90%.
     </p>
   </CaseStudy>
 </template>

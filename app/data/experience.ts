@@ -12,7 +12,7 @@ export const experience: Role[] = [
       'Led the frontend of a two-sided request-for-information workflow (send wizard, autosaving response grid, live status) and wrote .NET endpoints for its paging, cancellation and live updates.',
       'Built core parts of the spreadsheet-style product schedule (the save path, cell types, undo and redo, and most of view sharing), built its presence and live cells with teammates, and was a major contributor to the app’s Nuxt 3 migration.',
       'Built the first in-app notification center’s interface and live updates; on a teammate’s new engine, proposed and built its single real-time event and took its frontend through review to release. Finished and released threaded comments.',
-      'Built two Manifest V3 extensions end to end, one public on the Chrome Web Store, with a scoped token hand-off, server-side LLM parsing and a ground-truth evaluation harness.',
+      'Built two Manifest V3 extensions end to end, one public on the Chrome Web Store, with a scoped token hand-off, server-side LLM parsing and a ground-truth evaluation harness; in an offline replay of 23 reviewed products, fixes raised recall of reviewer-approved files 14 points, to 71%.',
       'Since mid-2026, carry my features through the server side, inside services teammates built: .NET endpoints with server-side permission checks, Python workflow steps that keep reviewers’ edits through a rescrape, Node.js route handlers for an internal review platform, and the migrations behind them.',
     ],
     work: ['workflow-engineering', 'data-interfaces', 'realtime-sync', 'browser-extensions', 'modernization'],
