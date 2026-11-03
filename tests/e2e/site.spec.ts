@@ -1,6 +1,7 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
 import { profile } from '../../app/data/profile'
+import { siteUrl as SITE } from '../../app/data/site'
 import { work } from '../../app/data/work'
 
 // End-to-end checks against the static build: `pnpm build && pnpm test:e2e`
@@ -8,10 +9,9 @@ import { work } from '../../app/data/work'
 // expected text come from app/data, so these tests follow the data contract,
 // not the case-study prose.
 
-const SITE = 'https://bereket.dev'
 const caseStudies = work.map(item => ({ ...item, path: `/work/${item.slug}` }))
-/** Home, every case study and the résumé. */
-const pages = ['/', ...caseStudies.map(item => item.path), '/resume']
+/** Every page: home, how I work, the case studies, the résumé and the lab. */
+const pages = ['/', '/how-i-work', ...caseStudies.map(item => item.path), '/resume', '/lab']
 
 interface LdNode {
   '@type'?: unknown
@@ -69,12 +69,12 @@ test.describe('home page', () => {
     await expect(page.locator('h1')).toHaveText(profile.headline)
     await expect.poll(() => page.title()).toContain(profile.name)
     await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', profile.description)
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /^https:\/\/bereket\.dev\/?$/)
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', new RegExp(`^${SITE}/?$`))
   })
 
   test('has an og:image with an absolute https URL', async ({ page }) => {
     await visit(page, '/')
-    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /^https:\/\/bereket\.dev\/\S+$/)
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', new RegExp(`^${SITE}/\\S+$`))
   })
 
   test('describes Bereket as a schema.org Person in JSON-LD', async ({ page }) => {
@@ -108,7 +108,7 @@ test.describe('navigation', () => {
     const hrefs = await page.getByRole('banner').locator('a[href*="#"]').evaluateAll(links =>
       links.map(link => link.getAttribute('href') ?? ''))
     const ids = hrefs.map(href => href.slice(href.indexOf('#') + 1))
-    expect(ids).toEqual(expect.arrayContaining(['work', 'capabilities', 'experience', 'about', 'contact']))
+    expect(ids).toEqual(expect.arrayContaining(['work', 'experience', 'about', 'contact']))
     for (const id of ids) {
       await expect(page.locator(`[id="${id}"]`), `#${id}`).toHaveCount(1)
     }
@@ -127,7 +127,7 @@ test.describe('case studies', () => {
 
       const facts = page.getByRole('complementary', { name: 'Project facts' })
       await expect(facts).toBeVisible()
-      for (const fact of [item.roleDetail, item.period, item.team]) {
+      for (const fact of [item.roleDetail, item.period]) {
         await expect(facts).toContainText(fact)
       }
 
@@ -139,6 +139,43 @@ test.describe('case studies', () => {
       expect(errors, 'console errors').toEqual([])
     })
   }
+})
+
+test.describe('demos', () => {
+  test.skip(({ isMobile }) => isMobile, 'Keyboard-driven demos; the markup is the same at every size, so these run once, on desktop')
+
+  test('the grid demo saves by keyboard and ignores a save that returns after a newer edit', async ({ page }) => {
+    await visit(page, '/')
+    await hydrated(page)
+    const grid = page.getByRole('grid', { name: /response grid/ })
+    const cell = grid.locator('[data-cell="0-0"]')
+    await cell.click()
+    // Type-to-edit: the first key replaces the value.
+    await page.keyboard.press('s')
+    await page.keyboard.type('atin')
+    await page.keyboard.press('Enter')
+    await page.keyboard.press('ArrowUp')
+    await page.keyboard.press('g')
+    await page.keyboard.type('loss')
+    await page.keyboard.press('Enter')
+    const log = page.getByRole('log', { name: 'Save activity' })
+    await expect(log).toContainText('Save 2 confirmed')
+    await expect(log).toContainText('Save 1 came back after a newer edit, so it was ignored')
+    await expect(cell).toContainText('gloss')
+    await expect(cell).toHaveAttribute('data-state', 'saved')
+  })
+
+  test('the clip demo replays from the start', async ({ page }) => {
+    await visit(page, '/')
+    await hydrated(page)
+    const demo = page.locator('.clip-demo').first()
+    await expect(demo.locator('table')).toBeVisible()
+    await demo.getByRole('button', { name: 'Replay from the start' }).click()
+    await expect(demo.locator('table')).toHaveCount(0)
+    await demo.getByRole('button', { name: 'Clip this page' }).click()
+    await demo.getByRole('button', { name: 'Paste into the schedule' }).click()
+    await expect(demo.locator('table')).toBeVisible()
+  })
 })
 
 test.describe('résumé', () => {
@@ -279,13 +316,13 @@ test.describe('links and files', () => {
     expect(missing).toEqual([])
   })
 
-  test('sitemap.xml lists the home page, the résumé and every case study on https://bereket.dev', async ({ request }) => {
+  test('sitemap.xml lists every page on the site address', async ({ request }) => {
     const response = await request.get('/sitemap.xml')
     expect(response.status()).toBe(200)
     const locs = Array.from((await response.text()).matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g), match => match[1] ?? '')
-    expect(locs.filter(loc => !/^https:\/\/bereket\.dev(?:\/|$)/.test(loc)), 'URLs outside https://bereket.dev').toEqual([])
+    expect(locs.filter(loc => loc !== SITE && !loc.startsWith(`${SITE}/`)), `URLs outside ${SITE}`).toEqual([])
     const paths = locs.map(loc => normalize(new URL(loc).pathname))
-    expect(paths).toEqual(expect.arrayContaining(['/', '/resume', ...caseStudies.map(item => item.path)]))
+    expect(paths).toEqual(expect.arrayContaining(pages))
     for (const path of paths) {
       expect((await request.get(path)).status(), `${path} is in the sitemap but not in the build`).toBe(200)
     }

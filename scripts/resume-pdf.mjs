@@ -3,11 +3,17 @@
 // another server, e.g. RESUME_URL=http://localhost:4173/resume after `pnpm preview`.
 //
 //   node scripts/resume-pdf.mjs
+//
+// The page links to its case studies with relative URLs; a PDF needs absolute ones,
+// so they're rewritten against SITE_URL (default: siteUrl in app/data/site.ts). To print
+// another address, start the dev server with the same one in NUXT_PUBLIC_SITE_URL.
 import { chromium } from '@playwright/test'
 import { readFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
+import { siteUrl } from '../app/data/site.ts'
 
 const url = process.env.RESUME_URL ?? 'http://localhost:3600/resume'
+const site = (process.env.SITE_URL ?? siteUrl).replace(/\/$/, '')
 const out = fileURLToPath(new URL('../public/bereket-abera-resume.pdf', import.meta.url))
 const maxPages = 2
 
@@ -28,6 +34,14 @@ try {
     return [...document.fonts].filter(font => font.status === 'loaded').map(font => font.family.replaceAll('"', ''))
   })
   if (!loaded.includes('Fragment Mono')) throw new Error('Fragment Mono did not load')
+
+  const printed = await page.evaluate((site) => {
+    for (const link of document.querySelectorAll('a[href^="/"]')) link.href = site + link.getAttribute('href')
+    return document.querySelector('.project-url')?.textContent?.trim() ?? ''
+  }, site)
+  if (!printed.startsWith(site.replace(/^https?:\/\//, ''))) {
+    throw new Error(`The page prints "${printed}" but links point at ${site}. Start the dev server with NUXT_PUBLIC_SITE_URL=${site}.`)
+  }
 
   await page.pdf({
     path: out,

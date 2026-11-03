@@ -36,12 +36,13 @@ export interface Work {
   period: string
   /** Compact years for the work table, e.g. "2024–26". */
   years: string
-  team: string
   stack: string[]
   /** The parts of the system the work touched, in plain words, e.g. "Web app", ".NET API". */
   spans: string[]
   links: ExternalLink[]
   themes: string[]
+  /** Shown large on the home page with a visual; the rest are listed compactly. */
+  featured?: boolean
 }
 
 /** Something a reader can open: a case study (by slug) or a URL / home-page anchor. */

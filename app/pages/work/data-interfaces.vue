@@ -1,46 +1,21 @@
 <template>
   <CaseStudy
     slug="data-interfaces"
-    problem="A spreadsheet-style grid where every cell is editable needs typed values, saves people can trust, undo, search, sharing and bulk actions, and it has to stay easy to change as each one arrives."
-    part="I built the save path behind typed cells, undo and redo, most of view sharing, catalog search and product replacement inside the schedule, and a bulk report that spans the web app and the .NET API; teammates built the grid’s rendering, keyboard movement, copy and paste, and row selection."
-    result="Everything here is merged into the main branches of Acelab’s web app and API; the save path and undo from 2024 are still in use, and the bulk report shipped with 48 new unit tests across the two."
+    problem="A spreadsheet-style schedule for specifying building products, where every cell is editable, needs saves people can trust, undo, search, sharing and bulk actions, and must stay easy to change as each arrives."
+    part="Core contributor: I built the cell save path, undo/redo, most of view sharing, catalog search with product replacement, and a bulk missing-product report; teammates built the grid’s rendering, scrolling, keyboard movement, copy-paste and selection."
+    result="Schedule users can undo their own cell edits, share views with chosen edit rights, search the catalog to replace a product, and report missing products in bulk; all merged into Acelab’s web app and API."
   >
     <h2>The problem</h2>
     <p>
-      A data grid where every cell is editable is unlike most screens: every change is a save, and new column types, views, search, sharing and bulk actions keep arriving. The hard part isn’t any one feature. It’s keeping edits predictable and the code easy to change while the grid grows.
+      The grid is Acelab’s product schedule in Material Hub: a spreadsheet-style list of the products, materials and finishes on a project, the kind that ends up in a drawing set, not a calendar. Each row holds a product; the columns hold its data: text, numbers, lists, files, its MasterFormat section and fields a firm defines for itself.
     </p>
     <p>
-      At Acelab, the grid I worked on is the product schedule. In Material Hub, a schedule is a spreadsheet-style list of the products, materials and finishes on a project, the kind of finish schedule that ends up in a drawing set, not a calendar. Each row holds a product; the columns hold its data: text, numbers, lists, files, its MasterFormat section (the North American standard for organizing construction specifications) and fields a firm defines for itself. Acelab’s <ExtLink href="https://www.acelabusa.com/solutions/project-delivery/finish-schedule">finish schedule page</ExtLink> describes views by project phase and building area, shared with other stakeholders.
+      Every change is a save, and new column types, views, search, sharing and bulk actions keep arriving. The hard part is keeping edits predictable and the code easy to change as the grid grows.
     </p>
 
-    <h2>What I owned</h2>
+    <h2>What I built</h2>
     <p>
-      I was one of the schedule’s main contributors from 2024 on, not its only author. Teammates built its foundations: rendering the grid (later with virtual scrolling), keyboard movement between cells, copy and paste, and the row selection that bulk actions use. Presence and live cell updates in this grid are in the <NuxtLink to="/work/realtime-sync">real-time case study</NuxtLink>.
-    </p>
-    <ul>
-      <li>
-        <strong>Cells and rows, 2024.</strong> The save path behind text, number, list and file cells, the composables that manage rows and cells, and cell types for a product’s MasterFormat section, the projects it is used in, and Acelab’s catalog fields. Also placeholder products for items not in the catalog, replace, duplicate, batch delete, creating and editing custom fields, and PDF previews in file cells.
-      </li>
-      <li>
-        <strong>Views and sharing, 2024.</strong> Connecting saved views to the API, and sharing them: a bundle groups views behind one link, each shared to view and comment or to edit data, and for edit data the sharer picks which custom fields recipients may change. Recipients get their own schedule page, which I built.
-      </li>
-      <li>
-        <strong>Undo and redo, 2024.</strong> I wrote it; a teammate later moved it to TypeScript.
-      </li>
-      <li>
-        <strong>2025.</strong> Moving products between schedules, changing a product’s MasterFormat section, and company-wide fields.
-      </li>
-      <li>
-        <strong>2026.</strong> Bringing catalog search into the schedule, with a mode for replacing a product; search within a schedule; an export menu that brings the existing CSV download back beside the PDF export (both built by teammates); and a bulk “report missing products” action, frontend and .NET API.
-      </li>
-    </ul>
-
-    <h2>How it works</h2>
-    <p>
-      Every cell is drawn by a component chosen by its column type, behind one contract: the component receives the cell, its column and its editing state, and reports back a new value or a change in editing state. A shared wrapper handles selection, keyboard and saving. Teammates set up that contract; I built cell types on it and wrote what happens when a value comes back.
-    </p>
-    <p>
-      The wrapper records the cell’s value before and after the edit in the page’s history, then hands the new value to one save function, which builds the payload the column type needs (a string, a list of numbers, chosen options, file references) and sends it to one endpoint for cell updates.
+      Each cell is drawn by a component chosen by its column type, behind one contract teammates set up: the component receives the cell, its column and its editing state, and reports back a new value. I built cell types on it, for a product’s MasterFormat section, the projects it is used in and Acelab’s catalog fields, and wrote what happens when a value comes back. The values before and after the edit go into the page’s history, and the new value goes to one save function, which builds the payload the column type needs and sends it to one endpoint for cell updates. Collaborators’ live edits skip the history (see the <NuxtLink to="/work/realtime-sync">real-time case study</NuxtLink>).
     </p>
 
     <CaseFigure caption="How a cell edit is saved and recorded, with undo and redo highlighted; collaborators’ live edits skip the history.">
@@ -249,38 +224,23 @@
     </CaseFigure>
 
     <p>
-      The editor for defining fields got the same separation. Before adding company-wide fields in late 2025, I moved its logic out of the modal and into composables for options, type conversion, payloads and updates. The modal went from about 1,400 lines to about 500, and company fields reused those pieces, including promoting a project field to a company field and archiving, not deleting, an option other projects still use.
+      <strong>Products and fields.</strong> I also added placeholder products for items not in the catalog, the replace, duplicate and batch-delete actions, custom fields, PDF previews in file cells and moving products between schedules. Before adding company-wide fields, I moved the field editor’s logic out of its modal into composables, so company fields reused it, including promoting a project field to a company field and archiving, not deleting, an option other projects still use.
+    </p>
+    <p>
+      <strong>Sharing.</strong> I connected saved views to the API and built most of sharing: a bundle groups views behind one link, each shared to view and comment or to edit data, and for edit data the sharer picks which custom fields recipients may change. I built the page recipients open.
+    </p>
+    <p>
+      <strong>Search and bulk report.</strong> I moved the catalog page’s search into one composable, switched that page to it, and built the schedule’s catalog search on it, with a mode for replacing a product. I also built a bulk “report missing products” action across the web app, the .NET API and a database migration. That work surfaced an older bug: the weekly report of reported products went by the date a product was added, not when it was reported, so most products reported in bulk would never have reached it. I added a reported date, set in the data layer so no write path can flag a product without dating it, and backfilled it.
     </p>
 
     <h2>Decisions</h2>
 
     <CaseDecision title="Record before-and-after values, and undo by saving the old one again.">
       <template #why>
-        Undo doesn’t need its own write path. The history keeps each cell’s value from before and after an edit, and undo or redo sends the recorded value through the same save function as typing, with the usual shortcuts and a toast to confirm. Only your own single-cell edits enter the history, so undo steps back through what you typed, and it works the same on shared bundle pages.
+        Undo doesn’t need its own write path. The history keeps each cell’s value from before and after an edit, and undo or redo sends the recorded value through the same save function as typing. Only your own single-cell edits enter the history, so undo steps back through what you typed, and it works the same on shared bundle pages.
       </template>
       <template #cost>
-        The history lives in the open page, so a reload clears it, and it covers edits made in one cell at a time: pasted values and adding, moving or deleting products never entered it. Undo doesn’t check what the cell holds now, so if a collaborator has changed that cell since, your old value replaces theirs. Pairing values per cell also took follow-up fixes for edge cases such as repeated undos.
-      </template>
-    </CaseDecision>
-
-    <CaseDecision title="Extract the shared search first, then ship in small stacked pull requests.">
-      <template #why>
-        The schedule needed keyword search across the whole catalog, with filters and paging, which the app’s catalog page already did. The first of ten stacked pull requests moved that logic into one composable and switched the catalog page to it, so the schedule’s new search dialog (Explore Products in the app) could reuse it. Each of the other nine had a narrow scope, such as category and manufacturer filters, loading and empty states, a shared product card or the replace mode, with its own summary and test plan.
-      </template>
-      <template #cost>
-        Small parts didn’t make it bug-free. The stack merged down and landed as one change, and in the following days I shipped a handful of fixes, such as results that didn’t reset when the search was cleared.
-      </template>
-    </CaseDecision>
-
-    <CaseDecision title="Narrow the table when a search is committed, not on every keystroke.">
-      <template #instead>
-        Narrowing the table as you type, which the first plan called for.
-      </template>
-      <template #why>
-        Search within a schedule found products and manufacturers through two backend endpoints I didn’t write. Suggestions updated as you typed, but the table changed only on Enter, a picked suggestion or a cleared search. Narrowing reloaded rows from the server and reset the scroll, so doing it on every pause would have kept resetting the table under someone still typing; feedback during the build moved it to commit time. The committed search lived in the URL, so a shared link or a refresh restored it.
-      </template>
-      <template #cost>
-        The table didn’t respond while you typed, so the suggestions carried that feedback. Focus took several rounds: after Enter the input stayed blurred, Tab still moved on, and reopening it showed cached suggestions without another request. The decision was later reversed: a teammate rebuilt the search to match every visible column in the browser, against a cached copy, and switched the table to narrow as you type, after a short pause.
+        The history lives in the open page, so a reload clears it, and pasted values and adding, moving or deleting products never entered it. Undo was built for your own edits, so it doesn’t reconcile with a collaborator’s later change to the same cell; that’s the first thing I’d add.
       </template>
     </CaseDecision>
 
@@ -289,29 +249,21 @@
         Keeping a client-side record of which products were already reported.
       </template>
       <template #why>
-        Reporting asks Material Hub to add a product to its catalog, and it can’t be undone. No cell carries the reported flag, and a select-all over a whole view can’t be listed cheaply in the browser. A preview endpoint sorts the selection without writing: products to report, catalog products, ones already reported, empty rows. If nothing is reportable, a toast says why; otherwise the confirmation names how many products will actually be reported. The write endpoint runs the same classification, and a test asserts the two agree. The button reuses the toolbar’s selection, so select-all and exclusions work as they do elsewhere.
+        Reporting asks Material Hub to add a product to its catalog, and it can’t be undone. No cell carries the reported flag, and a select-all over a whole view can’t be listed cheaply in the browser. A preview endpoint sorts the selection without writing, so the confirmation names how many products will actually be reported. The write endpoint runs the same classification, and a test asserts the two agree.
       </template>
       <template #cost>
-        One more request before each confirmation. It also surfaced an older bug: the weekly report of reported products selected them by the date a product was added, not when it was reported, so most products reported in bulk would never have reached it. I added a reported date, set in the data layer so no write path can flag a product without dating it, and backfilled it so nothing already in the report dropped out.
+        One more request before each confirmation, and the same classification runs twice, once to preview and once to write.
       </template>
     </CaseDecision>
 
-    <h2>Tradeoffs and what I’d change</h2>
+    <h2>What I’d change</h2>
     <p>
-      <strong>One question per flag.</strong> A column filter didn’t narrow its options as you typed. It chose between filtering locally and searching the server from a snapshot that could be empty, while loading and searching read the live column, so it waited on a search that never ran. My fix reads the live column everywhere and splits a flag that was answering two questions: do the options come from the server, and is the list on hand complete.
-    </p>
-    <p>
-      <strong>What I’d change.</strong> I’d extend undo to row actions, recorded as inverse operations, and make it check a cell’s current value before writing over a collaborator’s change. And the bulk-report button was verified by component tests but not in a browser; I’d hold that kind of change for a visual check.
-    </p>
-
-    <h2>What transfers</h2>
-    <p>
-      A grid like this stays easy to change when the paths every feature shares are few and obvious: one contract for cell types, one save path, one history, one source for each decision. New work then adds a case, not a path. And when the browser can’t cheaply know what an action will touch, ask the server first instead of caching a guess. None of this is specific to Vue or to construction products.
+      I’d extend undo to row actions, recorded as inverse operations, and make it check a cell’s current value before writing over a collaborator’s change. I verified the bulk-report button with component tests, not in a browser; I’d hold that kind of change for a visual check.
     </p>
 
     <h2>Outcome</h2>
     <p>
-      I have no usage numbers for these features. Everything here is merged into the main branches of Acelab’s web app and API, and it held up: the save path and undo from 2024 are still in use, and in 2026 teammates added date and formula columns by extending the same composable. The bulk report shipped with 24 new unit tests in the web app and 24 in the API.
+      Schedule users can undo their own cell edits, share views with chosen edit rights, search the catalog to replace a product, and report missing products in bulk. Everything is merged into Acelab’s web app and API; the 2024 save path and undo are still in use, and teammates added date and formula columns by extending the same composable. I have no usage numbers. What transfers: keep shared paths few and obvious, and ask the server rather than cache a guess.
     </p>
   </CaseStudy>
 </template>

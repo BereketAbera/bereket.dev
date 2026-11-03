@@ -143,9 +143,16 @@ describe('capability and journey evidence', () => {
     expect(missing.map(item => `${item.where}: ${item.work}`)).toEqual([])
   })
 
-  it('points `href` at an https URL or at a section of the home page', () => {
-    const homeIds = new Set(Array.from(read('app/pages/index.vue').matchAll(/\sid="([^"]+)"/g), match => match[1]))
-    const bad = evidence.filter(({ href }) => href !== undefined && !(href.startsWith('#') ? homeIds.has(href.slice(1)) : isHttps(href)))
+  it('points `href` at an https URL or at a page (and section) of this site', () => {
+    /** "/how-i-work#platform": the page file exists and has that id; "#work": a section of the home page. */
+    const resolves = (href: string) => {
+      if (!href.startsWith('/') && !href.startsWith('#')) return isHttps(href)
+      const [path = '', id] = href.split('#')
+      const file = `app/pages/${path === '' || path === '/' ? 'index' : path.slice(1)}.vue`
+      if (!existsSync(join(root, file))) return false
+      return id === undefined || new RegExp(`\\sid="${id}"`).test(read(file))
+    }
+    const bad = evidence.filter(({ href }) => href !== undefined && !resolves(href))
     expect(bad.map(item => `${item.where}: ${item.href}`)).toEqual([])
   })
 })
@@ -161,6 +168,12 @@ describe('ownership tiers', () => {
 
   it('says what every case study touched', () => {
     expect(work.filter(item => item.spans.length === 0).map(item => item.slug)).toEqual([])
+  })
+
+  it('features exactly three case studies, listed first', () => {
+    const flags = work.map(item => item.featured === true)
+    expect(flags.filter(Boolean)).toHaveLength(3)
+    expect(flags.slice(0, 3)).toEqual([true, true, true])
   })
 
   it('describes my part in every platform layer', () => {

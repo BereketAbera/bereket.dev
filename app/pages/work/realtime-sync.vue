@@ -2,36 +2,20 @@
   <CaseStudy
     slug="realtime-sync"
     problem="When many people have the same data open, every screen has to show their changes as they happen and recover the ones it missed."
-    part="I built presence, live cell updates and the first notification center, and took over schedule comments from a teammate to release them. On a teammate’s new notification engine, I proposed and built its single real-time event and took its frontend through review to release."
-    result="Shipped from 2024 to 2026: live cells and presence in the schedule, comments for all users, and one notification center on the new engine, with the old one removed."
+    part="With my team I built presence and live cells; I built the first notification center, finished a teammate’s threaded comments, and built the real-time event for a teammate’s notification engine, taking its frontend to release."
+    result="Collaborators on a schedule see each other’s edits and selected cells live, discuss cells in threaded comments, and get notifications in one center; all shipped between 2024 and 2026, with the old center removed."
   >
     <h2>The problem</h2>
     <p>
-      When several people work on the same data, every open screen has to keep up: a value someone else just typed, who is looking at what, a reply, a request that needs an answer. Each change has to reach every open tab without a reload and apply correctly even if it arrives twice. And each client needs to catch up on what it missed while a laptop slept or a connection dropped.
+      When several people share data, every screen has to keep up: a value someone just typed, who is looking where, a reply, a request awaiting an answer. Each change must reach every tab without a reload, survive arriving twice, and be recovered after a laptop sleeps or a connection drops.
     </p>
     <p>
-      At Acelab the shared data is the product schedule in Material Hub, a materials platform for architects, owners and manufacturers. A schedule is a spreadsheet-style list of the products, materials and finishes that go into a drawing set, not a calendar; Acelab markets one kind as <ExtLink href="https://www.acelabusa.com/solutions/project-delivery/finish-schedule">Finish Schedules</ExtLink>. Several people can have one open at once, discuss its cells in comment threads and get notified when someone mentions them or needs their answer.
+      At Acelab that data is the product schedule in Material Hub, a materials platform for architects, owners and manufacturers. A schedule is a spreadsheet-style list of the products and finishes in a drawing set; Acelab markets one kind as <ExtLink href="https://www.acelabusa.com/solutions/project-delivery/finish-schedule">Finish Schedules</ExtLink>. Collaborators comment on its cells and get notified when someone needs them.
     </p>
-
-    <h2>What I owned</h2>
-    <ul>
-      <li>
-        <strong>Presence and live cells, 2024.</strong> I built live updates for text, number, list and file cells, and presence: who else has the schedule open and which cell each person has selected. I created the real-time store and the presence composable underneath. A teammate introduced the real-time service, Pusher, and its client wrapper; another built the row, column and category events; a backend teammate published the cell and selection events from the server.
-      </li>
-      <li>
-        <strong>Notification center, 2025.</strong> Between April and July 2025 I built the first in-app notification center: the bell and panel, groups for requests, updates and announcements, read states, filters, actions taken from the notification, a settings panel and real-time updates.
-      </li>
-      <li>
-        <strong>Schedule comments, 2026.</strong> A teammate started threaded cell comments in April and May, including the TipTap composer with mentions, product-link previews and live thread updates. I took it over in late May and carried it to general release: fixes to editing, replies and mentions in the TipTap editor, a reworked product-link preview, several bug-fix bundles, .NET changes that place threads in the right views and route notifications to them, and removing the feature flag. In September I turned URLs in comments into links, live as you type.
-      </li>
-      <li>
-        <strong>Notification engine, 2026.</strong> A teammate built a new event-driven notification engine and the first version of its frontend, behind a flag. In review I proposed replacing its five real-time event types with one; the proposal was approved as the direction, and I built it on server and client. I also added server support for actions that ask for input, markdown messages and links into comment threads, and fixed flows I verified end to end. I opened and merged the pull request that took its frontend to release and wrote the fixes from its review, including the catch-up fixes below, as well as a settings page redesign and the manufacturer paths. The teammate moved settings onto the engine’s recursive tree and deleted the flag and the old interface.
-      </li>
-    </ul>
 
     <h2>How it works</h2>
     <p>
-      All four features share one transport: an event goes out on a channel per schedule (cells, presence), per project (comment threads), or per user and per company (notifications). What differs is how a client applies it.
+      All four features share one transport: the server publishes each change on a channel per schedule, project, user or company. What differs is how an open client applies it.
     </p>
 
     <CaseFigure caption="Four kinds of events and how an open client applies each, with the notification catch-up path highlighted.">
@@ -311,53 +295,26 @@
     </CaseFigure>
 
     <p>
-      <strong>Apply it.</strong> A cell event carries the new value in the server’s typed format. The client finds the row through an id-to-index map and the column by id, converts the value to the cell’s own shape and patches that one cell, with no refetch. Selections travel the same way, sent after a half-second pause so moving quickly across a row sends one message, not one per cell. Each client keeps one selection per collaborator, indexed by row and column, so a cell can tell whether someone else is on it and outline itself in that person’s color. A presence channel supplies the avatars; when someone leaves, their selection goes too.
+      <strong>Patch in place.</strong> With my team I built live cell updates and presence: who else has the schedule open and which cell each person has selected. I created the real-time store and presence composable underneath. A cell event carries the new value, and the client patches that one cell, found by row and column id, with no refetch. Selections go out after a half-second pause, so moving quickly across a row sends one message, not one per cell, and a cell outlines itself in the color of whoever is on it.
     </p>
     <p>
-      <strong>Refetch.</strong> Whether a comment thread shows depends on which rows and columns the open view contains, which the server works out. So a thread event tells every other open schedule in the project to refetch its view’s threads.
+      <strong>Refetch.</strong> I took threaded cell comments over from a teammate and carried them to general release, with fixes to editing, replies and mentions, a reworked product-link preview, and .NET changes that route notifications to the right thread. I attached each thread to its cell rather than the view it was written in, so it shows in any view containing its row and column. The server works out which threads a view shows, so a thread event tells other open schedules in the project to refetch theirs.
     </p>
     <p>
-      <strong>Merge by id.</strong> Notifications are a list the client has already loaded, so events insert, update or remove entries by id, and a duplicate changes nothing. Since events can still be missed, the client resyncs after a reconnect or when a tab hidden for over five minutes returns.
-    </p>
-    <p>
-      A comment notification must open its thread. The schedule loads rows in pages and renders only those on screen, so the thread’s row may not be in the browser yet. The client asks the server where the row sits in the current view, search included, loads that page, scrolls to the row, waits for the cell to render and opens the thread.
+      <strong>Merge by id, then resync.</strong> In 2025 I built the first in-app notification center: the bell and panel, grouping, read states, filters, actions taken from a notification, and real-time updates. Events insert, update or remove entries by id, so a duplicate changes nothing. On a teammate’s new notification engine, I proposed and built its single real-time event on server and client, added server support for actions that ask for input, markdown messages and links into comment threads, and took its frontend through review to release. Its client, which the teammate started, resyncs after a reconnect or when a tab hidden for over five minutes returns.
     </p>
 
     <h2>Decisions</h2>
 
-    <CaseDecision title="When someone joins, have one existing member re-send everyone’s selections.">
-      <template #instead>
-        Re-sending each selection as a separate request, which my first version did.
-      </template>
-      <template #why>
-        Selections go out only when they change, so a newcomer would see nobody’s selected cell until each person moved. When someone joins, the client first in the channel’s member list sends every current selection, tagged with its owner, in one request that the server broadcasts; a backend teammate added that endpoint.
-      </template>
-      <template #cost>
-        A newcomer depends on another open client: if that request fails, they see each selection only when its owner next moves. Every client also has to agree on who is first.
-      </template>
-    </CaseDecision>
-
-    <CaseDecision title="Attach a comment thread to its cell, not to the view it was written in.">
-      <template #instead>
-        Scoping each thread to the view it was created in, which I had shipped the week before.
-      </template>
-      <template #why>
-        A schedule can have several views, each showing its own rows and columns, so a thread scoped to its creation view was missing from other views of the same cell. Now it shows in any view containing its row and column, and its notifications carry the view to open.
-      </template>
-      <template #cost>
-        The server resolves visibility for each view, and an open schedule applies a thread event by refetching its view’s threads rather than patching one.
-      </template>
-    </CaseDecision>
-
     <CaseDecision title="Send one notification event that says what to do with it.">
       <template #instead>
-        Five event types, with the unread count in an event of its own, as the engine’s first version had.
+        Five event types, with the unread count in its own event, as the engine’s first version had.
       </template>
       <template #why>
-        With the count sent separately, the badge could show the old number until the count event arrived, and only a new notification could raise a toast. Now one event carries the notification, the current counts and delivery instructions (toast, remove or resync), so the badge changes in the same update as the notification it counts, and the server decides behavior in data, not by event name.
+        With the count sent separately, the badge could lag the notification it counted, and only a new notification could raise a toast. I proposed one event carrying the notification, the current counts and a delivery instruction (toast, remove or resync), so the badge changes with the notification it counts and the server decides behavior in data, not by event name.
       </template>
       <template #cost>
-        Every write path on the server must assemble the full event, counts included, before publishing. Company-wide broadcasts share a channel that can’t carry anyone’s own counts, so they only tell clients to resync.
+        Every write path on the server must assemble the full event, counts included, before publishing. Company-wide broadcasts can’t carry anyone’s own counts, so they only tell clients to resync.
       </template>
     </CaseDecision>
 
@@ -366,32 +323,24 @@
         Merging in what changed since the last sync, timed by the client’s clock, as the new frontend’s first version did.
       </template>
       <template #why>
-        A merge never removes anything, so a notification dismissed or canceled while a client was offline stayed on screen, and a cursor taken from the client’s clock could drift from the server’s timestamps. A resync now fetches the current window and replaces the store. Counts follow the same rule: marking a notification read applies the counts in the server’s response, not waiting for a count event that never arrives if the socket is down.
+        A merge never removes anything, so a notification dismissed or canceled while a client was offline stayed on screen, and the client’s clock could drift from the server’s timestamps. I made each resync fetch the current window and replace the store. Marking a notification read applies the counts in the server’s response instead of waiting on the socket.
       </template>
       <template #cost>
-        Each resync downloads the whole recent window, not a delta. A first load also used to resync twice, on mount and on the first connection; now only a real reconnect triggers another.
+        Each resync downloads the whole recent window, not a delta. A first load also used to resync twice; now only a real reconnect triggers another.
       </template>
     </CaseDecision>
 
-    <h2>Tradeoffs and what I’d change</h2>
+    <h2>What I’d change</h2>
     <p>
-      <strong>The cutover.</strong> I first gated the new center by role, keeping admins, manufacturers and internal staff on the old one until notifications they relied on existed in the engine. The next day a teammate found that every old type already had an engine equivalent and switched everyone over; the flag and the old interface were deleted in the pull request that shipped the new center. I kept manufacturers on their old email-only preferences page, since the new settings tree is empty for them. Next time I’d compare the catalogs before building a gate.
+      My first notification center trusted the stream. It loaded its list once and let events keep it current, and the badge added or subtracted one per event, so a dropped connection or a missed event left both wrong until a reload. The engine’s client fixes both; next time I’d build the catch-up path first.
     </p>
     <p>
-      <strong>My first notification center trusted the stream.</strong> It loaded its list once and let events keep it current, merged by id. Nothing caught up after a dropped connection, and the badge was kept by adding and subtracting one per event, so a missed event left both wrong until a reload. The engine’s client fixes both.
-    </p>
-    <p>
-      <strong>The 2024 store.</strong> Presence state outlived the page until an October hotfix cleared it on unmount and before each new subscription. The store also rebuilt its map of who is on which cell whenever rows or selections changed, scanning each selected row; in 2026 a teammate removed those scans with other performance fixes. I’d now tie such state to the subscription and build such maps from lookups.
-    </p>
-
-    <h2>What transfers</h2>
-    <p>
-      Decide, per kind of event, whether it carries data the client can apply or only says something changed. Apply the first kind by id, so duplicates are harmless, and refetch for the second. Then give every client a catch-up path where the server’s answer replaces local state, because reconnects, sleeping laptops and background tabs are routine. None of this depends on Pusher or Vue.
+      In the 2024 presence store, state outlived the page until a hotfix cleared it, and the store rebuilt its map of who is on which cell, scanning each selected row, whenever rows or selections changed. I’d now tie such state to the subscription and build those maps from lookups.
     </p>
 
     <h2>Outcome</h2>
     <p>
-      Live cells and presence merged in August 2024 and the notification center in July 2025. Schedule comments reached general release when I removed their feature flag in June 2026, and URL linking followed in September. In July 2026 the engine-backed notification center merged as the only one, with the old interface removed.
+      Collaborators now see each other’s edits and selections live, discuss cells in threaded comments, and get notifications in one center that catches up after a gap. Live cells and presence merged in August 2024 and the first notification center in July 2025; comments reached general release in June 2026, and since July 2026 the engine-backed center is the only one. What transfers: apply data events by id, and after any gap let the server’s answer replace local state.
     </p>
   </CaseStudy>
 </template>

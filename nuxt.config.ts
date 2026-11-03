@@ -1,6 +1,6 @@
 import tailwindcss from '@tailwindcss/vite'
+import { siteUrl } from './app/data/site'
 
-const siteUrl = 'https://bereket.dev'
 
 export default defineNuxtConfig({
   compatibilityDate: '2026-11-01',

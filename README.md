@@ -2,7 +2,7 @@
 
 Source of [bereket.dev](https://bereket.dev), the portfolio of Bereket Abera, a software engineer in Addis Ababa who takes features from an unclear brief to production: deepest in frontend (TypeScript, Vue, Nuxt), also building in React, and shipping the API, data and release work behind them in .NET, Node.js and Python.
 
-The site is written to be read two ways. A recruiter can get role, stack, location and contact details from the first screen. An engineering manager can follow how I work from brief to production, see the platform I work in with my exact part in each layer, and open any row of the work table for a case study covering the problem, my part, the decisions, the tradeoffs and what shipped.
+The site is written to be read at three depths. In ten seconds the first screen says what I build, where and with what. Within thirty seconds the three featured projects show the work itself: an interactive rebuild of a response grid (made-up data), an illustration of a browser-extension hand-off, and screens from my own product. Over five minutes the case studies and [`/how-i-work`](app/pages/how-i-work.vue) cover the stages from brief to production, each capability with examples, and the platform I work in with my exact part in each layer.
 
 ## Stack
 
@@ -20,11 +20,11 @@ Claims and the evidence behind them live in typed data files, not scattered thro
 | [`app/data/profile.ts`](app/data/profile.ts) | Positioning, facts, contact |
 | [`app/data/journey.ts`](app/data/journey.ts) | Six stages from brief to production, each with proof, one real decision and links to where to check it |
 | [`app/data/platform.ts`](app/data/platform.ts) | The platform I work in, layer by layer: what it runs, and my part in each layer |
-| [`app/data/work.ts`](app/data/work.ts) | Case-study index: role, period, team, stack, evidence type, public links |
+| [`app/data/work.ts`](app/data/work.ts) | Case-study index: role, period, stack, evidence type, public links; the first three are featured with a visual |
 | [`app/data/capabilities.ts`](app/data/capabilities.ts) | Capability groups: tools I ship with, platform technology I have working knowledge of (kept separate), and evidence links |
 | [`app/data/experience.ts`](app/data/experience.ts) | Roles and education |
 | [`app/data/resume.ts`](app/data/resume.ts) | Résumé summary and the grouped working-knowledge list |
-| [`app/data/lab.ts`](app/data/lab.ts) | Experiments and older public code, kept apart from the case studies |
+| [`app/data/lab.ts`](app/data/lab.ts) | Experiments and older public code, kept apart from the case studies (shown at `/lab`) |
 
 `tests/unit/content.test.ts` fails if a capability points at a case study that doesn't exist, if a technology is listed both as shipped and as working knowledge, if any page still holds placeholder text, or if a ticket ID, PR number, staging URL or phone number slips into the source. Internal names are checked against a private denylist passed in at test time (`CONTENT_DENYLIST=<file>`).
 

@@ -5,7 +5,7 @@ import type { Stage } from './types'
  * Each stage: the responsibility, two proofs, and one real decision with its cost.
  * tests/unit/content.test.ts checks that every evidence link points at something that exists.
  */
-export const journeyIntro = 'Six stages, in the order they happen. Each names the responsibility I take on, two places I’ve done it, and one call I made, with the tradeoff behind it.'
+export const journeyIntro = 'Six stages, in the order they happen. Each names the responsibility I take on, two places I’ve done it and one call I made, with its cost.'
 
 export const journey: Stage[] = [
   {
@@ -20,7 +20,7 @@ export const journey: Stage[] = [
     evidence: [
       { label: 'Workflow engineering', work: 'workflow-engineering' },
       { label: 'Browser extensions', work: 'browser-extensions' },
-      { label: 'The platform', href: '#platform' },
+      { label: 'The platform', href: '/how-i-work#platform' },
     ],
   },
   {
@@ -49,7 +49,7 @@ export const journey: Stage[] = [
     evidence: [
       { label: 'Browser extensions', work: 'browser-extensions' },
       { label: 'Workflow engineering', work: 'workflow-engineering' },
-      { label: 'The platform', href: '#platform' },
+      { label: 'The platform', href: '/how-i-work#platform' },
     ],
   },
   {
@@ -57,13 +57,13 @@ export const journey: Stage[] = [
     title: 'Prove it works and keep it safe',
     summary: 'Tests ship with the feature, and security is decided on the server: who may act, what a page or a model returned, and where a user-supplied URL is allowed to go.',
     proof: [
-      'Wrote about a fifth of a large Vue app’s unit-test files, and built a Playwright harness that scores an extraction tool against frozen ground truth.',
-      'Found and closed an authentication gap in an internal tool’s API routes, guarded server-side URL fetching against SSRF in .NET and Node.js, and switched off an image optimizer that worked as an open proxy.',
+      'Tests ship with my features, and I built a Playwright harness that scores an extraction tool against frozen ground truth, so every change is measured, not eyeballed.',
+      'Kept credentials and model calls behind the API: a browser extension gets a short-lived scoped token, and links and images from a model’s answer pass an allow-list before they render.',
     ],
-    decision: 'I hand-wrote a same-origin analytics relay with allow-listed headers, methods and paths, because the framework’s one-line proxy would have forwarded users’ session cookies to a third party. The cost: a route to maintain.',
+    decision: 'I hand-wrote a same-origin analytics relay with allow-listed headers, methods and paths, so only what the analytics service needs ever leaves the app. The cost: a route to maintain instead of a one-line proxy.',
     evidence: [
       { label: 'Browser extensions', work: 'browser-extensions' },
-      { label: 'Capabilities', href: '#capabilities' },
+      { label: 'Capabilities', href: '/how-i-work#capabilities' },
     ],
   },
   {
@@ -71,7 +71,7 @@ export const journey: Stage[] = [
     title: 'Ship it',
     summary: 'I release through the team’s pipelines and plan risky rollouts with the change: the deploy order between services, a flag or an off switch, and migrations that are safe to re-run. Urgent fixes take the hotfix path.',
     proof: [
-      'Cut versioned production releases on a release-triggered Cloud Run pipeline teammates built, wrote the notes for a web and API release versioned in lockstep, and ran hotfixes with back-ports to staging.',
+      'Cut versioned production releases through the pipeline teammates built, wrote the notes for a web and API release shipped together, and ran hotfixes with back-ports.',
       'Shipped the frontend of a cross-company workflow dark behind a flag that gated every entry point, background request and live-update handler; it reached internal users first, and I removed another feature’s flag at general release.',
     ],
     decision: 'I added a page scan to an edge service and designed it with its Python callers and review app so each piece could deploy in either order, dark until switched on per site and off again without a deploy. The cost: each caller has to opt in explicitly.',
@@ -92,7 +92,7 @@ export const journey: Stage[] = [
     decision: 'I traded a little precision for coverage in category assignment: on an offline replay of about 26,000 reviewed products, the share with a real category rose from about 19% to 72% while correctness moved from 81–85% to 79%.',
     evidence: [
       { label: 'Workflow engineering', work: 'workflow-engineering' },
-      { label: 'The platform', href: '#platform' },
+      { label: 'The platform', href: '/how-i-work#platform' },
     ],
   },
 ]

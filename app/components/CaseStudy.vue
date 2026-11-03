@@ -95,12 +95,6 @@ const summary = computed(() => [
           </div>
           <div class="fact">
             <dt class="label">
-              Team
-            </dt>
-            <dd>{{ item.team }}</dd>
-          </div>
-          <div class="fact">
-            <dt class="label">
               Stack
             </dt>
             <dd>{{ item.stack.join(', ') }}</dd>
@@ -174,7 +168,7 @@ const summary = computed(() => [
             What’s left out
           </h2>
           <p class="mt-2">
-            Acelab’s code and data are private, so there are no product screenshots here and the diagrams are redrawn. Names of colleagues, customers and internal tools are left out on purpose. I’m glad to go deeper on any of it in an interview.
+            Acelab’s code and data are private, so the diagrams are redrawn and any interactive demo is a rebuild with made-up data. Names of colleagues, customers and internal tools are left out on purpose. I’m glad to go deeper on any of it in an interview.
           </p>
         </section>
 

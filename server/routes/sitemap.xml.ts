@@ -2,7 +2,7 @@ import { work } from '../../app/data/work'
 
 export default defineEventHandler((event) => {
   const { siteUrl } = useRuntimeConfig().public
-  const paths = ['/', '/resume', ...work.map(w => `/work/${w.slug}`)]
+  const paths = ['/', '/how-i-work', '/resume', ...work.map(w => `/work/${w.slug}`), '/lab']
   const urls = paths.map(path => `  <url><loc>${siteUrl}${path === '/' ? '' : path}</loc></url>`).join('\n')
 
   setHeader(event, 'content-type', 'application/xml; charset=utf-8')

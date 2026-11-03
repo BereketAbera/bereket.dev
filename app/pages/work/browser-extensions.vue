@@ -2,45 +2,28 @@
   <CaseStudy
     slug="browser-extensions"
     problem="Product data lives on third-party web pages that each hide it differently, and it has to reach an application as structured records that people can trust."
-    part="I built both extensions end to end and the pieces they connect to: token handoff and LLM parsing in the .NET API, the import flow in the web app, and the paste dialogs in an internal data-quality platform."
-    result="The public extension is on the Chrome Web Store. The internal one reached version 2.0.1 with 1,673 unit tests, and on an 11-page benchmark of the pages it was developed against, it found all 245 reachable files."
+    part="I built both extensions end to end and the pieces they connect to: token handoff and LLM parsing in the .NET API, the web app’s import flow, and the review platform’s paste dialogs."
+    result="Architects can paste products from manufacturer pages into a project schedule with a public Chrome extension; the internal one found all 245 reachable files in a benchmark of the 11 pages it was developed against."
   >
     <h2>The problem</h2>
     <p>
-      Some data lives only on other companies’ websites. Product pages are a hard case: the facts sit in text, structured data and scripts, behind tabs and dropdowns, in embedded frames and linked PDFs, and every site differs. The work is reading pages you don’t control, handing the result over securely, and knowing how accurate it is.
-    </p>
-    <p>
-      At Acelab, whose Material Hub is a materials-management platform for architects, owners and manufacturers, that data is manufacturers’ product information. In 2026 I built two Chrome extensions for it.
+      Manufacturers’ product data sits in text, structured data and scripts, behind tabs and dropdowns, in frames and linked PDFs, and every site differs. At Acelab, whose Material Hub is a materials-management platform for architects, owners and manufacturers, I built two Chrome extensions to bring it in:
     </p>
     <ul>
       <li>
-        <strong>AceClipper</strong> is public on the <ExtLink href="https://chromewebstore.google.com/detail/aceclipper/kpljfojfnempmahijdcncjbopekfcjag">Chrome Web Store</ExtLink>. An architect opens it on a manufacturer’s page and pastes the products it finds into a project schedule, the spreadsheet-style product list for a drawing set.
+        <strong>AceClipper</strong>, public on the <ExtLink href="https://chromewebstore.google.com/detail/aceclipper/kpljfojfnempmahijdcncjbopekfcjag">Chrome Web Store</ExtLink>. An architect opens it on a manufacturer’s page and pastes the products it finds into a project schedule, the spreadsheet-style product list for a drawing set.
       </li>
       <li>
-        <strong>The internal extension</strong> is for Acelab’s product-data reviewers. Automated scraping misses swatches on many manufacturer pages, so it collects a product’s swatches, finish photos and linked documents for a reviewer to check in Chrome’s side panel and copy to the review platform.
-      </li>
-    </ul>
-
-    <h2>What I owned</h2>
-    <ul>
-      <li>
-        <strong>AceClipper.</strong> The popup, service worker, content script and page capture; a teammate added three commits: environment-based build configuration, a screenshot feature and icons.
-      </li>
-      <li>
-        <strong>Its server and web-app pieces.</strong> In the .NET API: short-lived extension tokens, an endpoint that parses a capture with OpenAI and validates the answer, image import from remote URLs, and matching scoped to imported products. In the Nuxt web app: the connect page, the clipboard import modal and matching after import.
-      </li>
-      <li>
-        <strong>The internal extension.</strong> Sole author, including the Playwright evaluation harness. It started as a measured prototype whose written plan ruled out a backend and AI.
-      </li>
-      <li>
-        <strong>Where its data lands.</strong> The review platform’s paste dialogs for images and documents, and a change in the Python workers that keeps reviewer-added document links through a rescrape.
+        <strong>An internal extension</strong> for product-data reviewers. Automated scraping misses swatches on many manufacturer pages, so it collects swatches, finish photos and linked documents for a reviewer to check.
       </li>
     </ul>
 
     <h2>How it works</h2>
     <p>
-      Both extensions use Manifest V3, read a page only after a click, and hand over a versioned JSON clip on the clipboard. They differ in where extraction happens.
+      Both extensions use Manifest V3, read a page only after a click, and hand over a versioned JSON clip on the clipboard. They differ in where extraction happens. The demo below follows one clip from page to schedule.
     </p>
+
+    <ClipDemo />
 
     <CaseFigure caption="Same input, two ways to extract, one hand-off: the public extension parses on the server with an LLM, the internal one reads the page with rules, and both pass a versioned JSON clip (highlighted).">
       <svg
@@ -408,44 +391,35 @@
     </CaseFigure>
 
     <p>
-      <strong>AceClipper</strong> is a popup, a service worker and a content script. Early builds declared the script on every page and could read any URL; I narrowed the store version to injecting it only when needed, on https pages. The capture holds the URL, title, up to 10,000 characters of visible text, meta tags, JSON-LD and up to 50 image URLs, each part guarded so one failure can’t sink the rest. The API asks OpenAI for products in a fixed shape and validates the answer. Pasted into a schedule, the clip opens an import modal; the server creates the products, downloads and checks each image, and can match just the new ones.
+      <strong>AceClipper</strong> is a popup, a service worker and a content script injected only when needed, on https pages. Its capture holds the URL, title, up to 10,000 characters of visible text, meta tags, JSON-LD and up to 50 image URLs, each part guarded so one failure can’t sink the rest. In the .NET API, my endpoint asks OpenAI for products in a fixed shape and validates the answer, and the API drops any link from the model that isn’t http(s). Pasted into a schedule, the clip opens my import modal; the server creates the products, downloads and checks each image, and can match just the new ones.
     </p>
     <p>
-      <strong>The internal extension</strong> runs everything from the side panel. Its service worker only opens the panel and holds no state, so suspension loses nothing. The panel injects a reader into the page and each readable frame; results come back in an envelope that separates a value from an error, because a frame whose code throws otherwise returns nothing. Small probes read page data and framework state in the page’s own JavaScript context, writing nothing. The reader opens tabs, dropdowns and closed sections, never a product option, a form or a link off the page. Linked PDFs are fetched without the reviewer’s cookies and read with pdf.js.
+      <strong>The internal extension</strong> runs everything from Chrome’s side panel. Its service worker only opens the panel and holds no state, so suspension loses nothing. The panel injects a reader into the page and each readable frame, and results come back in an envelope that separates a value from an error, because a frame whose code throws otherwise returns nothing. The reader opens tabs, dropdowns and closed sections, never a product option, a form or a link off the page. Linked PDFs are fetched without the reviewer’s cookies and read with pdf.js. A run ends with a status: “complete” needs a count the page itself states that matches what was found, with nothing failed, cut short or unreadable.
     </p>
     <p>
-      Handlers know page situations, such as frames, carousels and PDFs, and profiles know data types, which let documents join swatches later. A run ends with a status: “complete” needs a count the page itself states that matches what was found, with nothing failed, cut short or unreadable.
+      On the receiving side, I built the review platform’s paste dialogs for images and documents and changed the Python workers so reviewer-added document links survive a rescrape. I later re-implemented the extension’s rules as a page scan in the server-side scraper, with no LLM, tested against the extension’s frozen ground truth.
     </p>
 
     <h2>Decisions</h2>
 
     <CaseDecision title="Keep secrets and the model on the server; give the extension a short-lived token.">
       <template #why>
-        The extension is treated as an untrusted client: no model key, no service credential, no password prompt. It opens the web app’s connect page, which signs the user in, or reuses their session, gets a token from the API and sends it over. The token is user-scoped, lasts an hour by default and is limited to the extension’s scopes; the extension accepts it only from the web app’s origin and in the expected shape.
+        The extension is an untrusted client, so it holds no model key, no service credential and no password prompt. It opens the web app’s connect page, which signs the user in or reuses their session, gets a token from the API and sends it over. The token is user-scoped, limited to the extension’s scopes and lasts an hour by default.
       </template>
       <template #cost>
         Connecting is a trip through a browser tab, and returning the user to their page with the popup reopened depends on Chrome’s APIs, so it’s best effort. Every capture is a server round trip.
       </template>
     </CaseDecision>
 
-    <CaseDecision title="Collect with rules, and keep AI out of the internal tool.">
+    <CaseDecision title="Collect with rules, not AI, and score every change against frozen answers.">
       <template #instead>
-        A model reading the page, as in the public extension. The code keeps only an unused seam for an optional assist on unresolved items.
+        A model reading the page, as in the public extension.
       </template>
       <template #why>
-        Reviewers approve what the tool finds, so every item records where it came from, and where sources disagree the panel shows both values. Rules can be rerun on saved pages and scored against fixed answers, and only rule-based items count toward “complete.”
+        Reviewers approve what the tool finds, so every item records where it came from, and where sources disagree the panel shows both values. Rules can be rerun on saved pages, and a Playwright harness loads the built extension into Chromium, collects on each live example page, scores it against ground truth frozen on a set date and reports site drift apart from regressions. A false “complete” fails the run.
       </template>
       <template #cost>
-        Coverage grows one page pattern at a time, each needing a generic rule, a saved page and a test; a CI check fails if the source names a test site. Against reviewers’ decisions, most remaining misses sat only in page data, behind buttons that open a dialog, on a page that hadn’t rendered, or under review rules a page can’t show.
-      </template>
-    </CaseDecision>
-
-    <CaseDecision title="Freeze the ground truth, and score every change against it.">
-      <template #why>
-        Live pages change, so a score alone can’t tell a regression from a site update. For swatches, each example site’s truth is derived from its own verified source, spot-checked once and saved as a dated file. That eval loads the built extension into Chromium with Playwright, collects on each page, scores recall, precision, names, codes, groups and status, and reports drift apart from regressions; a false “complete” fails the run. For documents, the truth lists every file on the 11 example pages and what reviewers kept, frozen on one date, and the eval fails when a target is missed.
-      </template>
-      <template #cost>
-        The harness is a second codebase; most of the 2.0.0 diff was harness data. Live runs still need judgment: when old and new builds ran side by side on 200 pages, every difference turned out to be a site change or a bot block, which took reruns to confirm.
+        Coverage grows one page pattern at a time, each needing a generic rule, a saved page and a test, and the harness is a second codebase. Live runs still need judgment: when old and new builds ran side by side on 200 pages, every difference turned out to be a site change or a bot block, which took reruns to confirm.
       </template>
     </CaseDecision>
 
@@ -458,33 +432,14 @@
       </template>
     </CaseDecision>
 
-    <h2>The pipeline it feeds</h2>
-    <p>
-      The internal extension feeds a review pipeline in which Python workers scrape and extract products and reviewers check them on the review platform. I later re-implemented its rules as a page scan in the server-side scraper, with no LLM, tested against the extension’s frozen truths.
-    </p>
-    <p>
-      I also changed how those workers assign categories, measured by offline replay, not in production. Where the search wasn’t confident, products had fallen back to a generic category; now the product’s MasterFormat section (its construction-industry classification), or a set score margin, can pick one of the search’s top two candidates instead. Replayed over approved products and scored against reviewers’ final categories, more than three times as many products got a real category and the share needing a reviewer’s fix roughly halved, while the share of assigned categories that were right dipped by a few points, a deliberate trade.
-    </p>
-
-    <h2>Tradeoffs and what I’d change</h2>
+    <h2>What I’d change</h2>
     <p>
       <strong>The model failed quietly.</strong> A reported page with 16 color variants came back empty: the model listed each variant as a product, hit the output limit, and the endpoint returned an empty list. I changed the prompt to treat schema.org JSON-LD as strong evidence and fold variants into one product, raised the limit, and made a truncated answer return a clear error. I’d give the LLM path a frozen test set from day one.
-    </p>
-    <p>
-      <strong>Untrusted input includes the model’s output.</strong> Links and images from the parse response pass through helpers that allow only web URLs (and <code>data:</code> images), so a <code>javascript:</code> link can’t run inside the extension. Production builds don’t ship source maps, and the API also drops any link from the model that isn’t http(s).
-    </p>
-
-    <h2>What transfers</h2>
-    <p>
-      Pulling data from pages you don’t control is a measurement problem before it’s a parsing problem: fix the answers, score every change, and make the tool say when it isn’t sure. Keep credentials and model calls behind your own API, validate what pages and models return, and integrate through a versioned contract that both sides test.
     </p>
 
     <h2>Outcome</h2>
     <p>
-      AceClipper is public on the Chrome Web Store (version 0.1.2, updated June 25, 2026), and the web app’s navigation links architects to it.
-    </p>
-    <p>
-      The internal extension reached version 2.0.1 in November 2026 with 1,673 unit tests. On an 11-page benchmark of the live example pages it was developed against, its documents mode found all 245 reachable files (those the page links to without a click) against a 95% target, and 96% of its suggested file types were right against a 90% target. Against reviewers’ decisions on 23 reviewed products, replayed offline after fixes, it found 117 of the 164 reviewer-approved files (71%, up from 94, or 57%) and left 22% of those files untyped, down from 41%.
+      Architects can paste products from manufacturer pages into schedules with AceClipper, public on the Chrome Web Store. On an 11-page benchmark of the pages it was developed against, the internal extension’s documents mode found all 245 reachable files (linked without a click), against a 95% target, and 96% of suggested file types were right, against 90%. Replayed offline against reviewers’ decisions on 23 products, it found 117 of 164 approved files (71%, up from 57%).
     </p>
   </CaseStudy>
 </template>

@@ -43,9 +43,12 @@ const skills = [
 // Work that an experience entry already describes only needs a pointer to its
 // case study; anything else gets its one-sentence outcome.
 const described = new Set(experience.flatMap(role => role.work ?? []))
+// Links stay relative so the page works on any host (preview deploys included);
+// scripts/resume-pdf.mjs makes them absolute for the PDF.
 const projects = work.map(item => ({
   slug: item.slug,
   headline: item.headline,
+  path: `/work/${item.slug}`,
   url: `${siteUrl}/work/${item.slug}`,
   role: item.role,
   org: item.evidence === 'employer' ? (item.org.split(' · ')[0] ?? item.org) : evidenceLabel[item.evidence],
@@ -85,7 +88,9 @@ const projects = work.map(item => ({
         </p>
         <ul class="contact">
           <li><a :href="mailto">{{ profile.email }}</a></li>
-          <li><a :href="siteUrl">{{ bare(siteUrl) }}</a></li>
+          <li>
+            <NuxtLink to="/">{{ bare(siteUrl) }}</NuxtLink>
+          </li>
           <li>
             <ExtLink :href="profile.links.github">{{ bare(profile.links.github) }}</ExtLink>
           </li>
@@ -232,7 +237,7 @@ const projects = work.map(item => ({
           class="project"
         >
           <h3 class="project-title">
-            <a :href="item.url">{{ item.headline }}</a>
+            <NuxtLink :to="item.path">{{ item.headline }}</NuxtLink>
           </h3>
           <p class="project-meta">
             {{ item.role }} · {{ item.org }} · <span class="data">{{ item.years }}</span>
