@@ -1,8 +1,8 @@
 # bereket.dev
 
-Source of [bereket.dev](https://bereket.dev), the portfolio of Bereket Abera, a software engineer in Addis Ababa: frontend-first (TypeScript, Vue, Nuxt, React), with Node.js and .NET APIs behind it.
+Source of [bereket.dev](https://bereket.dev), the portfolio of Bereket Abera, a software engineer in Addis Ababa who takes features from an unclear brief to production: deepest in frontend (TypeScript, Vue, Nuxt), also building in React, and shipping the API, data and release work behind them in .NET, Node.js and Python.
 
-The site is written to be read two ways. A recruiter can get role, stack, location and contact details from the first screen. An engineering manager can open any row of the work table for a case study covering the problem, my part, the decisions, the tradeoffs and what shipped.
+The site is written to be read two ways. A recruiter can get role, stack, location and contact details from the first screen. An engineering manager can follow how I work from brief to production, see the platform I work in with my exact part in each layer, and open any row of the work table for a case study covering the problem, my part, the decisions, the tradeoffs and what shipped.
 
 ## Stack
 
@@ -18,19 +18,21 @@ Claims and the evidence behind them live in typed data files, not scattered thro
 | File | Holds |
 |---|---|
 | [`app/data/profile.ts`](app/data/profile.ts) | Positioning, facts, contact |
-| [`app/data/approach.ts`](app/data/approach.ts) | The five ways I work, each with examples and links to where to check them |
+| [`app/data/journey.ts`](app/data/journey.ts) | Six stages from brief to production, each with proof, one real decision and links to where to check it |
+| [`app/data/platform.ts`](app/data/platform.ts) | The platform I work in, layer by layer: what it runs, and my part in each layer |
 | [`app/data/work.ts`](app/data/work.ts) | Case-study index: role, period, team, stack, evidence type, public links |
-| [`app/data/capabilities.ts`](app/data/capabilities.ts) | Capability groups with the tools used for each, every group pointing at case studies or public links |
+| [`app/data/capabilities.ts`](app/data/capabilities.ts) | Capability groups: tools I ship with, platform technology I have working knowledge of (kept separate), and evidence links |
 | [`app/data/experience.ts`](app/data/experience.ts) | Roles and education |
+| [`app/data/resume.ts`](app/data/resume.ts) | Résumé summary and the grouped working-knowledge list |
 | [`app/data/lab.ts`](app/data/lab.ts) | Experiments and older public code, kept apart from the case studies |
 
-`tests/unit/content.test.ts` fails if a capability points at a case study that doesn't exist, if any page still holds placeholder text, or if an internal identifier from employer work slips into the source.
+`tests/unit/content.test.ts` fails if a capability points at a case study that doesn't exist, if a technology is listed both as shipped and as working knowledge, if any page still holds placeholder text, or if a ticket ID, PR number, staging URL or phone number slips into the source. Internal names are checked against a private denylist passed in at test time (`CONTENT_DENYLIST=<file>`).
 
 Every piece of work is labeled by evidence type:
 
 - **Shipped at work** (■): in production at an employer; the code is private.
 - **Own product · in development** (□): my own product, not yet launched.
-- **Open source · live demo**: built in public; the code and a working demo are linked.
+- **Open source · live demo**: reserved for projects built in public, with the code and a working demo linked.
 
 Employer case studies describe my part and the decisions behind it. They contain no code, internal names or customer names; figures from internal benchmarks, evaluations or offline replays are labeled as such.
 
@@ -49,13 +51,13 @@ pnpm dev            # http://localhost:3000
 | `pnpm typecheck` | `vue-tsc` through `nuxt typecheck` |
 | `pnpm test` | Vitest unit tests |
 | `pnpm test:e2e` | Playwright against the built site (desktop and Pixel 7) |
-| `pnpm check` | All of the above, in order |
-| `pnpm resume:pdf` | Regenerate `public/bereket-abera-resume.pdf` from `/resume` (needs the dev server) |
+| `pnpm check` | Lint, typecheck, unit tests, build, then e2e |
+| `pnpm resume:pdf` | Regenerate `public/bereket-abera-resume.pdf` from `/resume` (needs the site running: `pnpm dev --port 3600`, or set `RESUME_URL`) |
 | `pnpm og` | Regenerate the 1200×630 social cards in `public/og/` |
 
 ## Deploy
 
-Vercel serves `.output/public` as a static site (see [`vercel.json`](vercel.json)). Hashed assets and fonts are cached for a year, and security headers, including a Content Security Policy, are set on every route.
+Vercel serves `.output/public` as a static site (see [`vercel.json`](vercel.json)). Hashed assets and fonts are cached for a year. Security headers are set on every route, and a Content Security Policy on every page except the résumé PDF.
 
 ## License
 

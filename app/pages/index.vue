@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { capabilitiesIntro } from '~/data/capabilities'
 import { education, experience } from '~/data/experience'
+import { journeyIntro } from '~/data/journey'
 import { lab } from '~/data/lab'
+import { platform } from '~/data/platform'
 import { facts, mailto, profile } from '~/data/profile'
 import { work } from '~/data/work'
 import type { Role } from '~/data/types'
@@ -100,22 +103,24 @@ const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? sl
     </section>
 
     <section
-      id="approach"
+      id="journey"
       class="wrap scroll-mt-4"
-      aria-labelledby="approach-title"
+      aria-labelledby="journey-title"
     >
       <SectionHead
-        id="approach-title"
+        id="journey-title"
         number="01"
-        title="What I bring"
-      >
-        <p class="text-[0.9375rem] text-muted">
-          Five things, each with somewhere to check it.
+        title="From brief to production"
+      />
+      <div class="sheet mt-4">
+        <div />
+        <p class="max-w-[42rem] text-[1.0625rem] leading-[1.6]">
+          {{ journeyIntro }}
         </p>
-      </SectionHead>
+      </div>
       <div class="sheet mt-8">
         <div />
-        <ApproachList />
+        <JourneyList />
       </div>
     </section>
 
@@ -137,8 +142,35 @@ const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? sl
         <WorkTable :items="work" />
       </div>
       <p class="mt-5 max-w-[44rem] text-[0.9375rem] text-muted lg:ml-[13rem]">
-        Acelab’s code is private. Those case studies describe my part and the decisions behind it, without proprietary detail.
+        Acelab’s code is private, so its case studies describe my part and the decisions behind it, without proprietary detail.
       </p>
+    </section>
+
+    <section
+      id="platform"
+      class="wrap mt-24 scroll-mt-4 lg:mt-32"
+      aria-labelledby="platform-title"
+    >
+      <SectionHead
+        id="platform-title"
+        number="03"
+        :title="platform.title"
+      />
+      <div class="sheet mt-4">
+        <div />
+        <p class="max-w-[42rem] text-[1.0625rem] leading-[1.6]">
+          {{ platform.intro }}
+        </p>
+      </div>
+      <div class="mt-8">
+        <PlatformMap />
+      </div>
+      <div class="sheet mt-6">
+        <div />
+        <p class="max-w-[42rem] text-[1.0625rem] leading-[1.6]">
+          {{ platform.closing }}
+        </p>
+      </div>
     </section>
 
     <section
@@ -148,13 +180,15 @@ const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? sl
     >
       <SectionHead
         id="capabilities-title"
-        number="03"
+        number="04"
         title="Capabilities"
-      >
-        <p class="text-[0.9375rem] text-muted">
-          Most prominent first, with the tools I have used for each.
+      />
+      <div class="sheet mt-4">
+        <div />
+        <p class="max-w-[42rem] text-[1.0625rem] leading-[1.6]">
+          {{ capabilitiesIntro }}
         </p>
-      </SectionHead>
+      </div>
       <div class="sheet mt-8">
         <div />
         <CapabilityList />
@@ -168,7 +202,7 @@ const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? sl
     >
       <SectionHead
         id="experience-title"
-        number="04"
+        number="05"
         title="Experience"
       >
         <a
@@ -195,8 +229,9 @@ const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? sl
             <p class="mt-2.5 max-w-[40rem]">
               {{ role.summary }}
             </p>
+            <!-- Roles with case studies link to them instead; the résumé keeps every bullet. -->
             <div
-              v-if="role.highlights.length"
+              v-if="role.highlights.length && !role.work?.length"
               class="prose mt-4 !text-[1rem]"
             >
               <ul>
@@ -245,7 +280,7 @@ const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? sl
     >
       <SectionHead
         id="about-title"
-        number="05"
+        number="06"
         title="About"
       />
       <div class="sheet mt-8 gap-y-8">
@@ -263,13 +298,13 @@ const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? sl
         <div class="grid gap-10 xl:grid-cols-[minmax(0,38rem)_minmax(0,1fr)] xl:gap-14">
           <div class="prose">
             <p>
-              I’m a software engineer in Addis Ababa. I studied software engineering at Addis Ababa University and have been building for the web since 2017: sites for local businesses, then client products in React, Vue and Angular with Node.js back ends, and since 2023, Material Hub at Acelab.
+              I’m a software engineer in Addis Ababa with more than eight years on the web and a software engineering degree from Addis Ababa University. I started out building web applications in React, Vue and Angular, with Node.js back ends where they needed one, and have spent the last three-plus years inside one large Vue and Nuxt product. In 2026 that work spread into its API, data pipeline and browser extensions, and I followed it there.
             </p>
             <p>
-              My strongest work is where a product’s value depends on its interface: dense spreadsheet-style tables, requests that pass between two companies, and data that changes while you’re looking at it. I take features from the spec to the screen with their tests, and since mid-2026 often to the API behind them as well.
+              The work I like best is a feature nobody has fully specified yet, where the interface carries the value and the data has to stay right underneath it. The interesting part is the call in the middle: whether a shortcut costs more than it saves, whether a rule or a model should decide, what happens when two writes race.
             </p>
             <p>
-              Frameworks change; the work underneath them doesn’t. Clear contracts between components, data that has one owner, permissions enforced on the server and changes small enough to review carry from Vue to React, from Node.js to .NET, and from web to mobile.
+              Frameworks change; the habits underneath them don’t. Clear contracts between pieces, data with one owner, permissions enforced on the server and changes small enough to roll back carry from Vue to React, from .NET to Node.js and Python, and from the web to mobile.
             </p>
           </div>
           <div>
@@ -278,16 +313,16 @@ const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? sl
             </h3>
             <ul class="mt-3 space-y-3 text-[0.9875rem] leading-[1.55]">
               <li class="border-t border-hair pt-3">
-                <span class="font-semibold">Own the whole feature.</span> A bulk “report missing products” action, built across the web app and the .NET API, with a preview step so the confirmation says exactly what will happen.
+                <span class="font-semibold">Own the whole feature.</span> A bulk “report missing products” action, built across the web app, the .NET API and a migration, with a preview step so the confirmation says exactly what will happen. Along the way I fixed the weekly report it feeds.
               </li>
               <li class="border-t border-hair pt-3">
-                <span class="font-semibold">Ship it with tests.</span> I wrote about a fifth of the main web app’s unit-test files, and I check a new test by breaking the code it covers.
+                <span class="font-semibold">Tests that can fail.</span> When a test guards a fix, I break the code it covers to prove it catches the bug, then put the code back.
               </li>
               <li class="border-t border-hair pt-3">
-                <span class="font-semibold">Write it down.</span> Pull requests that state the root cause, what changed and how it was tested, and role-by-role documentation for the workflow I led.
+                <span class="font-semibold">AI output is a draft.</span> I use coding agents every day. I cross-check their review findings against a second model and the code itself, and I say plainly what I didn’t verify.
               </li>
               <li class="border-t border-hair pt-3">
-                <span class="font-semibold">Work across time zones.</span> Remote with a distributed team since 2023.
+                <span class="font-semibold">Decisions in writing.</span> Most of my pull requests state the root cause, what changed and how it was tested, often with before-and-after evidence.
               </li>
             </ul>
           </div>
@@ -302,7 +337,7 @@ const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? sl
     >
       <SectionHead
         id="lab-title"
-        number="06"
+        number="07"
         title="Lab and earlier work"
       >
         <p class="text-[0.9375rem] text-muted">
@@ -346,14 +381,14 @@ const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? sl
     >
       <SectionHead
         id="contact-title"
-        number="07"
+        number="08"
         title="Contact"
       />
       <div class="sheet mt-8">
         <div />
         <div>
           <p class="max-w-[36rem] text-[1.0625rem]">
-            Email is the quickest way to reach me. I’m looking for senior software, frontend or product engineering roles, remote and full-time.
+            Have a product or a feature that needs someone to carry it from an unclear brief to production? Email me. I’m in Addis Ababa (UTC+3) and have worked remotely with a distributed team since 2023.
           </p>
           <p class="mt-6 text-[clamp(1.375rem,1rem+1.6vw,2.25rem)] leading-tight font-[470] tracking-[-0.015em] break-words">
             <a :href="mailto">{{ profile.email }}</a>

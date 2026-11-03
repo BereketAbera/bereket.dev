@@ -38,6 +38,8 @@ export interface Work {
   years: string
   team: string
   stack: string[]
+  /** The parts of the system the work touched, in plain words, e.g. "Web app", ".NET API". */
+  spans: string[]
   links: ExternalLink[]
   themes: string[]
 }
@@ -49,25 +51,47 @@ export interface EvidenceRef {
   href?: string
 }
 
-/** One of the five ways I work, each backed by something inspectable. */
-export interface Approach {
+/** One stage of taking a product from brief to production, backed by something inspectable. */
+export interface Stage {
   id: string
   title: string
+  /** The responsibility I take on at this stage. */
   summary: string
   /** Concrete examples, one sentence each. */
-  examples: string[]
+  proof: string[]
+  /** A real tradeoff made at this stage, in one sentence. Optional. */
+  decision?: string
   evidence: EvidenceRef[]
+}
+
+/**
+ * One layer of the platform I work in. `platform` is company-wide context;
+ * `mine` is my part, worded so the verbs carry the ownership: built, added,
+ * ship through, know how it works.
+ */
+export interface PlatformLayer {
+  id: string
+  layer: string
+  platform: string
+  mine: string
 }
 
 /** A capability group. Groups are listed most prominent first. */
 export interface Capability {
   id: string
   title: string
+  /** Short label for the résumé's skills column, e.g. "Backend & data". */
+  short: string
   summary: string
   /** Specific things I have done, one line each. */
   points: string[]
-  /** Tools I have used for this, most-used first. Never tools I have only read about. */
+  /** Tools I have shipped with, most-used first. Never tools I have only read about. */
   tools: string[]
+  /**
+   * Platform technology I know how to work with but have not owned: how it works
+   * and how my platform uses it. Kept apart from `tools` on purpose.
+   */
+  workingKnowledge?: string[]
   /** Every capability must point at something a reader can inspect. */
   evidence: EvidenceRef[]
 }

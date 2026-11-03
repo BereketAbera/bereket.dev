@@ -45,6 +45,9 @@ const pad = (n: number) => String(n).padStart(2, '0')
           <p class="mt-2 max-w-[36rem] text-[0.9875rem] leading-[1.55] text-pretty">
             {{ item.outcome }}
           </p>
+          <p class="mt-2.5 max-w-[36rem] text-[0.875rem] leading-[1.5] text-muted">
+            <span class="label mr-2">Spans<span class="visually-hidden">: </span></span>{{ item.spans.join(' · ') }}
+          </p>
         </div>
         <dl class="contents text-[0.9375rem] leading-snug">
           <div class="max-lg:mt-3">

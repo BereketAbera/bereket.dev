@@ -2,6 +2,7 @@
 import { capabilities } from '~/data/capabilities'
 import { education, experience } from '~/data/experience'
 import { facts, mailto, profile } from '~/data/profile'
+import { resume } from '~/data/resume'
 import type { Role } from '~/data/types'
 import { evidenceLabel, work } from '~/data/work'
 
@@ -32,19 +33,11 @@ function fact(label: (typeof facts)[number]['label']) {
   return entry
 }
 
-/** Short labels for the capability groups, so the label column stays narrow. */
-const skillLabels: Record<string, string> = {
-  frontend: 'Frontend',
-  backend: 'Backend & data',
-  connected: 'Real-time & mobile',
-  product: 'Product & UX',
-  quality: 'Quality & delivery',
-  ai: 'AI tooling',
-}
-
+// Tools I ship with, by capability group. Working knowledge gets its own block
+// below, so the two never blur.
 const skills = [
   { label: 'Deepest in', value: fact('Deepest in').value },
-  ...capabilities.map(cap => ({ label: skillLabels[cap.id] ?? cap.title, value: cap.tools.join(', ') })),
+  ...capabilities.map(cap => ({ label: cap.short, value: cap.tools.join(', ') })),
 ]
 
 // Work that an experience entry already describes only needs a pointer to its
@@ -115,7 +108,7 @@ const projects = work.map(item => ({
       </h2>
       <div class="main">
         <p class="lede">
-          {{ profile.lede }}
+          {{ resume.summary }}
         </p>
         <p class="seeking">
           <span class="label">Looking for</span>
@@ -146,6 +139,35 @@ const projects = work.map(item => ({
           <dd>{{ row.value }}</dd>
         </div>
       </dl>
+    </section>
+
+    <section
+      class="part sheet"
+      aria-labelledby="knowledge"
+    >
+      <h2
+        id="knowledge"
+        class="label heading"
+      >
+        Working knowledge
+      </h2>
+      <div class="main">
+        <p class="note">
+          {{ resume.workingKnowledgeNote }}
+        </p>
+        <dl class="skills">
+          <div
+            v-for="row in resume.workingKnowledge"
+            :key="row.group"
+            class="skill"
+          >
+            <dt class="label">
+              {{ row.group }}
+            </dt>
+            <dd>{{ row.items.join(' · ') }}</dd>
+          </div>
+        </dl>
+      </div>
     </section>
 
     <section
@@ -335,6 +357,12 @@ const projects = work.map(item => ({
 }
 .seeking .label {
   margin-right: 0.5rem;
+}
+
+.note {
+  margin-bottom: 0.6rem;
+  font-size: 0.9375rem;
+  color: var(--muted);
 }
 
 .skill {
@@ -582,10 +610,23 @@ const projects = work.map(item => ({
     font-size: 9.4pt;
     line-height: 1.38;
   }
+  .note {
+    margin-bottom: 2.5pt;
+    font-size: 8.6pt;
+  }
 
   .entry {
     padding-block: 6pt;
     break-inside: avoid;
+  }
+  /* A long entry may continue on the next page, but only between bullets,
+     and never leaving its heading and summary alone at the bottom. */
+  .entry:not(.brief) {
+    break-inside: auto;
+  }
+  .entry-head,
+  .entry-summary {
+    break-after: avoid;
   }
   .entry:first-child {
     padding-top: 0;
@@ -626,6 +667,7 @@ const projects = work.map(item => ({
     margin-top: 4pt;
   }
   .bullets li {
+    break-inside: avoid;
     max-width: none;
     font-size: 9.4pt;
     line-height: 1.38;

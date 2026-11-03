@@ -2,8 +2,9 @@
 import { profile } from '~/data/profile'
 
 const nav = [
-  { label: 'Approach', to: '/#approach' },
+  { label: 'Process', to: '/#journey' },
   { label: 'Work', to: '/#work' },
+  { label: 'Platform', to: '/#platform' },
   { label: 'Capabilities', to: '/#capabilities' },
   { label: 'Experience', to: '/#experience' },
   { label: 'About', to: '/#about' },

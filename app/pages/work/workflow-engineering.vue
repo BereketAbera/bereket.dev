@@ -425,7 +425,7 @@
       <strong>Reads shouldn’t change state.</strong> Reading a response used to mark the RFI as opened, and the conversation card reads it too, so merely opening the conversation ended the architect’s cancel window. Opening is now its own explicit call. Fetching a thread marks its messages read, so the drawer waits until its conversation tab is first shown.
     </p>
     <p>
-      <strong>A server-side flag check, removed a day later.</strong> I moved the workflow’s feature-flag check into server rendering, then took it out the next day: it put a blocking upstream call in front of every signed-in server render, and measured on the running app, the gain was close to nothing.
+      <strong>A server-side flag check I prototyped and dropped.</strong> I tried resolving the workflow’s feature flag during server rendering. It put a blocking upstream call in front of every signed-in server render for one visible benefit, so I took it out before the branch merged.
     </p>
     <p>
       <strong>Green tests aren’t proof.</strong> One bug survived a fully passing suite because the grid’s tests injected a value the store had stopped producing. I check new tests by breaking the code they cover and confirming they fail. A few later fixes still merged on unit tests alone, with the visual check left to reviewers; I would hold those for a browser pass.

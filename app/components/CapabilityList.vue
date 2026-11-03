@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import { capabilities } from '~/data/capabilities'
+
+/** "Kubernetes & Kustomize (rollouts, probes, overlays)" → name and detail. */
+function topic(item: string) {
+  const match = /^(.*?) \((.*)\)$/.exec(item)
+  return match ? { name: match[1], detail: match[2] } : { name: item, detail: '' }
+}
 </script>
 
 <template>
@@ -37,11 +43,28 @@ import { capabilities } from '~/data/capabilities'
       <div class="space-y-4">
         <div>
           <p class="label">
-            Tools
+            Shipped with
           </p>
           <p class="mt-1.5 text-[0.9375rem] leading-[1.5] text-muted">
             {{ cap.tools.join(', ') }}
           </p>
+        </div>
+        <div v-if="cap.workingKnowledge?.length">
+          <p class="label">
+            Working knowledge
+          </p>
+          <!-- One topic per line: a comma-joined run of parentheticals reads as a keyword wall. -->
+          <ul class="mt-1.5 space-y-1.5 text-[0.9375rem] leading-[1.4] text-muted">
+            <li
+              v-for="item in cap.workingKnowledge"
+              :key="item"
+            >
+              {{ topic(item).name }}<span
+                v-if="topic(item).detail"
+                class="block text-[0.8125rem]"
+              >{{ topic(item).detail }}</span>
+            </li>
+          </ul>
         </div>
         <EvidenceLinks
           :id="`evidence-${cap.id}`"

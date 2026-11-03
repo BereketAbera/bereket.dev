@@ -107,6 +107,12 @@ const summary = computed(() => [
           </div>
           <div class="fact">
             <dt class="label">
+              Spans
+            </dt>
+            <dd>{{ item.spans.join(' · ') }}</dd>
+          </div>
+          <div class="fact">
+            <dt class="label">
               Evidence
             </dt>
             <dd>

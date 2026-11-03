@@ -2,10 +2,11 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { extname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { approach } from '../../app/data/approach'
 import { capabilities } from '../../app/data/capabilities'
 import { experience } from '../../app/data/experience'
+import { journey } from '../../app/data/journey'
 import { lab } from '../../app/data/lab'
+import { platform } from '../../app/data/platform'
 import { mailto, profile } from '../../app/data/profile'
 import { work } from '../../app/data/work'
 
@@ -102,17 +103,19 @@ describe('list keys', () => {
   it('are unique', () => {
     expect(duplicates(work.map(item => item.slug)), 'work slugs').toEqual([])
     expect(duplicates(capabilities.map(cap => cap.id)), 'capability ids').toEqual([])
-    expect(duplicates(approach.map(item => item.id)), 'approach ids').toEqual([])
-    for (const item of approach) {
-      expect(duplicates(item.evidence.map(ev => ev.label)), `evidence labels in approach ${item.id}`).toEqual([])
-      expect(duplicates(item.examples), `examples in approach ${item.id}`).toEqual([])
+    expect(duplicates(journey.map(stage => stage.id)), 'journey stage ids').toEqual([])
+    for (const stage of journey) {
+      expect(duplicates(stage.evidence.map(ev => ev.label)), `evidence labels in stage ${stage.id}`).toEqual([])
+      expect(duplicates(stage.proof), `proof in stage ${stage.id}`).toEqual([])
     }
+    expect(duplicates(platform.layers.map(layer => layer.id)), 'platform layer ids').toEqual([])
     expect(duplicates(experience.map(role => role.org)), 'experience orgs').toEqual([])
     expect(duplicates(lab.map(entry => entry.title)), 'lab titles').toEqual([])
     for (const cap of capabilities) {
       expect(duplicates(cap.evidence.map(item => item.label)), `evidence labels in ${cap.id}`).toEqual([])
       expect(duplicates(cap.points), `points in ${cap.id}`).toEqual([])
       expect(duplicates(cap.tools), `tools in ${cap.id}`).toEqual([])
+      expect(duplicates(cap.workingKnowledge ?? []), `working knowledge in ${cap.id}`).toEqual([])
     }
     for (const item of work) {
       expect(duplicates(item.links.map(link => link.href)), `links in ${item.slug}`).toEqual([])
@@ -120,15 +123,15 @@ describe('list keys', () => {
   })
 })
 
-describe('capability and approach evidence', () => {
+describe('capability and journey evidence', () => {
   const evidence = [
     ...capabilities.flatMap(cap => cap.evidence.map(item => ({ ...item, where: `${cap.id} → ${item.label}` }))),
-    ...approach.flatMap(entry => entry.evidence.map(item => ({ ...item, where: `approach ${entry.id} → ${item.label}` }))),
+    ...journey.flatMap(stage => stage.evidence.map(item => ({ ...item, where: `stage ${stage.id} → ${item.label}` }))),
   ]
 
-  it('backs every capability and approach item with at least one link', () => {
+  it('backs every capability and journey stage with at least one link', () => {
     expect(capabilities.filter(cap => cap.evidence.length === 0).map(cap => cap.id)).toEqual([])
-    expect(approach.filter(entry => entry.evidence.length === 0).map(entry => entry.id)).toEqual([])
+    expect(journey.filter(stage => stage.evidence.length === 0).map(stage => stage.id)).toEqual([])
   })
 
   it('gives every item exactly one of `work` or `href`', () => {
@@ -144,6 +147,24 @@ describe('capability and approach evidence', () => {
     const homeIds = new Set(Array.from(read('app/pages/index.vue').matchAll(/\sid="([^"]+)"/g), match => match[1]))
     const bad = evidence.filter(({ href }) => href !== undefined && !(href.startsWith('#') ? homeIds.has(href.slice(1)) : isHttps(href)))
     expect(bad.map(item => `${item.where}: ${item.href}`)).toEqual([])
+  })
+})
+
+describe('ownership tiers', () => {
+  // Working knowledge is what I know but haven't shipped with. A technology
+  // listed in both places would claim more than the site means to.
+  it('never lists the same technology as shipped and as working knowledge', () => {
+    const shipped = new Set(capabilities.flatMap(cap => cap.tools.map(tool => tool.toLowerCase())))
+    const both = capabilities.flatMap(cap => (cap.workingKnowledge ?? []).filter(item => shipped.has(item.toLowerCase())).map(item => `${cap.id}: ${item}`))
+    expect(both).toEqual([])
+  })
+
+  it('says what every case study touched', () => {
+    expect(work.filter(item => item.spans.length === 0).map(item => item.slug)).toEqual([])
+  })
+
+  it('describes my part in every platform layer', () => {
+    expect(platform.layers.filter(layer => !layer.platform.trim() || !layer.mine.trim()).map(layer => layer.id)).toEqual([])
   })
 })
 

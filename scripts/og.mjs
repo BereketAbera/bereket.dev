@@ -39,7 +39,8 @@ function card({ label, marker, headline, meta }) {
   html, body { width: 1200px; height: 630px; background: ${colors.paper}; color: ${colors.ink}; }
   body { padding: 64px 72px 56px; display: flex; flex-direction: column; font-family: Literata, Georgia, serif; font-optical-sizing: auto; }
   .top { border-top: 3px solid ${colors.ink}; padding-top: 22px; display: flex; justify-content: space-between; gap: 32px; }
-  .label { font-family: "Fragment Mono", monospace; font-size: 21px; letter-spacing: 0.06em; text-transform: uppercase; color: ${colors.muted}; }
+  .label { font-family: "Fragment Mono", monospace; font-size: 19px; letter-spacing: 0.06em; text-transform: uppercase; color: ${colors.muted}; }
+  .top .label:last-child { white-space: nowrap; flex-shrink: 0; }
   .marker { color: ${colors.signal}; }
   .headline { flex: 1; display: flex; align-items: center; }
   h1 { font-weight: 470; letter-spacing: -0.022em; line-height: 1.08; font-size: 68px; max-width: 1000px; text-wrap: balance; }
