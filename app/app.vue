@@ -23,7 +23,7 @@ useHead({
         'name': profile.name,
         'alternateName': profile.nameGeez,
         'url': siteUrl,
-        'image': `${siteUrl}/img/portrait-480.webp`,
+        'image': `${siteUrl}/img/profile-480.webp`,
         'email': `mailto:${profile.email}`,
         'jobTitle': profile.title,
         'worksFor': { '@type': 'Organization', 'name': 'Acelab', 'url': 'https://www.acelabusa.com' },

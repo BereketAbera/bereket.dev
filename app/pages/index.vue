@@ -302,11 +302,11 @@ const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? sl
       />
       <div class="sheet mt-8 gap-y-8">
         <img
-          src="/img/portrait-480.webp"
-          srcset="/img/portrait-480.webp 480w, /img/portrait-720.webp 720w"
+          src="/img/profile-480.webp"
+          srcset="/img/profile-480.webp 480w, /img/profile-720.webp 720w"
           sizes="(width >= 64rem) 10rem, 9rem"
           width="480"
-          height="684"
+          height="480"
           alt="Bereket Abera"
           loading="lazy"
           decoding="async"
