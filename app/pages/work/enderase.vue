@@ -285,7 +285,7 @@
         <strong>Confirm the failures.</strong> Failures were grouped by root cause, and each was challenged by another method, such as replaying API calls and querying the database instead of driving the browser.
       </li>
       <li>
-        <strong>Verify each fix independently.</strong> Fixes ran in waves; within a wave each file belonged to exactly one fix package, so parallel work could not collide. Each fix was then verified at runtime, separately from the run that wrote it.
+        <strong>Verify each fix independently.</strong> Fixes ran in waves; within a wave each file belonged to exactly one fix package, so parallel work could not collide. Each fix was then verified independently at runtime.
       </li>
     </ol>
     <p>
