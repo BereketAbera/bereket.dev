@@ -18,7 +18,7 @@ describe('zoneOffsetMinutes', () => {
 })
 
 describe('describeOffset', () => {
-  it('describes the gap from the visitor’s point of view', () => {
+  it('describes the gap from the point of view of the visitor', () => {
     expect(describeOffset('Africa/Addis_Ababa', 'America/New_York', winter)).toBe('8 hours ahead of you')
     expect(describeOffset('Africa/Addis_Ababa', 'Europe/Berlin', summer)).toBe('1 hour ahead of you')
     expect(describeOffset('Africa/Addis_Ababa', 'Asia/Kolkata', winter)).toBe('2 hours 30 min behind you')

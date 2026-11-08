@@ -7,7 +7,7 @@ export interface LabEntry {
   link: { label: string, href: string }
 }
 
-/** Experiments and earlier public work — kept apart from the case studies on purpose. */
+/** Experiments and earlier public work, kept apart from the case studies on purpose. */
 export const lab: LabEntry[] = [
   {
     year: '2026',
@@ -34,7 +34,7 @@ export const lab: LabEntry[] = [
     link: { label: 'Repository', href: 'https://github.com/kwong-hub/talguu-client' },
   },
   {
-    year: '2020–21',
+    year: '2020 to 2021',
     title: 'Jimla',
     note: 'A B2B wholesale marketplace with separate admin, merchant and retailer portals.',
     context: 'Team product',

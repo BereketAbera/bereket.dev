@@ -66,7 +66,7 @@ const type3 = raw.match(/\/Subtype\s*\/Type3\b/g)?.length ?? 0
 console.log(`${out}\n${pages} page${pages === 1 ? '' : 's'}, ${Math.round(pdf.length / 1024)} KB, fonts: ${fonts.join(', ') || 'none'}`)
 
 const problems = []
-if (pages < 1 || pages > maxPages) problems.push(`it has ${pages} pages; the résumé must fit on 1–${maxPages} A4 pages`)
+if (pages < 1 || pages > maxPages) problems.push(`it has ${pages} pages; the résumé must fit on 1 to ${maxPages} A4 pages`)
 // Chromium embeds variable fonts (like Literata) as Type 3, and their text does
 // not copy or search cleanly, so the print styles use static system serifs.
 if (type3) problems.push(`${type3} Type 3 font${type3 === 1 ? ' is' : 's are'} embedded; print text must use a static font such as Charter or Georgia`)
