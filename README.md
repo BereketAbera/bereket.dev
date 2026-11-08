@@ -1,8 +1,10 @@
 # bereket.dev
 
-Source of [bereket.dev](https://bereket.dev), the portfolio of Bereket Abera, a software engineer in Addis Ababa who takes features from an unclear brief to production: deepest in frontend (TypeScript, Vue, Nuxt), also building in React, and shipping the API, data and release work behind them in .NET, Node.js and Python.
+Source of [bereket.dev](https://bereket.dev), the portfolio of Bereket Abera, a senior software engineer in Addis Ababa, frontend first and full-stack when the feature needs it.
 
-The site is written to be read at three depths. In ten seconds the first screen says what I build, where and with what. Within thirty seconds the three featured projects show the work itself: an interactive rebuild of a response grid (made-up data), an illustration of a browser-extension hand-off, and screens from my own product. Over five minutes the case studies and [`/how-i-work`](app/pages/how-i-work.vue) cover the stages from brief to production, each capability with examples, and the platform I work in with my exact part in each layer.
+The site is written to be read at three depths. In ten seconds the first screen says what I do and what I am looking for. In thirty seconds the capability list and the project cards show what I bring and how far each thing goes. Over five minutes the case studies cover the architecture, the tradeoffs and what was and was not tested.
+
+AI coding agents built this site and drafted its copy under my direction.
 
 ## Stack
 
@@ -18,23 +20,17 @@ Claims and the evidence behind them live in typed data files, not scattered thro
 | File | Holds |
 |---|---|
 | [`app/data/profile.ts`](app/data/profile.ts) | Positioning, facts, contact |
-| [`app/data/journey.ts`](app/data/journey.ts) | Six stages from brief to production, each with proof, one real decision and links to where to check it |
-| [`app/data/platform.ts`](app/data/platform.ts) | The platform I work in, layer by layer: what it runs, and my part in each layer |
-| [`app/data/work.ts`](app/data/work.ts) | Case-study index: role, period, stack, evidence type, public links; the first three are featured with a visual |
-| [`app/data/capabilities.ts`](app/data/capabilities.ts) | Capability groups: tools I ship with, platform technology I have working knowledge of (kept separate), and evidence links |
+| [`app/data/capabilities.ts`](app/data/capabilities.ts) | What I bring, how deep each thing goes, and where to check it |
+| [`app/data/work.ts`](app/data/work.ts) | Projects and case studies: what each is, what is mine, what came from elsewhere, what each technology enabled, links and screenshots |
 | [`app/data/experience.ts`](app/data/experience.ts) | Roles and education |
-| [`app/data/resume.ts`](app/data/resume.ts) | Résumé summary, compact skills (shipped tools only) and a one-line list of what I have studied but not shipped |
+| [`app/data/resume.ts`](app/data/resume.ts) | Résumé summary and compact skills |
 | [`app/data/lab.ts`](app/data/lab.ts) | Experiments and older public code, kept apart from the case studies (shown at `/lab`) |
 
-`tests/unit/content.test.ts` fails if a capability points at a case study that doesn't exist, if a technology is listed both as shipped and as working knowledge, if any page still holds placeholder text, or if a ticket ID, PR number, staging URL or phone number slips into the source. Internal names are checked against a private denylist passed in at test time (`CONTENT_DENYLIST=<file>`).
+`tests/unit/content.test.ts` fails if a capability points at a case study that does not exist, if a project is missing its statement of what is mine, if an upstream project is uncredited, if a screenshot is missing, unlabeled or heavier than its budget, if published text uses curly quotes or em dashes, or if a ticket ID, PR number, staging URL or phone number slips into the source. Internal names are checked against a private denylist passed in at test time (`CONTENT_DENYLIST=<file>`).
 
-Every piece of work is labeled by evidence type:
+Every piece of work is labeled by evidence type, and every screenshot says where it came from: the live site, a local preview with sample data, or the hosted instance's monitoring.
 
-- **Shipped at work** (■): in production at an employer; the code is private.
-- **Own product · in development** (□): my own product, not yet launched.
-- **Open source · live demo**: reserved for projects built in public, with the code and a working demo linked.
-
-Employer case studies describe my part and the decisions behind it. They contain no code, internal names or customer names; figures from internal benchmarks, evaluations or offline replays are labeled as such.
+Employer work describes my part and the decisions behind it. It contains no code, internal names or customer names; figures from internal benchmarks or offline replays are labeled as such. Personal projects say plainly that AI coding agents did the implementation under my direction.
 
 ## Develop
 
@@ -61,4 +57,4 @@ Vercel serves `.output/public` as a static site (see [`vercel.json`](vercel.json
 
 ## License
 
-The code is MIT-licensed. The writing, the case studies and the photo are mine and not licensed for reuse.
+The code is MIT-licensed. The text, the case studies and the photo are not licensed for reuse.
