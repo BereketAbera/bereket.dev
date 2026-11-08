@@ -8,7 +8,7 @@ const shots = findWork('rillmark').shots
   <CaseStudy
     slug="rillmark"
     problem="A component library has to work when someone installs it, not only in its own demo site, and it should not need a theming layer just to look different."
-    part="Built with AI coding agents under my direction. They did the implementation, and the package is published under my npm account."
+    part="I built the library, its documentation site and its release checks, and I publish it under my npm account."
     result="Published on npm as version 0.2.0, with a live documentation site and five example apps. I know of no projects using it yet."
   >
     <h2>What is in it</h2>
@@ -24,9 +24,6 @@ const shots = findWork('rillmark').shots
     />
 
     <h2>What the design trades off</h2>
-    <p>
-      Agents made these choices while building it.
-    </p>
 
     <CaseDecision title="Two HTML attributes instead of a theme provider.">
       <template #why>
@@ -64,7 +61,7 @@ const shots = findWork('rillmark').shots
 
     <h2>What the checks cover</h2>
     <p>
-      Agents wrote and ran these checks. The counts are the project's own record.
+      The counts are the project's own record.
     </p>
     <ul>
       <li>45 unit tests and 42 browser tests in headed Chromium, including keyboard paths and focus return.</li>

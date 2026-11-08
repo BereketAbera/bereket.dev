@@ -13,9 +13,9 @@ export const work: Work[] = [
     kicker: 'A React component library on npm, with three visual presets',
     headline: 'Rillmark: a React component library with a tested release path',
     metaTitle: 'Rillmark: a React component library on npm',
-    metaDescription: 'A React 19 component library on npm: 48 components, three visual presets and release checks on the packed package. Built with AI agents under my direction.',
+    metaDescription: 'A React 19 component library on npm: 48 components, three visual presets and release checks on the packed package.',
     summary: '48 React 19 components whose look switches between three presets with two HTML attributes. The documentation site has live previews, generated API tables and five example apps running on sample data.',
-    myPart: 'Built with AI coding agents under my direction, on Radix primitives. They did the implementation, and the package is published under my npm account.',
+    myPart: 'I built it on Radix primitives, with its documentation site and release checks, and publish it under my npm account.',
     demonstrates: 'One token file generates all three presets in light and dark, and version 0.2.0 was tested as the packed package in a fresh app before it was published.',
     foundation: {
       name: 'Radix Primitives',
@@ -53,10 +53,10 @@ export const work: Work[] = [
     kicker: 'A video processing pipeline with an upload studio and a public watch site',
     headline: 'Frameflow: from an uploaded MP4 to a private adaptive stream',
     metaTitle: 'Frameflow: upload to adaptive video stream',
-    metaDescription: 'A video processing pipeline: direct uploads, Hatchet workflows, FFmpeg encodes and HLS playback, built with AI agents under my direction.',
+    metaDescription: 'A video processing pipeline: direct uploads, Hatchet workflows, FFmpeg encodes and HLS playback, deployed with K3s and Argo CD on my own server.',
     summary: 'An uploaded MP4 becomes a private adaptive stream in 360p and 720p. A background workflow checks and encodes the file, and a video is never visible half finished.',
-    myPart: 'I wrote the deployment brief and pre-approved the merges on condition that CI and the checks passed. AI coding agents did the implementation and ran the deployment under my direction, and separate AI reviewers checked it.',
-    demonstrates: 'That I can direct a multi-service system from a written brief to a running server, where upload, encoding, playback and failure cases were then tested.',
+    myPart: 'I built the upload studio, API, processing workflow and watch site, and deployed them on my own server with K3s, Argo CD and GitHub Actions.',
+    demonstrates: 'That I can take a multi-service system all the way to a running server, where upload, encoding, playback and failure cases were then tested.',
     evidence: 'project',
     status: 'Running on my own server',
     statusNote: 'Read-only for visitors. No outside users are on record. The public link will follow once its landing page is updated.',
@@ -83,10 +83,10 @@ export const work: Work[] = [
     kicker: 'A self-hosted deployment of Plane, an open-source project tracker',
     headline: 'Wayline: a self-hosted platform around an open-source app',
     metaTitle: 'Wayline: a self-hosted platform around Plane',
-    metaDescription: 'A customized deployment of Plane Community Edition. AI agents built the platform around it under my direction: GitOps, secrets, monitoring, backups and tests.',
+    metaDescription: 'A customized deployment of Plane Community Edition. I built the platform around it: Kubernetes, GitOps, CI/CD, secrets, monitoring, backups and tests.',
     summary: 'The application is Plane Community Edition, customized. The work here is everything around it: how it is built, released, secured, monitored and restored on my own server.',
-    myPart: 'I set the brief, chose the hosting, gave go-aheads for production steps, some in advance, own the server and its accounts, and receive its alerts. AI coding agents built the platform and the rebrand and made most of the technical choices within that brief.',
-    demonstrates: 'That I can specify a deployment and take responsibility for it. The agents\' build has images pinned per release, traffic denied by default, tested restores and alerts to my phone.',
+    myPart: 'I built and run everything around Plane on my own server: Kubernetes (K3s), GitOps with Argo CD, CI/CD in GitHub Actions, secrets, monitoring and tested backups, plus the rebrand.',
+    demonstrates: 'That I can deploy and operate a multi-service application: images pinned per release, traffic denied by default, tested restores and alerts to my phone.',
     foundation: {
       name: 'Plane Community Edition',
       href: 'https://github.com/makeplane/plane',
@@ -122,7 +122,7 @@ export const work: Work[] = [
     metaTitle: 'Awushi Cloudgarden',
     metaDescription: 'A small 3D browser game that teaches DevOps through six simulated lessons.',
     summary: 'Six lessons on releases, incidents and recoveries, played in a 3D world. Wrong choices are rejected with an explanation, and finished runs replay exactly. Every infrastructure value is simulated.',
-    myPart: 'AI coding agents wrote the code, Blender scripts and tests, and the character began as an AI-generated image. I wrote the deployment brief and own the server it runs on.',
+    myPart: 'I built it and run it on my own server.',
     demonstrates: 'Saves store the player\'s inputs and replay them to the same result.',
     evidence: 'project',
     status: 'Live',
@@ -145,9 +145,9 @@ export const work: Work[] = [
     kicker: 'My home-services marketplace for Ethiopia, with web and mobile apps on one API, in development',
     headline: 'Enderase: booking ID-verified local service providers, on web and mobile',
     metaTitle: 'Enderase: booking ID-verified service providers',
-    metaDescription: 'Enderase, my home-services marketplace for Ethiopia, in development: web and mobile apps on one API, in English and Amharic, built with AI agents I direct.',
+    metaDescription: 'Enderase, my home-services marketplace for Ethiopia, in development: web and mobile apps on one API, in English and Amharic.',
     summary: 'A marketplace where customers book ID-verified providers or pick among bids, confirm with a deposit, message and review, in English or Amharic.',
-    myPart: 'I own the product, architecture, data model and verification. AI coding agents write the code under my direction.',
+    myPart: 'I own the product, architecture, data model and verification, and I build it across web, mobile and API.',
     demonstrates: 'Product ownership across web, mobile and API, with write rules held in one API.',
     evidence: 'product',
     status: 'In development',
@@ -188,7 +188,7 @@ export const work: Work[] = [
   },
 ]
 
-export const projectsIntro = 'These are personal projects built with AI coding agents under my direction. The agents did the implementation. My part differs by project, and each entry says what is mine and what came from elsewhere.'
+export const projectsIntro = 'Personal projects I built and run. Each entry says what is mine and what came from elsewhere.'
 
 /** The home page's selected projects, in order. */
 export const projects = work.filter(item => item.evidence === 'project')

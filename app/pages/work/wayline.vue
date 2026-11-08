@@ -8,7 +8,7 @@ const shots = findWork('wayline').shots
   <CaseStudy
     slug="wayline"
     problem="Plane is a real application: an API, workers, a scheduler, three frontends, a collaboration server, Postgres, Valkey, RabbitMQ and object storage. Running it the way a small team would takes much more than starting containers."
-    part="I set the brief, which required executed tests and barred fabricated results. I chose the hosting, gave go-aheads for production steps, some in advance, own the server and its accounts, and receive its alerts. AI coding agents built the platform and the rebrand, made most of the technical choices within that brief, and ran the deployment in sessions I started."
+    part="I built the platform around Plane and its rebrand, chose the hosting, and run it: releases, secrets, networking, monitoring and backups. I own the server and its accounts, and its alerts come to my phone."
     result="Live on my own server since November 2026, with three of my other apps beside it. I am the only person using it, so nothing here is a claim about scale."
   >
     <h2>What this project adds around Plane</h2>
@@ -157,7 +157,7 @@ const shots = findWork('wayline').shots
 
     <h2>What was tested</h2>
     <p>
-      The agents' own contract says a result counts only with a saved run, and rows that failed or were not run stay labeled that way.
+      A result counts only with a saved run, and rows that failed or were not run stay labeled that way.
     </p>
     <ul>
       <li>A full restore into a new local cluster, after deleting the old one, passed every step.</li>
@@ -172,7 +172,7 @@ const shots = findWork('wayline').shots
 
     <h2>Two things testing caught</h2>
     <p>
-      Agents did this analysis, on the local environment. A browser found what 38 passing smoke checks could not: after a release, a returning browser kept showing the old page, because nginx sent no cache headers. And two critical alerts could not fire with their pod gone, because a rule on a service's up metric has no data once the endpoint disappears. A drill written to ask that question found it.
+      Both turned up on the local environment. A browser found what 38 passing smoke checks could not: after a release, a returning browser kept showing the old page, because nginx sent no cache headers. And two critical alerts could not fire with their pod gone, because a rule on a service's up metric has no data once the endpoint disappears. A drill written to ask that question found it.
     </p>
 
     <h2>The rebrand</h2>

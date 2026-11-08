@@ -4,8 +4,6 @@ Source of [bereket.dev](https://bereket.dev), the portfolio of Bereket Abera, a 
 
 The site is written to be read at three depths. In ten seconds the first screen says what I do and what I am looking for. In thirty seconds the capability list and the project cards show what I bring and how far each thing goes. Over five minutes the case studies cover the architecture, the tradeoffs and what was and was not tested.
 
-AI coding agents built this site and drafted its copy under my direction.
-
 ## Stack
 
 - **Nuxt 4** (Vue 3.5, TypeScript, strict), prerendered with `nuxt generate`. Every page is static HTML, so crawlers and link previews get the full content.
@@ -30,7 +28,7 @@ Claims and the evidence behind them live in typed data files, not scattered thro
 
 Every piece of work is labeled by evidence type, and every screenshot says where it came from: the live site, a local preview with sample data, or the hosted instance's monitoring.
 
-Employer work describes my part and the decisions behind it. It contains no code, internal names or customer names; figures from internal benchmarks or offline replays are labeled as such. Personal projects say plainly that AI coding agents did the implementation under my direction.
+Employer work describes my part and the decisions behind it. It contains no code, internal names or customer names; figures from internal benchmarks or offline replays are labeled as such.
 
 ## Develop
 

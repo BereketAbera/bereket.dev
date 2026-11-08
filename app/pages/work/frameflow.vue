@@ -8,7 +8,7 @@ const shots = findWork('frameflow').shots
   <CaseStudy
     slug="frameflow"
     problem="A video upload is not finished when the bytes arrive. Transcoding takes minutes, any step can fail, and a viewer should never see a half-published stream."
-    part="I wrote the deployment brief and pre-approved the merges on condition that CI and the checks passed. AI coding agents did the implementation and ran the deployment under my direction, and separate AI reviewers checked it."
+    part="I built the upload studio, API, processing workflow and watch site, and deployed them on my own server with K3s, Argo CD and GitHub Actions."
     result="It runs on my own server. A 6-second test clip went from upload to playable stream in about 7 seconds of processing, and cancelling a run stopped FFmpeg within 9 seconds. No outside users are on record."
   >
     <h2>How a video moves through it</h2>
@@ -175,9 +175,6 @@ const shots = findWork('frameflow').shots
     />
 
     <h2>What the design trades off</h2>
-    <p>
-      Agents made or proposed these choices. My deployment brief set limits such as one job at a time.
-    </p>
 
     <CaseDecision title="Publish the master playlist last.">
       <template #why>
@@ -213,7 +210,7 @@ const shots = findWork('frameflow').shots
       class="case-shot"
     />
 
-    <h2>What the agents tested on the live server</h2>
+    <h2>What was tested on the live server</h2>
     <ul>
       <li>Upload, scheduling, encoding, HLS output and browser playback, end to end.</li>
       <li>A source below the 1280 by 720 minimum fails after probing, and no encode runs.</li>

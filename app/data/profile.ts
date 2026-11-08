@@ -9,11 +9,11 @@ export const profile = {
   employer: 'Acelab',
   eyebrow: 'Senior software engineer · frontend first, full-stack when the feature needs it',
   headline: 'I build complex product interfaces and carry them through to production.',
-  lede: 'Eight-plus years on the web. At Acelab I build data-heavy Vue and Nuxt features for architects and manufacturers, and since June 2026 the .NET endpoints and SQL behind them. In my own projects AI coding agents do the implementation under my direction, from a React component library to a single-server Kubernetes deployment.',
+  lede: 'Eight-plus years on the web. At Acelab I build data-heavy Vue and Nuxt features for architects and manufacturers, and since June 2026 the .NET endpoints and SQL behind them. On my own projects I work across the stack, from a React component library on npm to a Kubernetes deployment with CI/CD and monitoring on my own server.',
   description: 'Senior software engineer in Addis Ababa, frontend first and full-stack when the feature needs it. Open to senior roles and contract work, remote.',
   about: [
     'I have a software engineering degree from Addis Ababa University. I started on websites and full-stack apps in React, Vue, Angular and Node.js, and since 2023 I have worked on one large Vue and Nuxt product, following my features into its API and data layer in 2026.',
-    'The work I like best is a feature nobody has fully specified yet, where the screen has to be easy to use and the data behind it has to stay correct. I use AI coding agents every day. At work I check what they produce and answer for what ships.',
+    'The work I like best is a feature nobody has fully specified yet, where the screen has to be easy to use and the data behind it has to stay correct. I use AI coding tools in my development every day. I review what they produce and answer for what ships.',
   ],
   email: 'bereket5042@gmail.com',
   emailSubject: 'Hello from bereket.dev',

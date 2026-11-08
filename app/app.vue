@@ -29,7 +29,7 @@ useHead({
         'worksFor': { '@type': 'Organization', 'name': 'Acelab', 'url': 'https://www.acelabusa.com' },
         'address': { '@type': 'PostalAddress', 'addressLocality': 'Addis Ababa', 'addressCountry': 'ET' },
         'alumniOf': { '@type': 'CollegeOrUniversity', 'name': 'Addis Ababa University' },
-        'knowsAbout': ['Software engineering', 'Product engineering', 'Frontend engineering', 'Design systems', 'TypeScript', 'Vue.js', 'Nuxt', 'React', 'Next.js', 'Node.js', '.NET', 'Python', 'PostgreSQL', 'Real-time applications', 'Browser extensions', 'AI-assisted development'],
+        'knowsAbout': ['Software engineering', 'Product engineering', 'Frontend engineering', 'Design systems', 'TypeScript', 'Vue.js', 'Nuxt', 'React', 'Next.js', 'Node.js', '.NET', 'Python', 'PostgreSQL', 'Real-time applications', 'Browser extensions', 'Kubernetes', 'CI/CD', 'DevOps', 'AI-assisted development'],
         'sameAs': [profile.links.github, profile.links.linkedin].filter(Boolean),
       }),
     },

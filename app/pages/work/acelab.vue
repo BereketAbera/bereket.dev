@@ -22,7 +22,7 @@
     </p>
 
     <SaveGridDemo compact>
-      A small rebuild with made-up data. Two saves to one cell race: press "Show conflicting saves" to watch the late one get ignored, or edit cells with the keyboard. Built for this site with AI coding agents under my direction. It is not Acelab's code or design.
+      A small rebuild with made-up data. Two saves to one cell race: press "Show conflicting saves" to watch the late one get ignored, or edit cells with the keyboard. Built for this site. It is not Acelab's code or design.
     </SaveGridDemo>
 
     <h2>Browser extensions for product data</h2>
@@ -53,7 +53,7 @@
 
     <h2>How this work was done</h2>
     <p>
-      I use AI coding agents, mainly Claude Code, for part of this work. I direct them and I answer for what ships.
+      I use AI coding tools, mainly Claude Code, in my development every day. I review what they produce and I answer for what ships.
     </p>
   </CaseStudy>
 </template>

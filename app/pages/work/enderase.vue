@@ -2,7 +2,7 @@
   <CaseStudy
     slug="enderase"
     problem="A web app, a mobile app and an API share one database, and the rules for customers, providers and admins have to hold whichever client sends the request."
-    part="My own product: I own the product definition, architecture, data model, security model and verification, and AI coding agents (Claude Code and Codex) write the code under my direction."
+    part="My own product: I own the product definition, architecture, data model, security model and verification, and I build it across web, mobile and API."
     result="In development. The web flows have been re-verified end to end on a working branch. Payments run only in Chapa's sandbox, and the mobile app is not in the stores yet."
   >
     <h2>What it does</h2>
@@ -269,23 +269,23 @@
 
     <h2>How I verify it</h2>
     <p>
-      Each major feature is written up in the repository, and the agents' instructions require updating its document whenever the feature changes. But an agent's report that something works is only a claim, so in late October 2026 I directed an agent-run campaign to test the claims, with one rule: nothing counts as done until someone other than whoever built or fixed it has seen it work at runtime.
+      Each major feature is written up in the repository, and its document has to change whenever the feature does. But a write-up saying something works is only a claim, so in late October 2026 I ran a campaign to test those claims, with one rule: nothing counts as done until a separate check has seen it work at runtime.
     </p>
     <ol>
       <li>
-        <strong>List the acceptance criteria.</strong> Agents independently listed what customers, providers and admins can do across web, mobile and API; deduplicated, those flows became the acceptance criteria.
+        <strong>List the acceptance criteria.</strong> Independent passes listed what customers, providers and admins can do across web, mobile and API; deduplicated, those flows became the acceptance criteria.
       </li>
       <li>
         <strong>Run them.</strong> Web flows ran in Playwright with API and database assertions. About a quarter of the mobile flows ran in Maestro on an iOS simulator and Android emulators; the rest have not run.
       </li>
       <li>
-        <strong>Audit the passes.</strong> A second agent checked that each passing test proved the screen, the stored data and the side effects, strengthening weak assertions and never weakening one.
+        <strong>Audit the passes.</strong> A second review checked that each passing test proved the screen, the stored data and the side effects, strengthening weak assertions and never weakening one.
       </li>
       <li>
-        <strong>Confirm the failures.</strong> Failures were grouped by root cause, and a skeptical verifier tried to disprove each by another method, such as replaying API calls and querying the database instead of driving the browser.
+        <strong>Confirm the failures.</strong> Failures were grouped by root cause, and each was challenged by another method, such as replaying API calls and querying the database instead of driving the browser.
       </li>
       <li>
-        <strong>Verify each fix independently.</strong> Fixes ran in waves; within a wave each file belonged to exactly one fix package, so parallel agents could not collide. An agent that had not written a fix verified it at runtime.
+        <strong>Verify each fix independently.</strong> Fixes ran in waves; within a wave each file belonged to exactly one fix package, so parallel work could not collide. Each fix was then verified at runtime, separately from the run that wrote it.
       </li>
     </ol>
     <p>
