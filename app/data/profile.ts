@@ -2,20 +2,26 @@ export const profile = {
   name: 'Bereket Abera',
   /** Ge'ez spelling, used once as a signature. */
   nameGeez: 'በረከት አበራ',
-  /** Used in titles, JSON-LD and the footer. The current job title is in `facts`. */
-  title: 'Software Engineer',
+  /** How I describe myself: titles and the footer. The title I actually hold is `jobTitle`. */
+  title: 'Senior Software Engineer',
+  /** The job title I hold today. Structured data states this one, not the positioning. */
+  jobTitle: 'Senior Frontend Engineer',
   employer: 'Acelab',
-  eyebrow: 'Software engineer · frontend depth, full-stack delivery',
-  headline: 'I build complex product interfaces, and the API and data behind them.',
-  lede: 'Eight-plus years on the web, the last three on a large product platform for architects and manufacturers. Give me an unclear brief and I’ll pin down what it must do, then build the interface and the API and data behind it, and see it through release.',
-  description: 'Software engineer in Addis Ababa, open to remote roles: 8+ years on the web, deepest in frontend, shipping whole features across API, data and release.',
+  eyebrow: 'Senior software engineer · frontend first, full-stack when the feature needs it',
+  headline: 'I build complex product interfaces and carry them through to production.',
+  lede: 'Eight-plus years on the web. At Acelab I build data-heavy Vue and Nuxt features for architects and manufacturers, and since June 2026 the .NET endpoints and SQL behind them. In my own projects AI coding agents do the implementation under my direction, from a React component library to a single-server Kubernetes deployment.',
+  description: 'Senior software engineer in Addis Ababa, frontend first and full-stack when the feature needs it. Open to senior roles and contract work, remote.',
+  about: [
+    'I have a software engineering degree from Addis Ababa University. I started on websites and full-stack apps in React, Vue, Angular and Node.js, and since 2023 I have worked on one large Vue and Nuxt product, following my features into its API and data layer in 2026.',
+    'The work I like best is a feature nobody has fully specified yet, where the screen has to be easy to use and the data behind it has to stay correct. I use AI coding agents every day. At work I check what they produce and answer for what ships.',
+  ],
   email: 'bereket5042@gmail.com',
   emailSubject: 'Hello from bereket.dev',
   location: 'Addis Ababa, Ethiopia',
   timeZone: 'Africa/Addis_Ababa',
   utcOffset: 'UTC+3',
-  availability: 'Open to senior roles · remote',
-  lookingFor: 'Senior product, full-stack or frontend engineering roles · remote · full-time',
+  availability: 'Open to senior roles and contract work',
+  lookingFor: 'Senior frontend, full-stack or product engineering roles, and contract work. Remote.',
   links: {
     github: 'https://github.com/BereketAbera',
     linkedin: 'https://www.linkedin.com/in/bereket-abera-629380180/' as string | null,
@@ -26,11 +32,31 @@ export const profile = {
 
 export const mailto = `mailto:${profile.email}?subject=${encodeURIComponent(profile.emailSubject)}`
 
+export function mailtoWith(subject: string): string {
+  return `mailto:${profile.email}?subject=${encodeURIComponent(subject)}`
+}
+
 /** The résumé reads "Deepest in" by label. */
 export const facts = [
-  { label: 'Now', value: 'Senior Frontend Engineer, Acelab', note: 'Since 2023 · remote' },
-  { label: 'Deepest in', value: 'Vue & Nuxt, in JavaScript and TypeScript' },
-  { label: 'Also ship', value: 'React & Next.js, .NET, Node.js, Python, PostgreSQL', note: 'Plus Chrome extensions, and Flutter in my own product' },
+  { label: 'Now', value: 'Senior Frontend Engineer, Acelab', note: 'At Acelab since 2023 · remote' },
+  { label: 'Deepest in', value: 'Vue and Nuxt, in JavaScript and TypeScript' },
+  { label: 'Also work in', value: 'React, Next.js, .NET, Node.js, Python, PostgreSQL' },
   { label: 'Based in', value: 'Addis Ababa, Ethiopia', note: 'Remote with a distributed team', clock: true },
-  { label: 'Looking for', value: 'Senior product, full-stack or frontend engineering roles', note: 'Remote · full-time' },
+  { label: 'Open to', value: 'Senior roles and contract work', note: 'Remote' },
+] as const
+
+/** The contact section's two audiences, spelled out so neither has to guess. */
+export const contactLines = [
+  {
+    label: 'Full-time roles',
+    text: 'I am looking for a senior frontend, full-stack or product engineering role, remote.',
+    cta: 'Email me about a role',
+    subject: 'Full-time role',
+  },
+  {
+    label: 'Contract work',
+    text: 'I take on Vue, Nuxt and React work, remotely: product interfaces, design systems and whole features, from a rough brief to release. If you have a project in mind, tell me what it is and when you need it.',
+    cta: 'Email me about a project',
+    subject: 'Contract project',
+  },
 ] as const

@@ -4,12 +4,9 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { capabilities } from '../../app/data/capabilities'
 import { experience } from '../../app/data/experience'
-import { journey } from '../../app/data/journey'
 import { lab } from '../../app/data/lab'
-import { platform } from '../../app/data/platform'
 import { mailto, profile } from '../../app/data/profile'
-import { resume } from '../../app/data/resume'
-import { work } from '../../app/data/work'
+import { projects, work } from '../../app/data/work'
 
 // The wiring between what the site claims and the evidence behind it. These
 // tests read the data files and page sources, never the prose, so they keep
@@ -17,7 +14,8 @@ import { work } from '../../app/data/work'
 
 const root = fileURLToPath(new URL('../../', import.meta.url))
 const read = (file: string) => readFileSync(join(root, file), 'utf8')
-const slugs = new Set(work.map(item => item.slug))
+const slugs = new Set(work.filter(item => item.caseStudy).map(item => item.slug))
+const allSlugs = work.map(item => item.slug)
 
 const TEXT_EXTENSIONS = new Set(['.vue', '.ts', '.mts', '.js', '.mjs', '.cjs', '.css', '.html', '.md', '.json', '.txt', '.xml', '.svg', '.yml', '.yaml', '.webmanifest'])
 /** Dependencies, build output and local tooling: never published. */
@@ -102,37 +100,30 @@ describe('case-study pages', () => {
 describe('list keys', () => {
   // Each of these is a v-for :key; a duplicate makes Vue reuse the wrong row.
   it('are unique', () => {
-    expect(duplicates(work.map(item => item.slug)), 'work slugs').toEqual([])
+    expect(duplicates(allSlugs), 'work slugs').toEqual([])
     expect(duplicates(capabilities.map(cap => cap.id)), 'capability ids').toEqual([])
-    expect(duplicates(journey.map(stage => stage.id)), 'journey stage ids').toEqual([])
-    for (const stage of journey) {
-      expect(duplicates(stage.evidence.map(ev => ev.label)), `evidence labels in stage ${stage.id}`).toEqual([])
-      expect(duplicates(stage.proof), `proof in stage ${stage.id}`).toEqual([])
-    }
-    expect(duplicates(platform.layers.map(layer => layer.id)), 'platform layer ids').toEqual([])
     expect(duplicates(experience.map(role => role.org)), 'experience orgs').toEqual([])
     expect(duplicates(lab.map(entry => entry.title)), 'lab titles').toEqual([])
     for (const cap of capabilities) {
       expect(duplicates(cap.evidence.map(item => item.label)), `evidence labels in ${cap.id}`).toEqual([])
-      expect(duplicates(cap.points), `points in ${cap.id}`).toEqual([])
-      expect(duplicates(cap.tools), `tools in ${cap.id}`).toEqual([])
-      expect(duplicates(cap.workingKnowledge ?? []), `working knowledge in ${cap.id}`).toEqual([])
     }
     for (const item of work) {
       expect(duplicates(item.links.map(link => link.href)), `links in ${item.slug}`).toEqual([])
+      expect(duplicates(item.built.map(note => note.tech)), `tech notes in ${item.slug}`).toEqual([])
+      expect(duplicates(item.shots.map(shot => shot.file)), `shots in ${item.slug}`).toEqual([])
     }
   })
 })
 
-describe('capability and journey evidence', () => {
-  const evidence = [
-    ...capabilities.flatMap(cap => cap.evidence.map(item => ({ ...item, where: `${cap.id} → ${item.label}` }))),
-    ...journey.flatMap(stage => stage.evidence.map(item => ({ ...item, where: `stage ${stage.id} → ${item.label}` }))),
-  ]
+describe('capability evidence', () => {
+  const evidence = capabilities.flatMap(cap => cap.evidence.map(item => ({ ...item, where: `${cap.id} → ${item.label}` })))
 
-  it('backs every capability and journey stage with at least one link', () => {
+  it('backs every capability with at least one link', () => {
     expect(capabilities.filter(cap => cap.evidence.length === 0).map(cap => cap.id)).toEqual([])
-    expect(journey.filter(stage => stage.evidence.length === 0).map(stage => stage.id)).toEqual([])
+  })
+
+  it('states how deep every capability goes', () => {
+    expect(capabilities.filter(cap => !cap.depth.trim()).map(cap => cap.id)).toEqual([])
   })
 
   it('gives every item exactly one of `work` or `href`', () => {
@@ -145,7 +136,7 @@ describe('capability and journey evidence', () => {
   })
 
   it('points `href` at an https URL or at a page (and section) of this site', () => {
-    /** "/how-i-work#platform": the page file exists and has that id; "#work": a section of the home page. */
+    /** "/resume#skills": the page file exists and has that id; "#projects": a section of the home page. */
     const resolves = (href: string) => {
       if (!href.startsWith('/') && !href.startsWith('#')) return isHttps(href)
       const [path = '', id] = href.split('#')
@@ -158,40 +149,75 @@ describe('capability and journey evidence', () => {
   })
 })
 
-describe('ownership tiers', () => {
-  // Working knowledge is what I know but haven't shipped with. A technology
-  // listed in both places would claim more than the site means to.
-  it('never lists the same technology as shipped and as working knowledge', () => {
-    const shipped = new Set(capabilities.flatMap(cap => cap.tools.map(tool => tool.toLowerCase())))
-    const both = capabilities.flatMap(cap => (cap.workingKnowledge ?? []).filter(item => shipped.has(item.toLowerCase())).map(item => `${cap.id}: ${item}`))
-    expect(both).toEqual([])
+describe('project entries', () => {
+  it('says what is mine on every entry', () => {
+    expect(work.filter(item => !item.myPart.trim()).map(item => item.slug)).toEqual([])
   })
 
-  it('lists only shipped tools in the résumé skills, and nothing shipped as studied', () => {
-    const shipped = new Set(capabilities.flatMap(cap => cap.tools))
-    expect(resume.skills.flatMap(group => group.tools.filter(tool => !shipped.has(tool)))).toEqual([])
-    const lower = new Set([...shipped].map(tool => tool.toLowerCase()))
-    expect(resume.studied.filter(item => lower.has(item.toLowerCase()))).toEqual([])
+  it('credits the upstream project wherever one is the foundation', () => {
+    const uncredited = work.filter(item => item.foundation && (!isHttps(item.foundation.href) || !item.foundation.license || !item.foundation.note))
+    expect(uncredited.map(item => item.slug)).toEqual([])
+    expect(work.find(item => item.slug === 'wayline')?.foundation?.name, 'the Plane deployment must credit Plane').toMatch(/Plane/)
   })
 
-  it('says what every case study touched', () => {
-    expect(work.filter(item => item.spans.length === 0).map(item => item.slug)).toEqual([])
+  it('leads with one project and gives the projects unequal space on purpose', () => {
+    expect(projects.filter(item => item.weight === 'lead')).toHaveLength(1)
+    expect(projects[0]?.weight, 'the lead project comes first').toBe('lead')
+    expect(projects.filter(item => item.weight === 'compact').length).toBeGreaterThanOrEqual(1)
   })
 
-  it('features exactly three case studies, listed first', () => {
-    const flags = work.map(item => item.featured === true)
-    expect(flags.filter(Boolean)).toHaveLength(3)
-    expect(flags.slice(0, 3)).toEqual([true, true, true])
+  it('explains technology through what it enabled', () => {
+    expect(work.flatMap(item => item.built.filter(note => !note.enabled.trim()).map(note => `${item.slug}: ${note.tech}`))).toEqual([])
+  })
+})
+
+describe('screenshots', () => {
+  const shots = work.flatMap(item => item.shots.map(shot => ({ ...shot, slug: item.slug })))
+
+  /** Width and height from a WebP file's header (VP8, VP8L and VP8X encodings). */
+  function webpSize(file: string): { width: number, height: number } {
+    const bytes = readFileSync(join(root, 'public', file))
+    expect(bytes.subarray(0, 4).toString('latin1'), `${file} is not a WebP`).toBe('RIFF')
+    const format = bytes.subarray(12, 16).toString('latin1')
+    if (format === 'VP8X') return { width: 1 + bytes.readUIntLE(24, 3), height: 1 + bytes.readUIntLE(27, 3) }
+    if (format === 'VP8L') {
+      const bits = bytes.readUInt32LE(21)
+      return { width: (bits & 0x3fff) + 1, height: ((bits >> 14) & 0x3fff) + 1 }
+    }
+    return { width: bytes.readUInt16LE(26) & 0x3fff, height: bytes.readUInt16LE(28) & 0x3fff }
+  }
+
+  it('has every width of every screenshot in public/img/projects', () => {
+    const missing = shots.flatMap(shot => (shot.widths ?? [960, 1600]).map(width => `/img/projects/${shot.file}-${width}.webp`).filter(path => !existsSync(join(root, 'public', path))))
+    expect(missing).toEqual([])
   })
 
-  it('describes my part in every platform layer', () => {
-    expect(platform.layers.filter(layer => !layer.platform.trim() || !layer.mine.trim()).map(layer => layer.id)).toEqual([])
+  it('declares the real size of the largest file, so the layout does not jump', () => {
+    const wrong = shots.flatMap((shot) => {
+      const widths = shot.widths ?? [960, 1600]
+      const size = webpSize(`/img/projects/${shot.file}-${widths[widths.length - 1]}.webp`)
+      return size.width === shot.width && size.height === shot.height ? [] : [`${shot.file}: declared ${shot.width}x${shot.height}, file is ${size.width}x${size.height}`]
+    })
+    expect(wrong).toEqual([])
+  })
+
+  it('describes every screenshot and says where it came from', () => {
+    expect(shots.filter(shot => shot.alt.trim().length < 20 || !shot.caption.trim() || !shot.host.trim()).map(shot => shot.file)).toEqual([])
+  })
+
+  it('keeps each image small enough for a fast page', () => {
+    const heavy = shots.flatMap(shot => (shot.widths ?? [960, 1600]).flatMap((width) => {
+      const path = `/img/projects/${shot.file}-${width}.webp`
+      const kb = readFileSync(join(root, 'public', path)).length / 1024
+      return kb > 160 ? [`${path}: ${Math.round(kb)} KB`] : []
+    }))
+    expect(heavy).toEqual([])
   })
 })
 
 describe('experience', () => {
   it('links only to case studies that exist', () => {
-    const missing = experience.flatMap(role => (role.work ?? []).filter(slug => !slugs.has(slug)).map(slug => `${role.org} → ${slug}`))
+    const missing = experience.flatMap(role => (role.work && !slugs.has(role.work) ? [`${role.org} → ${role.work}`] : []))
     expect(missing).toEqual([])
   })
 
@@ -204,18 +230,18 @@ describe('experience', () => {
 
   it('never ends a role before it starts', () => {
     const backwards = experience.filter(role => typeof role.end === 'string' && !(year(role.end) >= year(role.start)))
-    expect(backwards.map(role => `${role.org}: ${role.start} – ${role.end}`)).toEqual([])
+    expect(backwards.map(role => `${role.org}: ${role.start} to ${role.end}`)).toEqual([])
   })
 })
 
 describe('page metadata', () => {
   it('keeps meta descriptions within 160 characters', () => {
     expect(profile.description.length, 'profile.description').toBeLessThanOrEqual(160)
-    for (const item of work) expect(item.metaDescription.length, item.slug).toBeLessThanOrEqual(160)
+    for (const item of work.filter(entry => entry.caseStudy)) expect(item.metaDescription.length, item.slug).toBeLessThanOrEqual(160)
   })
 
   it('keeps case-study titles short enough for search results', () => {
-    for (const item of work) expect(`${item.metaTitle} · ${profile.name}`.length, item.slug).toBeLessThanOrEqual(65)
+    for (const item of work.filter(entry => entry.caseStudy)) expect(`${item.metaTitle} · ${profile.name}`.length, item.slug).toBeLessThanOrEqual(65)
   })
 })
 
@@ -250,10 +276,11 @@ describe('published text', () => {
   // numbers, staging or preview URLs, or phone number anywhere in the repository.
   const sensitive: Record<string, RegExp> = {
     // Any tracker-style key such as ABC-42. Specific project keys stay in the private denylist.
-    'ticket ID': /\b(?!UTC-|UTF-)[A-Z][A-Z0-9]{1,9}-\d+\b/,
+    'ticket ID': /\b(?!UTC-|UTF-|AGPL-|GPL-|MPL-|CVE-|ISO-|HTTP-|TLS-|K3S-)[A-Z][A-Z0-9]{1,9}-\d+\b/,
     'PR number': /\bPR\s?#?\d+\b/,
     'staging or preview URL': /https?:\/\/[^\s/"'`<>)]*(?:staging|preview|-git-)|\bstaging\.[a-z0-9-]+\.[a-z]{2,}/i,
     'phone number': /(?:\+|\b00)251[\s.-]*(?:\(0\))?(?:[\s.()-]*\d){9}(?!\d)/,
+    'IP address': /\b(?!127\.0\.0\.1\b)(?:\d{1,3}\.){3}\d{1,3}\b/,
   }
 
   // Names that must stay private can't be listed in a public repository, so a
@@ -276,6 +303,18 @@ describe('published text', () => {
     expect(hits).toEqual([])
   })
 
+  // The owner's house style: straight quotes and apostrophes, no em or en dashes.
+  it('uses straight quotes and no em or en dashes in published text', () => {
+    const typography = /[\u2018\u2019\u201C\u201D\u2013\u2014]/
+    // The licence is verbatim third-party text.
+    expect(findLines(contentFiles.filter(file => file !== 'LICENSE'), typography)).toEqual([])
+  })
+
+  it('avoids inflated language in the visible copy', () => {
+    const inflated = /\b(?:world[- ]class|cutting[- ]edge|best[- ]in[- ]class|blazing|seamless(?:ly)?|game[- ]chang|production[- ]grade|rockstar|ninja|synerg)/i
+    expect(findLines([...appFiles.filter(file => file.startsWith('app/data/') || file.startsWith('app/pages/')), ...repoFiles.filter(file => file.startsWith('drafts/'))], inflated)).toEqual([])
+  })
+
   it.skipIf(denylist.length === 0)('contains none of the terms in CONTENT_DENYLIST', () => {
     const hits = denylist.flatMap((term, index) => {
       // Letter boundaries, so a short term doesn't match inside an ordinary word.
@@ -283,6 +322,24 @@ describe('published text', () => {
       return findLines(repoFiles, pattern, false).map(at => `${at} (term ${index + 1})`)
     })
     expect(hits).toEqual([])
+  })
+})
+
+describe('retired URLs', () => {
+  // Case studies merged into /work/acelab: old links, the previous PDF and copies already
+  // sent must keep working.
+  const redirects = (JSON.parse(read('vercel.json')) as { redirects?: Array<{ source: string, destination: string, permanent: boolean }> }).redirects ?? []
+
+  it('redirects every retired page permanently to a page that exists', () => {
+    const retired = ['/work/workflow-engineering', '/work/browser-extensions', '/work/data-interfaces', '/work/realtime-sync', '/work/modernization', '/how-i-work']
+    for (const source of retired) {
+      const redirect = redirects.find(item => item.source === source)
+      expect(redirect, source).toBeDefined()
+      expect(redirect?.permanent, source).toBe(true)
+      const destination = (redirect?.destination ?? '').split('#')[0] || '/'
+      const file = destination === '/' ? 'app/pages/index.vue' : `app/pages${destination}.vue`
+      expect(existsSync(join(root, file)), `${source} redirects to ${destination}, which has no page`).toBe(true)
+    }
   })
 })
 

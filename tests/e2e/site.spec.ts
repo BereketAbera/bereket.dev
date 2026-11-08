@@ -2,16 +2,16 @@ import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
 import { profile } from '../../app/data/profile'
 import { siteUrl as SITE } from '../../app/data/site'
-import { work } from '../../app/data/work'
+import { caseStudies as studies } from '../../app/data/work'
 
 // End-to-end checks against the static build: `pnpm build && pnpm test:e2e`
 // (playwright.config.ts serves .output/public on port 4173). Page lists and
 // expected text come from app/data, so these tests follow the data contract,
 // not the case-study prose.
 
-const caseStudies = work.map(item => ({ ...item, path: `/work/${item.slug}` }))
-/** Every page: home, how I work, the case studies, the résumé and the lab. */
-const pages = ['/', '/how-i-work', ...caseStudies.map(item => item.path), '/resume', '/lab']
+const caseStudies = studies.map(item => ({ ...item, path: `/work/${item.slug}` }))
+/** Every page: home, the case studies, the résumé and the lab. */
+const pages = ['/', ...caseStudies.map(item => item.path), '/resume', '/lab']
 
 interface LdNode {
   '@type'?: unknown
@@ -108,7 +108,7 @@ test.describe('navigation', () => {
     const hrefs = await page.getByRole('banner').locator('a[href*="#"]').evaluateAll(links =>
       links.map(link => link.getAttribute('href') ?? ''))
     const ids = hrefs.map(href => href.slice(href.indexOf('#') + 1))
-    expect(ids).toEqual(expect.arrayContaining(['work', 'experience', 'about', 'contact']))
+    expect(ids).toEqual(expect.arrayContaining(['projects', 'capabilities', 'experience', 'about', 'contact']))
     for (const id of ids) {
       await expect(page.locator(`[id="${id}"]`), `#${id}`).toHaveCount(1)
     }
@@ -127,12 +127,15 @@ test.describe('case studies', () => {
 
       const facts = page.getByRole('complementary', { name: 'Project facts' })
       await expect(facts).toBeVisible()
-      for (const fact of [item.roleDetail, item.period]) {
+      for (const fact of [item.status, item.period]) {
         await expect(facts).toContainText(fact)
+      }
+      if (item.foundation) {
+        await expect(facts).toContainText(item.foundation.name)
       }
 
       if (item.evidence === 'employer') {
-        await expect(page.getByText('What’s left out').first()).toBeVisible()
+        await expect(page.getByText('What is left out').first()).toBeVisible()
       }
 
       await hydrated(page)
@@ -145,7 +148,7 @@ test.describe('demos', () => {
   test.skip(({ isMobile }) => isMobile, 'Keyboard-driven demos; the markup is the same at every size, so these run once, on desktop')
 
   test('the grid demo saves by keyboard and ignores a save that returns after a newer edit', async ({ page }) => {
-    await visit(page, '/')
+    await visit(page, '/work/acelab')
     await hydrated(page)
     const grid = page.getByRole('grid', { name: /response grid/ })
     const cell = grid.locator('[data-cell="0-0"]')
@@ -166,11 +169,11 @@ test.describe('demos', () => {
   })
 
   test('the grid demo plays the conflicting-saves walkthrough in one click', async ({ page }) => {
-    await visit(page, '/')
+    await visit(page, '/work/acelab')
     await hydrated(page)
     const demo = page.locator('.grid-demo').first()
     await demo.getByRole('button', { name: 'Show conflicting saves' }).click()
-    await expect(demo.locator('.story')).toContainText('the cell keeps “Gloss”', { timeout: 10_000 })
+    await expect(demo.locator('.story')).toContainText('the cell keeps "Gloss"', { timeout: 10_000 })
     await expect(demo.locator('[data-cell="0-0"]')).toContainText('Gloss')
     await expect(page.getByRole('log', { name: 'Save activity' })).toContainText('came back after a newer edit, so it was ignored')
   })
@@ -189,18 +192,6 @@ test.describe('demos', () => {
     await page.keyboard.press('Escape')
     await expect(viewer).toBeHidden()
     await expect(first).toBeFocused()
-  })
-
-  test('the clip demo replays from the start', async ({ page }) => {
-    await visit(page, '/')
-    await hydrated(page)
-    const demo = page.locator('.clip-demo').first()
-    await expect(demo.locator('table')).toBeVisible()
-    await demo.getByRole('button', { name: 'Replay from the start' }).click()
-    await expect(demo.locator('table')).toHaveCount(0)
-    await demo.getByRole('button', { name: 'Clip this page' }).click()
-    await demo.getByRole('button', { name: 'Paste into the schedule' }).click()
-    await expect(demo.locator('table')).toBeVisible()
   })
 })
 

@@ -1,5 +1,9 @@
 import type { Role } from './types'
 
+/**
+ * Roles, newest first. Each entry says what I was responsible for and how deep it went.
+ * "Built" means I was the engineer responsible for the design, the change and whether it worked.
+ */
 export const experience: Role[] = [
   {
     org: 'Acelab',
@@ -7,32 +11,32 @@ export const experience: Role[] = [
     start: 'May 2023',
     end: null,
     location: 'Remote from Addis Ababa',
-    summary: 'Material Hub, a materials platform for architects, owners and manufacturers. I joined on the frontend in Vue and Nuxt; in mid-2026 the role grew to full-stack, and I now also write the .NET endpoints, Python workflow steps and Node.js route handlers my features need.',
+    summary: 'I build complex product interfaces in Vue and Nuxt, in TypeScript since 2026, for a B2B platform where architects and manufacturers select and document building products. Since June 2026 I also build the .NET endpoints and SQL behind my features, and since September 2026 Python workflow steps and Node.js route handlers for internal product-data tools, inside services teammates built and run.',
     highlights: [
-      'Led the frontend of a two-sided request-for-information workflow (send wizard, autosaving response grid, live status) and wrote .NET endpoints for its paging, cancellation and live updates.',
-      'Built core parts of the spreadsheet-style product schedule (the save path, cell types, undo and redo, and most of view sharing), built its presence and live cells with teammates, and was a major contributor to the app’s Nuxt 3 migration.',
-      'Built the first in-app notification center’s interface and live updates; on a teammate’s new engine, proposed and built its single real-time event and took its frontend through review to release. Finished and released threaded comments.',
-      'Built two Manifest V3 extensions end to end, one public on the Chrome Web Store, with a scoped token hand-off, server-side LLM parsing and a ground-truth evaluation harness; in an offline replay of 23 reviewed products, fixes raised recall of reviewer-approved files 14 points, to 71%.',
-      'Since mid-2026, carry my features through the server side, inside services teammates built: .NET endpoints with server-side permission checks, Python workflow steps that keep reviewers’ edits through a rescrape, Node.js route handlers for an internal review platform, and the migrations behind them.',
+      'Owned the frontend of a workflow that lets architects request product data from manufacturers, and built .NET endpoints for its paging, cancellation and live updates. A teammate led the backend. Acelab markets it as Bulk Vendor RFIs.',
+      'Built how cell edits are saved, single-cell undo and redo, and most of the sharing of saved views for a collaborative spreadsheet-style editor. Teammates built the grid itself.',
+      'Built a bulk report of missing products end to end, from the editor action through .NET endpoints to a SQL migration.',
+      'Built AceClipper, a public Chrome extension that turns manufacturer web pages into product records, with a scoped sign-in token and server-side LLM parsing.',
+      'Major contributor to moving a Vue app of more than 1,000 files from Nuxt 2 to Nuxt 3 while the product kept shipping (merged November 2025).',
     ],
-    work: ['workflow-engineering', 'data-interfaces', 'realtime-sync', 'browser-extensions', 'modernization'],
+    work: 'acelab',
   },
   {
     org: 'Mrara Enterprises',
-    title: 'Senior Frontend Developer (part-time)',
+    title: 'Frontend Developer (part-time)',
     start: '2021',
     end: '2024',
     location: 'Remote',
-    summary: 'Vue and Nuxt applications with Vuex and Vue Router, reusable component code, and React front ends with Redux and Tailwind.',
+    summary: 'Frontend work on Vue, Nuxt and React applications.',
     highlights: [],
   },
   {
     org: 'Mereb Technologies',
     title: 'Full-Stack Web Developer',
-    start: 'Sep 2021',
-    end: 'Dec 2021',
+    start: 'Late 2021',
+    end: 'Late 2021',
     location: 'Addis Ababa',
-    summary: 'JavaScript web projects and browser automation tests with Puppeteer.',
+    summary: 'JavaScript web projects.',
     highlights: [],
   },
   {
@@ -41,7 +45,7 @@ export const experience: Role[] = [
     start: 'Jan 2018',
     end: 'Aug 2021',
     location: 'Addis Ababa',
-    summary: 'Web applications in Node.js, React, Vue and Angular, built in an agile team.',
+    summary: 'Web applications in Node.js, React, Vue and Angular.',
     highlights: [],
   },
   {
@@ -58,5 +62,5 @@ export const experience: Role[] = [
 export const education = {
   degree: 'BSc, Software Engineering',
   school: 'Addis Ababa University',
-  period: '2014 – 2019',
+  period: '2014 to 2019',
 }

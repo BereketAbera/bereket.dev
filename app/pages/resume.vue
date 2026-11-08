@@ -3,7 +3,7 @@ import { education, experience } from '~/data/experience'
 import { facts, mailto, profile } from '~/data/profile'
 import { resume } from '~/data/resume'
 import type { Role } from '~/data/types'
-import { evidenceLabel, work } from '~/data/work'
+import { caseStudies, projects as personalProjects } from '~/data/work'
 
 usePageMeta({
   title: 'Résumé',
@@ -23,7 +23,8 @@ const where = `${profile.location} · ${profile.utcOffset} · remote`
 
 function period(role: Role) {
   if (role.end === undefined) return `From ${role.start}`
-  return `${role.start} – ${role.end ?? 'present'}`
+  if (role.end === role.start) return role.start
+  return `${role.start} to ${role.end ?? 'present'}`
 }
 
 function fact(label: (typeof facts)[number]['label']) {
@@ -32,27 +33,23 @@ function fact(label: (typeof facts)[number]['label']) {
   return entry
 }
 
-// Tools I ship with, grouped tightly so experience starts high on the first page.
-// What I've only studied gets one line at the end, never a skills row.
+// Grouped tightly so experience starts high on the first page.
 const skills = [
   { label: 'Deepest in', value: fact('Deepest in').value },
   ...resume.skills.map(group => ({ label: group.label, value: group.tools.join(', ') })),
 ]
 
-// Work that an experience entry already describes only needs a pointer to its
-// case study; anything else gets its one-sentence outcome.
-const described = new Set(experience.flatMap(role => role.work ?? []))
 // Links stay relative so the page works on any host (preview deploys included);
 // scripts/resume-pdf.mjs makes them absolute for the PDF.
-const projects = work.map(item => ({
+const hasPage = new Set(caseStudies.map(item => item.slug))
+const projects = personalProjects.map(item => ({
   slug: item.slug,
   title: item.title,
-  path: `/work/${item.slug}`,
-  url: `${siteUrl}/work/${item.slug}`,
-  role: item.role,
-  org: item.evidence === 'employer' ? (item.org.split(' · ')[0] ?? item.org) : evidenceLabel[item.evidence],
+  path: hasPage.has(item.slug) ? `/work/${item.slug}` : undefined,
+  url: hasPage.has(item.slug) ? `${siteUrl}/work/${item.slug}` : item.links[0]?.href,
   years: item.years,
-  note: described.has(item.slug) ? null : item.outcome,
+  note: item.kicker,
+  part: item.myPart,
 }))
 </script>
 
@@ -165,7 +162,7 @@ const projects = work.map(item => ({
           <div class="entry-head">
             <div>
               <h3 class="entry-title">
-                <span class="org">{{ role.org }}</span><span class="text-muted"> — </span>{{ role.title }}
+                <span class="org">{{ role.org }}</span><span class="text-muted"> · </span>{{ role.title }}
               </h3><span class="entry-where">&nbsp;·&nbsp;{{ role.location }}</span>
             </div>
             <p class="data when">
@@ -186,6 +183,12 @@ const projects = work.map(item => ({
               {{ item }}
             </li>
           </ul>
+          <p
+            v-if="role.org === 'Acelab'"
+            class="entry-note"
+          >
+            {{ resume.aiNote }}
+          </p>
         </li>
       </ol>
     </section>
@@ -207,19 +210,29 @@ const projects = work.map(item => ({
           class="project"
         >
           <h3 class="project-title">
-            <NuxtLink :to="item.path">{{ item.title }}</NuxtLink>
+            <NuxtLink
+              v-if="item.path"
+              :to="item.path"
+            >{{ item.title }}</NuxtLink>
+            <ExtLink
+              v-else-if="item.url"
+              :href="item.url"
+            >{{ item.title }}</ExtLink>
+            <template v-else>
+              {{ item.title }}
+            </template>
           </h3>
           <p class="project-meta">
-            {{ item.role }} · {{ item.org }} · <span class="data">{{ item.years }}</span>
-          </p>
-          <p class="data project-url">
-            {{ bare(item.url) }}
+            {{ item.note }} · <span class="data">{{ item.years }}</span>
           </p>
           <p
-            v-if="item.note"
-            class="project-note"
+            v-if="item.url"
+            class="data project-url"
           >
-            {{ item.note }}
+            {{ bare(item.url) }}
+          </p>
+          <p class="project-note">
+            {{ item.part }}
           </p>
         </li>
       </ul>
@@ -238,7 +251,7 @@ const projects = work.map(item => ({
       <div class="main">
         <div class="entry-head">
           <h3 class="entry-title">
-            <span class="org">{{ education.school }}</span><span class="text-muted"> — </span>{{ education.degree }}
+            <span class="org">{{ education.school }}</span><span class="text-muted"> · </span>{{ education.degree }}
           </h3>
           <p class="data when">
             {{ education.period }}
@@ -247,25 +260,17 @@ const projects = work.map(item => ({
       </div>
     </section>
 
-    <section
-      class="part sheet"
-      aria-labelledby="studied"
-    >
-      <h2
-        id="studied"
-        class="label heading"
-      >
-        Studied
-      </h2>
-      <p class="main studied">
-        <span class="text-muted">{{ resume.studiedNote }}:</span> {{ resume.studied.join(', ') }}
-      </p>
-    </section>
   </article>
 </template>
 
 <style scoped>
 /* ---------- Screen ---------- */
+
+.entry-note {
+  margin-top: 0.45rem;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
 
 .main {
   min-width: 0;
@@ -349,10 +354,6 @@ const projects = work.map(item => ({
   margin-right: 0.5rem;
 }
 
-.studied {
-  font-size: 0.9375rem;
-  line-height: 1.5;
-}
 
 .skill {
   display: grid;
@@ -599,10 +600,6 @@ const projects = work.map(item => ({
     font-size: 9.4pt;
     line-height: 1.38;
   }
-  .studied {
-    font-size: 9pt;
-    line-height: 1.38;
-  }
 
   .entry {
     padding-block: 6pt;
@@ -656,6 +653,11 @@ const projects = work.map(item => ({
     margin-top: 1pt;
     font-size: 9.2pt;
     line-height: 1.38;
+  }
+  .entry-note {
+    margin-top: 2pt;
+    font-size: 9.2pt;
+    color: #444;
   }
   .bullets {
     margin-top: 4pt;

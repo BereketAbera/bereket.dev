@@ -4,7 +4,7 @@ import { profile } from '~/data/profile'
 const { siteUrl } = useRuntimeConfig().public
 
 useHead({
-  titleTemplate: title => (!title ? `${profile.name} — ${profile.title}` : title.includes(profile.name) ? title : `${title} · ${profile.name}`),
+  titleTemplate: title => (!title ? `${profile.name}, ${profile.title}` : title.includes(profile.name) ? title : `${title} · ${profile.name}`),
   link: [
     { rel: 'preload', href: '/fonts/literata-roman.woff2', as: 'font', type: 'font/woff2', crossorigin: '' },
     { rel: 'preload', href: '/fonts/fragment-mono.woff2', as: 'font', type: 'font/woff2', crossorigin: '' },
@@ -25,11 +25,11 @@ useHead({
         'url': siteUrl,
         'image': `${siteUrl}/img/profile-480.webp`,
         'email': `mailto:${profile.email}`,
-        'jobTitle': profile.title,
+        'jobTitle': profile.jobTitle,
         'worksFor': { '@type': 'Organization', 'name': 'Acelab', 'url': 'https://www.acelabusa.com' },
         'address': { '@type': 'PostalAddress', 'addressLocality': 'Addis Ababa', 'addressCountry': 'ET' },
         'alumniOf': { '@type': 'CollegeOrUniversity', 'name': 'Addis Ababa University' },
-        'knowsAbout': ['Software engineering', 'Product engineering', 'Frontend engineering', 'TypeScript', 'Vue.js', 'Nuxt', 'React', 'Next.js', 'Node.js', '.NET', 'Python', 'PostgreSQL', 'Real-time applications', 'Browser extensions', 'Accessibility'],
+        'knowsAbout': ['Software engineering', 'Product engineering', 'Frontend engineering', 'Design systems', 'TypeScript', 'Vue.js', 'Nuxt', 'React', 'Next.js', 'Node.js', '.NET', 'Python', 'PostgreSQL', 'Real-time applications', 'Browser extensions', 'AI-assisted development'],
         'sameAs': [profile.links.github, profile.links.linkedin].filter(Boolean),
       }),
     },

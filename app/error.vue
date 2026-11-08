@@ -19,14 +19,14 @@ useSeoMeta({ robots: 'noindex' })
         </p>
         <div>
           <h1 class="text-[clamp(2rem,1.3rem+2.6vw,3.25rem)] leading-[1.08] font-[480] tracking-[-0.02em]">
-            {{ notFound ? 'There’s nothing at this address.' : 'Something went wrong.' }}
+            {{ notFound ? 'Nothing is at this address.' : 'Something went wrong.' }}
           </h1>
           <p class="mt-5 max-w-[34rem] text-[1.125rem]">
             {{ notFound ? 'The link may be old, or the page may have moved.' : 'Please try again in a moment.' }}
           </p>
           <p class="mt-8 flex flex-wrap gap-x-6 gap-y-2">
             <NuxtLink to="/">Home</NuxtLink>
-            <NuxtLink to="/#work">Selected work</NuxtLink>
+            <NuxtLink to="/#projects">Projects</NuxtLink>
             <NuxtLink to="/#contact">Contact</NuxtLink>
           </p>
         </div>

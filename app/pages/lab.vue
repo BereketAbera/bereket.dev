@@ -16,7 +16,7 @@ usePageMeta({
       Lab and earlier work
     </h1>
     <p class="mt-5 max-w-[40rem] text-[1.0625rem] leading-[1.6]">
-      Experiments and older public code, kept apart from the <NuxtLink to="/#work">case studies</NuxtLink>.
+      Experiments and older public code, kept apart from the <NuxtLink to="/#projects">projects</NuxtLink>.
     </p>
     <ul class="mt-10 border-t border-ink">
       <li
