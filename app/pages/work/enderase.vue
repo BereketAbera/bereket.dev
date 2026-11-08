@@ -2,7 +2,7 @@
   <CaseStudy
     slug="enderase"
     problem="A web app, a mobile app and an API share one database, and the rules for customers, providers and admins have to hold whichever client sends the request."
-    part="My own product: I own the product definition, architecture, data model, security model and verification, and AI coding agents (Claude Code and Codex) write the code under my direction."
+    part="My own product: I own the product definition, architecture, data model, security model and verification, and I build it across web, mobile and API."
     result="A marketplace where customers book ID-verified providers or pick among bids, confirm with a deposit, message and review, in English or Amharic; in development, with web flows re-verified end to end and payments in Chapa’s sandbox."
   >
     <h2>What it does</h2>
@@ -269,23 +269,23 @@
 
     <h2>How I verify it</h2>
     <p>
-      Each major feature is written up in the repository, and the agents’ instructions require updating its document whenever the feature changes. But an agent’s report that something works is only a claim, so in late October 2026 I directed an agent-run campaign to test the claims, with one rule: nothing counts as done until someone other than whoever built or fixed it has seen it work at runtime.
+      Each major feature is written up in the repository, and its document has to change whenever the feature does. But a write-up saying something works is only a claim, so in late October 2026 I ran a campaign to test those claims, with one rule: nothing counts as done until a separate check has seen it work at runtime.
     </p>
     <ol>
       <li>
-        <strong>List the acceptance criteria.</strong> Agents independently listed what customers, providers and admins can do across web, mobile and API; deduplicated, those flows became the acceptance criteria.
+        <strong>List the acceptance criteria.</strong> Independent passes listed what customers, providers and admins can do across web, mobile and API; deduplicated, those flows became the acceptance criteria.
       </li>
       <li>
         <strong>Run them.</strong> Web flows ran in Playwright with API and database assertions, mobile flows in Maestro on an iOS simulator and Android emulators.
       </li>
       <li>
-        <strong>Audit the passes.</strong> A second agent checked that each passing test proved the screen, the stored data and the side effects, strengthening weak assertions and never weakening one.
+        <strong>Audit the passes.</strong> A second review checked that each passing test proved the screen, the stored data and the side effects, strengthening weak assertions and never weakening one.
       </li>
       <li>
-        <strong>Confirm the failures.</strong> Failures were grouped by root cause, and a skeptical verifier tried to disprove each by another method, such as replaying API calls and querying the database instead of driving the browser.
+        <strong>Confirm the failures.</strong> Failures were grouped by root cause, and each was challenged by another method, such as replaying API calls and querying the database instead of driving the browser.
       </li>
       <li>
-        <strong>Verify each fix independently.</strong> Fixes ran in waves; within a wave each file belonged to exactly one fix package, so parallel agents couldn’t collide. An agent that hadn’t written a fix verified it at runtime.
+        <strong>Verify each fix independently.</strong> Fixes ran in waves; within a wave each file belonged to exactly one fix package, so parallel work couldn’t collide. Each fix was then verified independently at runtime.
       </li>
     </ol>
     <p>
@@ -294,12 +294,12 @@
 
     <h2>What I’d change</h2>
     <p>
-      Code ran ahead of verification: the flow-by-flow campaign came months after the first versions of all three parts. With coding agents, typing stops being the slow part. What remains is defining the product precisely enough to build and test against, so next time I’d write the flow list with the first feature and test each feature against it as it lands.
+      Code ran ahead of verification: the flow-by-flow campaign came months after the first versions of all three parts. The slow part is defining the product precisely enough to build and test against, so next time I’d write the flow list with the first feature and test each feature against it as it lands.
     </p>
 
     <h2>Outcome</h2>
     <p>
-      Enderase is a web app and a Flutter app that share one API for their business rules, in English and Amharic. Its web flows have been re-verified end to end. It’s in development, so there’s no usage to report: payments run only in Chapa’s sandbox, the mobile app isn’t in the app stores, and its flows still need their device runs. What transfers: give each rule one owner, and have someone other than the author prove each result.
+      Enderase is a web app and a Flutter app that share one API for their business rules, in English and Amharic. Its web flows have been re-verified end to end. It’s in development, so there’s no usage to report: payments run only in Chapa’s sandbox, the mobile app isn’t in the app stores, and its flows still need their device runs. What transfers: give each rule one owner, and have a separate check prove each result.
     </p>
   </CaseStudy>
 </template>

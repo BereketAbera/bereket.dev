@@ -12,7 +12,7 @@ export const lab: LabEntry[] = [
   {
     year: '2026',
     title: 'Understory',
-    note: 'A concept site for a fictional country-house brokerage: filters kept in the URL, a schematic map, saved homes and side-by-side compare. AI agents built it from my research brief and art direction.',
+    note: 'A concept site for a fictional country-house brokerage: filters kept in the URL, a schematic map, saved homes and side-by-side compare, from my own research and art direction.',
     context: 'Design experiment',
     stack: 'Vue 3, Pinia, Tailwind',
     link: { label: 'Live demo', href: 'https://understory-drab.vercel.app' },

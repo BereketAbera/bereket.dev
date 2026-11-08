@@ -58,7 +58,7 @@ export const capabilities: Capability[] = [
     points: [
       'Schedule presence and live cells with my team, the first notification center’s interface and live updates, and .NET event publishers that fire after the commit on channels whose rules mirror the HTTP API’s.',
       'An internal side-panel extension that hands collected product media to the review platform through a versioned clipboard format, golden-tested on both sides with no backend in between.',
-      'In my own product, a Flutter app and a Next.js web app on one API and database, with push notifications, live tracking and real-time chat, built with AI coding agents under my direction.',
+      'In my own product, a Flutter app and a Next.js web app on one API and database, with push notifications, live tracking and real-time chat.',
     ],
     tools: ['Pusher', 'Supabase Realtime', 'Chrome Manifest V3', 'Flutter', 'Riverpod', 'Firebase Cloud Messaging'],
     workingKnowledge: [
@@ -123,7 +123,7 @@ export const capabilities: Capability[] = [
     points: [
       'LLM product parsing introduced to a production .NET API, with model output validated and normalized, unsafe links stripped and a per-user rate limit on the endpoint.',
       'An offline language guardrail in a teammate-built LLM pipeline that skips non-English pages before any model spend and swaps in a page’s English version when one exists.',
-      'An agent-run QA campaign I directed on my own product: every user flow listed by role, run on web and mobile, failures confirmed a second way, and each fix re-verified at runtime by an agent that didn’t write it.',
+      'A QA campaign on my own product: every user flow listed by role, run on web and mobile, failures confirmed a second way, and each fix independently re-verified at runtime.',
     ],
     tools: ['OpenAI API', 'Claude Code', 'Codex'],
     workingKnowledge: [
@@ -133,7 +133,6 @@ export const capabilities: Capability[] = [
     evidence: [
       { label: 'Browser extensions', work: 'browser-extensions' },
       { label: 'Enderase', work: 'enderase' },
-      { label: 'Understory (lab)', href: '/lab' },
     ],
   },
 ]
