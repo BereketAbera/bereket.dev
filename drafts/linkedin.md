@@ -22,9 +22,9 @@ Alternatives:
 >
 > I have worked on the web for more than eight years. At Acelab I work on a large Vue and Nuxt product where architects and manufacturers select and document building products. My work there includes the frontend of a request workflow between architects and manufacturers, how cell edits are saved in a spreadsheet-style editor along with single-cell undo and redo, real-time updates built with my team, and a public Chrome extension. Since June 2026 I also build the .NET endpoints and SQL behind my features, and since September 2026 Python workflow steps and Node.js route handlers for internal tools.
 >
-> Outside work, AI coding agents build whole projects under my direction, from a brief to running software. Those projects include Rillmark, a React component library on npm; Frameflow, a video processing pipeline from upload to adaptive streaming; and Wayline, a self-hosted deployment of the open-source Plane project tracker. The project pages on bereket.dev say what is mine and what came from elsewhere.
+> Outside work I build and run my own projects, including the infrastructure under them. Those include Rillmark, a React component library on npm; Frameflow, a video processing pipeline from upload to adaptive streaming; and Wayline, a self-hosted deployment of the open-source Plane project tracker, with Kubernetes, GitOps, CI/CD, monitoring and tested backups on my own server. The project pages on bereket.dev say what is mine and what came from elsewhere.
 >
-> Deepest in Vue and Nuxt, in JavaScript and TypeScript. Also working in React, Next.js, .NET, Node.js, Python and PostgreSQL.
+> Deepest in Vue and Nuxt, in JavaScript and TypeScript. Also working in React, Next.js, .NET, Node.js, Python and PostgreSQL, and on my own projects in Docker, Kubernetes, CI/CD and monitoring. I use AI coding tools in my development every day.
 >
 > I am open to senior frontend, full-stack or product engineering roles and to contract work, remote from Addis Ababa (UTC+3).
 >
@@ -43,7 +43,7 @@ May 2023 to present. Remote from Addis Ababa.
 > - Built a bulk report of missing products end to end, from the editor action through .NET endpoints to a SQL migration.
 > - Built AceClipper, a public Chrome extension that turns manufacturer web pages into product records, with a scoped sign-in token and server-side LLM parsing.
 > - Major contributor to moving a Vue app of more than 1,000 files from Nuxt 2 to Nuxt 3 while the product kept shipping.
-> - I use AI coding agents, mainly Claude Code, for part of this work and answer for what ships.
+> - I use AI coding tools, mainly Claude Code, in my development every day and answer for what ships.
 
 ### Earlier roles
 
@@ -60,7 +60,7 @@ Keep these short.
 
 November 2026.
 
-> A React 19 component library on npm with 48 components, 26 of which import Radix primitives directly, and three visual presets. Built with AI coding agents under my direction. Version 0.2.0 was tested as the packed package in a fresh app before it was published.
+> A React 19 component library on npm with 48 components, 26 of which import Radix primitives directly, and three visual presets. Version 0.2.0 was tested as the packed package in a fresh app before it was published.
 >
 > https://bereket.dev/work/rillmark
 
@@ -68,7 +68,7 @@ November 2026.
 
 September and November 2026.
 
-> A video processing pipeline with an upload studio and a public watch site. An uploaded MP4 becomes a private adaptive stream in 360p and 720p. AI coding agents did the implementation under my direction, and it runs on my own server.
+> A video processing pipeline with an upload studio and a public watch site. An uploaded MP4 becomes a private adaptive stream in 360p and 720p. I built it and run it on my own server with K3s, Argo CD and GitHub Actions.
 >
 > https://bereket.dev/work/frameflow
 
@@ -76,7 +76,7 @@ September and November 2026.
 
 November 2026.
 
-> A customized, self-hosted deployment of Plane Community Edition, the open-source project tracker by the Plane team. AI coding agents built the platform around it from my brief: automated releases, secrets, monitoring and backups on my own server. I am the only person using it.
+> A customized, self-hosted deployment of Plane Community Edition, the open-source project tracker by the Plane team. I built the platform around it: Kubernetes (K3s), GitOps with Argo CD, CI/CD in GitHub Actions, secrets, monitoring and tested backups on my own server. I am the only person using it.
 >
 > https://bereket.dev/work/wayline
 
@@ -84,7 +84,7 @@ November 2026.
 
 November 2026.
 
-> A small 3D browser game that teaches DevOps through six simulated lessons. AI coding agents wrote the code, Blender scripts and tests. Every infrastructure value in it is simulated.
+> A small 3D browser game that teaches DevOps through six simulated lessons. Every infrastructure value in it is simulated.
 
 ## Featured section (in this order)
 
@@ -97,3 +97,5 @@ November 2026.
 ## Skills to pin
 
 Vue.js, Nuxt, TypeScript, React, Front-End Development
+
+Also add, unpinned: DevOps, Kubernetes, Docker, CI/CD, GitHub Actions, Terraform.

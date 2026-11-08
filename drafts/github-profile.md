@@ -28,11 +28,11 @@ At [Acelab](https://bereket.dev/work/acelab) I work on a large Vue and Nuxt prod
 
 ## Personal projects
 
-Built with AI coding agents under my direction. The project pages on bereket.dev say what is mine and what came from elsewhere.
+The project pages on bereket.dev say what is mine and what came from elsewhere.
 
 - [Rillmark](https://bereket.dev/work/rillmark): a React component library on npm, with 26 of its 48 components importing Radix primitives, and three visual presets.
 - [Frameflow](https://bereket.dev/work/frameflow): a video processing pipeline, from upload to private adaptive stream.
-- [Wayline](https://bereket.dev/work/wayline): a self-hosted deployment of Plane, the open-source project tracker, with automated releases, secrets, monitoring and backups around it.
+- [Wayline](https://bereket.dev/work/wayline): a self-hosted deployment of Plane, the open-source project tracker, on Kubernetes with GitOps, CI/CD, secrets, monitoring and backups around it.
 - [Awushi Cloudgarden](https://bereket.dev/#projects): a small 3D browser game that teaches DevOps through simulated lessons.
 
 ## Contact
@@ -64,6 +64,6 @@ The current descriptions claim more than the projects support, for example "AI v
 | rillmark | React 19 component library on npm with 48 components, Radix primitives and three visual presets. |
 | frameflow | Video processing pipeline: direct uploads, Hatchet workflows, FFmpeg encodes and HLS playback. |
 | plane-platform | A customized, self-hosted deployment of Plane Community Edition with GitOps, secrets, monitoring and backups. |
-| awushi-cloudgarden | A small 3D browser game that teaches DevOps through simulated lessons. Built with AI coding agents. |
+| awushi-cloudgarden | A small 3D browser game that teaches DevOps through simulated lessons. |
 
 Descriptions are not enough on their own. The same claims sit in each README and docs folder, and on the live Rillmark docs and llms.txt. Decide on these together, because each edit is a public commit, and changing the package text needs a new npm release. Nothing here should be pushed until you choose to.

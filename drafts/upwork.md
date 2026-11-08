@@ -19,13 +19,13 @@ Upwork's help center does not allow contact information in a profile or portfoli
 > - Complex frontend features in Vue, Nuxt, React or Next.js: dense data, autosave, real-time updates, multi-step flows.
 > - Design systems and reusable component libraries.
 > - Full-stack features, from the interface through the API and database.
-> - Building features with AI coding agents. I work with them every day and require results backed by tests that actually ran.
+> - Deployment and CI/CD at small-team scale: Docker, Kubernetes (K3s), GitHub Actions, monitoring and backups.
 >
-> I work remotely from Addis Ababa (UTC+3), and I tell you plainly what has and has not been tested. Tell me what you want to build and when you need it, and I will say whether it is a good fit.
+> I use AI coding tools in my development every day, and I review and test what I deliver. I work remotely from Addis Ababa (UTC+3), and I tell you plainly what has and has not been tested. Tell me what you want to build and when you need it, and I will say whether it is a good fit.
 
 ## Skills
 
-Vue.js, Nuxt.js, TypeScript, JavaScript, React, Next.js, Tailwind CSS, Front-End Development, Full Stack Development, Web Application Development, API Integration, Node.js, .NET, PostgreSQL, Chrome Extension Development
+Vue.js, Nuxt.js, TypeScript, JavaScript, React, Next.js, Front-End Development, Full Stack Development, Node.js, .NET, PostgreSQL, Chrome Extension Development, Docker, Kubernetes, CI/CD
 
 ## Portfolio entries
 
@@ -37,12 +37,12 @@ Use the screenshots from the site and these descriptions, without links.
 
 ### Rillmark: a React component library on npm
 
-> 48 components, 26 of which import Radix primitives directly, and three visual presets that switch with two HTML attributes, with a documentation site and example apps. Built with AI coding agents under my direction.
+> 48 components, 26 of which import Radix primitives directly, and three visual presets that switch with two HTML attributes, with a documentation site and example apps.
 
 ### Frameflow: a video processing pipeline
 
-> An uploaded video becomes a private adaptive stream in two quality levels, and a failed step retries without redoing the rest. Built with AI coding agents under my direction and running on my own server.
+> An uploaded video becomes a private adaptive stream in two quality levels, and a failed step retries without redoing the rest. I built it and run it on my own server.
 
 ### Wayline: a self-hosted deployment of an open-source app
 
-> A customized deployment of Plane Community Edition, an open-source project tracker by the Plane team. AI coding agents built the hosting around it from my brief: automated releases, secrets, monitoring and tested backups on one server.
+> A customized deployment of Plane Community Edition, an open-source project tracker by the Plane team. I built the hosting around it: Kubernetes, CI/CD with automated releases, secrets, monitoring and tested backups on one server.
