@@ -68,7 +68,8 @@ const [current, ...earlier] = experience
               >Email me</a>
             </div>
             <div class="flex flex-wrap gap-x-6 gap-y-2">
-              <a :href="profile.resumePdf">Résumé (PDF)</a>
+              <NuxtLink to="/resume">View résumé</NuxtLink>
+              <a :href="profile.resumePdf">Download PDF</a>
               <ExtLink :href="profile.links.github">GitHub</ExtLink>
               <ExtLink
                 v-if="profile.links.linkedin"
@@ -101,6 +102,24 @@ const [current, ...earlier] = experience
           </div>
         </dl>
       </div>
+
+      <ul
+        aria-label="Selected engineering examples"
+        class="mt-8 grid gap-4 border-t border-hair pt-4 text-[0.9375rem] leading-snug sm:grid-cols-3"
+      >
+        <li>
+          <NuxtLink to="/work/acelab" class="font-semibold">Acelab: from editor to database</NuxtLink>
+          <p class="mt-1 text-muted">Built a bulk missing-product report across the schedule editor, .NET API and SQL migration.</p>
+        </li>
+        <li>
+          <NuxtLink to="/work/frameflow" class="font-semibold">Frameflow: API and background jobs</NuxtLink>
+          <p class="mt-1 text-muted">Built a video pipeline with retryable encoding and private HLS streams published only after processing completes.</p>
+        </li>
+        <li>
+          <NuxtLink to="/work/wayline" class="font-semibold">Wayline: deployment and operations</NuxtLink>
+          <p class="mt-1 text-muted">Set up releases, monitoring and tested restores on my own single-server Kubernetes cluster.</p>
+        </li>
+      </ul>
     </section>
 
     <section

@@ -9,9 +9,9 @@ export const experience: Role[] = [
     org: 'Acelab',
     title: 'Senior Frontend Engineer',
     start: 'May 2023',
-    end: null,
+    end: 'November 2026',
     location: 'Remote from Addis Ababa',
-    summary: 'I build complex product interfaces in Vue and Nuxt, in TypeScript since 2026, for a B2B platform where architects and manufacturers select and document building products. Since June 2026 I also build the .NET endpoints and SQL behind my features, and since September 2026 Python workflow steps and Node.js route handlers for internal product-data tools, inside services teammates built and run.',
+    summary: 'I built complex product interfaces in Vue and Nuxt, using TypeScript from 2026, for a B2B platform where architects and manufacturers select and document building products. In 2026 I added .NET endpoints and SQL behind my features, plus Python workflow steps and Node.js route handlers for internal product-data tools, inside services teammates built and ran.',
     highlights: [
       'Owned the frontend of a workflow that lets architects request product data from manufacturers, and built .NET endpoints for its paging, cancellation and live updates. A teammate led the backend. Acelab markets it as Bulk Vendor RFIs.',
       'Built how cell edits are saved, single-cell undo and redo, and most of the sharing of saved views for a collaborative spreadsheet-style editor. Teammates built the grid itself.',

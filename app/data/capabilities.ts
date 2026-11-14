@@ -30,7 +30,7 @@ export const capabilities: Capability[] = [
     id: 'backend',
     title: 'APIs, data and background jobs',
     summary: 'Paginated APIs with server-side permission checks, SQL migrations, long-running jobs that can retry a failed step, and checks on what third-party services and LLMs return.',
-    depth: 'Hands-on at Acelab since 2026, inside services teammates built and run. Earlier full-stack roles in Node.js. Frameflow, my own project, adds video processing.',
+    depth: 'Hands-on at Acelab in 2026, inside services teammates built and run. Earlier full-stack roles in Node.js. Frameflow, my own project, adds video processing.',
     evidence: [
       { label: 'Frameflow', work: 'frameflow' },
       { label: 'Work at Acelab', work: 'acelab' },
@@ -40,7 +40,7 @@ export const capabilities: Capability[] = [
     id: 'delivery',
     title: 'DevOps, CI/CD and infrastructure',
     summary: 'Kubernetes releases through GitOps and CI/CD, with images pinned to exact versions, traffic denied by default, secrets kept out of Git, phone alerts and tested restores.',
-    depth: 'From my own projects, at single-server scale: I set up and run a K3s cluster with Argo CD and GitHub Actions, and I receive its alerts. At work I ship through pipelines my teammates own.',
+    depth: 'From my own projects, at single-server scale: I set up and run a K3s cluster with Argo CD and GitHub Actions, and I receive its alerts. At Acelab I shipped through pipelines my teammates owned.',
     evidence: [
       { label: 'Wayline', work: 'wayline' },
     ],
@@ -48,8 +48,8 @@ export const capabilities: Capability[] = [
   {
     id: 'ai',
     title: 'AI-assisted development',
-    summary: 'AI coding tools are part of how I develop every day. I decide what gets built, review what they produce and check it with tests that actually ran.',
-    depth: 'Daily, at work and on my own projects, mainly with Claude Code. I answer for what ships.',
+    summary: 'I review AI-assisted changes and run tests before relying on them.',
+    depth: 'Used at Acelab and on my own projects.',
     evidence: [
       { label: 'Work at Acelab', work: 'acelab' },
     ],

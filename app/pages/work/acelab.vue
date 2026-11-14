@@ -2,7 +2,7 @@
   <CaseStudy
     slug="acelab"
     problem="A large B2B product where architects and manufacturers work on the same data: dense editing, requests between companies, and interfaces that must stay right as data changes."
-    part="The frontend of these features in Vue and Nuxt, and since 2026 some of the server code behind them, inside services teammates built and run. Where teammates built or led something, the page says so."
+    part="As Senior Frontend Engineer, I built the frontend of these features in Vue and Nuxt, and in 2026 some of the server code behind them, inside services teammates built and run. Where teammates built or led something, the page says so."
     result="The editor work and AceClipper shipped. The request workflow merged behind a feature flag in 2026 and Acelab markets it. I have no usage or business numbers to share."
   >
     <h2>A spreadsheet-style editor for building products</h2>
@@ -30,7 +30,7 @@
       <ExtLink href="https://chromewebstore.google.com/detail/aceclipper/kpljfojfnempmahijdcncjbopekfcjag">AceClipper</ExtLink>, public on the Chrome Web Store, turns a manufacturer's product page into products an architect can paste into a schedule. I built the React extension, the sign-in hand-off that gives it a short-lived, scoped token, the server endpoint that parses pages with an LLM and validates the result, and the import step in the web app. A teammate added the screenshot feature and some build and icon changes.
     </p>
     <p>
-      I am also the only engineer on an internal extension that collects product files for reviewers, with no LLM at run time. In an offline replay of reviewers' decisions on 23 products, it found 117 of the 164 files they approved (71%). The same products scored 94 (57%) before a round of fixes, so this is not a held-out test. It measures recall, not reviewer time or production impact.
+      I was also the only engineer on an internal extension that collects product files for reviewers, with no LLM at run time. In an offline replay of reviewers' decisions on 23 products, it found 117 of the 164 files they approved (71%). The same products scored 94 (57%) before a round of fixes, so this is not a held-out test. It measures recall, not reviewer time or production impact.
     </p>
 
     <h2>Keeping a large application current</h2>
@@ -46,14 +46,9 @@
       <li>Contributed core components to the product's shared Vue design system.</li>
     </ul>
 
-    <h2>Server code, since mid-2026</h2>
+    <h2>Server code and data in 2026</h2>
     <p>
-      Inside services teammates built, I added .NET endpoints with server-side permission checks from June 2026, and from September Python workflow steps that keep reviewers' edits when a product page is scraped again and Node.js route handlers for an internal review tool, with the SQL migrations behind them. The clearest example is a bulk report of missing products, which I built from the editor action through .NET endpoints to a SQL migration. These ship through the team's pipelines, and I write tests as a routine part of this work, in Vitest, NUnit and pytest.
-    </p>
-
-    <h2>How this work was done</h2>
-    <p>
-      I use AI coding tools, mainly Claude Code, in my development every day. I review what they produce and I answer for what ships.
+      Inside services teammates built, I added .NET endpoints with server-side permission checks from June 2026, and from September Python workflow steps that keep reviewers' edits when a product page is scraped again and Node.js route handlers for an internal review tool, with the SQL migrations behind them. The clearest example is a bulk report of missing products, which I built from the editor action through .NET endpoints to a SQL migration. I shipped these changes through the team's pipelines and tested them with Vitest, NUnit and pytest.
     </p>
   </CaseStudy>
 </template>

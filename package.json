@@ -2,7 +2,7 @@
   "name": "bereket-dev",
   "private": true,
   "type": "module",
-  "description": "Portfolio of Bereket Abera, software engineer (frontend-first, full-stack).",
+  "description": "Portfolio of Bereket Abera, senior software engineer.",
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt generate && node scripts/postbuild.mjs",
