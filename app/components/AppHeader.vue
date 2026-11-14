@@ -2,10 +2,7 @@
 import { profile } from '~/data/profile'
 
 const nav = [
-  { label: 'What I bring', to: '/#capabilities' },
-  { label: 'Projects', to: '/#projects' },
-  { label: 'Experience', to: '/#experience' },
-  { label: 'About', to: '/#about' },
+  { label: 'Selected work', to: '/#projects' },
 ]
 
 const open = ref(false)

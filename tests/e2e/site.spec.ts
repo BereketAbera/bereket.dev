@@ -102,13 +102,25 @@ test.describe('home page', () => {
   })
 })
 
+test('homepage points directly to work, résumé and contact', async ({ page }) => {
+  await visit(page, '/')
+  const main = page.getByRole('main')
+  await expect(main.getByRole('heading', { level: 1, name: 'Senior Software Engineer' })).toBeVisible()
+  await expect(main.getByRole('link', { name: 'View résumé' })).toHaveAttribute('href', '/resume')
+  await expect(main.getByRole('link', { name: 'Explore case studies' })).toHaveAttribute('href', '#projects')
+  for (const slug of ['acelab', 'frameflow', 'rillmark', 'wayline', 'enderase']) {
+    await expect(main.locator(`a[href="/work/${slug}"]`)).toHaveCount(1)
+  }
+  await expect(page.locator('a[href^="mailto:"]')).toHaveCount(1)
+})
+
 test.describe('navigation', () => {
   test('every in-page link in the header has a target on the home page', async ({ page }) => {
     await visit(page, '/')
     const hrefs = await page.getByRole('banner').locator('a[href*="#"]').evaluateAll(links =>
       links.map(link => link.getAttribute('href') ?? ''))
     const ids = hrefs.map(href => href.slice(href.indexOf('#') + 1))
-    expect(ids).toEqual(expect.arrayContaining(['projects', 'capabilities', 'experience', 'about', 'contact']))
+    expect(ids).toEqual(expect.arrayContaining(['projects', 'contact']))
     for (const id of ids) {
       await expect(page.locator(`[id="${id}"]`), `#${id}`).toHaveCount(1)
     }
