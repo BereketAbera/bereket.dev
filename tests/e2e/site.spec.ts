@@ -111,7 +111,12 @@ test('homepage points directly to work, résumé and contact', async ({ page }) 
   for (const slug of ['acelab', 'frameflow', 'rillmark', 'wayline', 'enderase']) {
     await expect(main.locator(`a[href="/work/${slug}"]`)).toHaveCount(1)
   }
-  await expect(page.locator('a[href^="mailto:"]')).toHaveCount(1)
+  await expect(main.getByRole('img', { name: 'Portrait of Bereket Abera' })).toBeVisible()
+  await expect(main.getByRole('heading', { name: 'Technologies' })).toBeVisible()
+  await expect(main.getByRole('link', { name: 'All skills on my résumé' })).toHaveAttribute('href', '/resume#skills')
+  await expect(main.getByRole('link', { name: /^GitHub/ })).toHaveAttribute('href', profile.links.github)
+  await expect(main.getByRole('link', { name: /^LinkedIn/ })).toHaveAttribute('href', profile.links.linkedin ?? '')
+  await expect(page.locator('a[href^="mailto:"]')).toHaveCount(2)
 })
 
 test.describe('navigation', () => {
