@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { mailto, profile } from '~/data/profile'
+
+const route = useRoute()
 </script>
 
 <template>
@@ -18,11 +20,11 @@ import { mailto, profile } from '~/data/profile'
           {{ profile.title }} · {{ profile.location }}&nbsp;·&nbsp;{{ profile.utcOffset }}
         </p>
         <ul class="mt-4 flex flex-wrap gap-x-6 gap-y-2">
-          <li><a :href="mailto">{{ profile.email }}</a></li>
-          <li>
+          <li v-if="route.path !== '/'"><a :href="mailto">{{ profile.email }}</a></li>
+          <li v-if="route.path !== '/'">
             <ExtLink :href="profile.links.github">GitHub</ExtLink>
           </li>
-          <li v-if="profile.links.linkedin">
+          <li v-if="route.path !== '/' && profile.links.linkedin">
             <ExtLink :href="profile.links.linkedin">LinkedIn</ExtLink>
           </li>
           <li>
