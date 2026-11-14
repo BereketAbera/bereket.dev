@@ -15,6 +15,9 @@ export default defineConfig({
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } } },
     { name: 'mobile', use: { ...devices['Pixel 7'] } },
+    // Layout changes between these widths and the two above, so check them for overflow and accessibility.
+    { name: 'tablet', grep: /scroll sideways|axe violations/, use: { ...devices['Desktop Chrome'], viewport: { width: 820, height: 1180 } } },
+    { name: 'narrow', grep: /scroll sideways/, use: { ...devices['Desktop Chrome'], viewport: { width: 320, height: 640 } } },
   ],
   webServer: {
     command: `npx serve .output/public -l ${port} --no-clipboard`,

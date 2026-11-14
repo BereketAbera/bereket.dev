@@ -87,7 +87,7 @@ function save(key: string, value: string, label: string, latency?: number) {
   const sentIn = epoch
   const delay = latency ?? ((inFlight[key] ?? 0) > 0 ? 350 : 1500)
   inFlight[key] = (inFlight[key] ?? 0) + 1
-  note(`Save ${id} sent: ${label} = “${value || 'empty'}”`)
+  note(`Save ${id} sent: ${label} = "${value || 'empty'}"`)
   setTimeout(() => {
     if (sentIn !== epoch) return
     inFlight[key] = Math.max(0, (inFlight[key] ?? 1) - 1)
@@ -150,19 +150,19 @@ async function showConflict() {
   const steps: Array<[number, () => void]> = [
     [0, () => {
       write(row, col, 'Satin', true, 5000)
-      story.value = `1. You type “Satin” into ${labelOf(row, col)}. Its save goes out and is slow.`
+      story.value = `1. You type "Satin" into ${labelOf(row, col)}. Its save goes out and is slow.`
     }],
     [2000, () => {
       write(row, col, 'Gloss', true, 700)
-      story.value = '2. Before it returns, you change your mind: “Gloss”. That save is fast.'
+      story.value = '2. Before it returns, you change your mind: "Gloss". That save is fast.'
     }],
     [900, () => {
-      story.value = '3. The newer save comes back first and is confirmed. The older one is still out…'
+      story.value = '3. The newer save comes back first and is confirmed. The older one is still on its way.'
     }],
     [2300, () => {
       story.value = guard.value
-        ? '4. The older save finally returns. Its value no longer matches the cell, so it’s ignored: the cell keeps “Gloss”, the last thing you typed.'
-        : '4. The older save finally returns and is treated as the truth, so the cell flips back to “Satin”: your newer edit is lost. That’s the bug the guard prevents.'
+        ? '4. The older save finally returns. Its value no longer matches the cell, so it is ignored: the cell keeps "Gloss", the last thing you typed.'
+        : '4. The older save finally returns and is treated as the truth, so the cell flips back to "Satin": your newer edit is lost. That is the bug the guard prevents.'
     }],
   ]
   for (const [wait, step] of steps) {
@@ -443,7 +443,7 @@ function reset() {
                   @blur="commit(() => {})"
                 >
                 <template v-else>
-                  <span :class="{ empty: !values[cellKey(row, col)] }">{{ values[cellKey(row, col)] || '—' }}</span>
+                  <span :class="{ empty: !values[cellKey(row, col)] }">{{ values[cellKey(row, col)] || '-' }}</span>
                   <span
                     class="dot"
                     aria-hidden="true"
@@ -460,7 +460,7 @@ function reset() {
                 :colspan="columns.length + 1"
                 class="none"
               >
-                No products match “{{ query }}”.
+                No products match "{{ query }}".
               </td>
             </tr>
           </tbody>
@@ -472,7 +472,7 @@ function reset() {
         :class="{ empty: !story }"
         aria-live="polite"
       >
-        {{ story || 'Press “Show conflicting saves” to watch two edits race, or edit any cell yourself.' }}
+        {{ story || 'Press "Show conflicting saves" to watch two edits race, or edit any cell yourself.' }}
       </p>
       <div class="foot">
         <label class="guard">
@@ -508,14 +508,14 @@ function reset() {
           v-if="!log.length"
           class="hint"
         >
-          Each save appears here as it’s sent and as it returns.
+          Each save appears here as it's sent and as it returns.
         </li>
         </ol>
       </div>
     </div>
     <figcaption>
       <slot>
-        “Show conflicting saves” plays the race for you. To try it by hand, click a cell or use the arrow keys; type to replace a value, Enter to save, Escape to cancel, {{ '⌘/Ctrl' }}+Z to undo. Each cell saves on its own over a deliberately unreliable fake network. Untick the box to see the bug the guard prevents. On a touch screen, tap a selected cell again to edit it. Undo and redo come from my product-schedule work, not the response grid. Built for this site with made-up data; not Acelab’s code or design.
+        "Show conflicting saves" plays the race for you. To try it by hand, click a cell or use the arrow keys; type to replace a value, Enter to save, Escape to cancel, {{ '⌘/Ctrl' }}+Z to undo. Each cell saves on its own over a deliberately unreliable fake network. Untick the box to see the bug the guard prevents. On a touch screen, tap a selected cell again to edit it. Undo and redo come from my product-schedule work, not the response grid. Built for this site with made-up data; not Acelab's code or design.
       </slot>
     </figcaption>
   </figure>
@@ -527,7 +527,6 @@ function reset() {
   max-width: 44rem;
 }
 .grid-demo.compact {
-  margin-block: 0;
   max-width: none;
 }
 .frame {

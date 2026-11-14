@@ -3,11 +3,11 @@
     slug="enderase"
     problem="A web app, a mobile app and an API share one database, and the rules for customers, providers and admins have to hold whichever client sends the request."
     part="My own product: I own the product definition, architecture, data model, security model and verification, and I build it across web, mobile and API."
-    result="A marketplace where customers book ID-verified providers or pick among bids, confirm with a deposit, message and review, in English or Amharic; in development, with web flows re-verified end to end and payments in Chapa’s sandbox."
+    result="In development. The web flows have been re-verified end to end on a working branch. Payments run only in Chapa's sandbox, and the mobile app is not in the stores yet."
   >
     <h2>What it does</h2>
     <p>
-      Enderase is a two-sided marketplace for home services in Ethiopia, set up for Addis Ababa’s sub-cities. A customer finds a provider whose identity has been verified, books an open time slot or posts a task and picks among bids, confirms with a 20% deposit, messages the provider, and reviews the job. Each step is an acceptance criterion. When a customer pays a deposit, for example, the payment is recorded as paid, the booking turns confirmed, the provider gets a “Deposit received” notification and a push, and each person’s “View booking” opens the confirmed booking.
+      Enderase is a two-sided marketplace for home services in Ethiopia, set up for Addis Ababa's sub-cities. A customer finds a provider whose identity has been verified, books an open time slot or posts a task and picks among bids, confirms with a 20% deposit, messages the provider, and reviews the job. Each step is an acceptance criterion. When a customer pays a deposit, for example, the payment is recorded as paid, the booking turns confirmed, the provider gets a "Deposit received" notification and a push, and each person's "View booking" opens the confirmed booking.
     </p>
 
     <EnderaseShots />
@@ -18,7 +18,7 @@
 
     <h2>How it works</h2>
     <p>
-      A Next.js web app, a Flutter app and a Fastify API share one Supabase project: Postgres, authentication, file storage and real-time subscriptions. One question runs through every feature: where does each rule live? A rule kept in the apps has to be written twice and kept identical, so the line that matters runs between writes and everything else.
+      A Next.js web app, a Flutter app and a Fastify API share one Supabase project: Postgres, authentication, file storage and real-time subscriptions. A rule kept in the apps has to be written twice and kept identical, so data writes go through the API and everything else can go straight to the database.
     </p>
     <p>
       Apart from file uploads, both apps send their data writes to the API. It validates input with Zod and runs the business rules as SQL, inside transactions where requests can race. In Postgres, triggers keep related records in step.
@@ -32,7 +32,7 @@
         aria-describedby="fig-enderase-desc"
       >
         <title id="fig-enderase-title">Where the rules live in Enderase</title>
-        <desc id="fig-enderase-desc">Both apps, the Next.js web app and the Flutter app, send their data writes to the Fastify API, which validates input with Zod and runs the business rules in a transaction before writing to Postgres. The web app’s page reads, live updates and file uploads go to the database directly through the Supabase client. In Postgres, triggers keep related records in step.</desc>
+        <desc id="fig-enderase-desc">Both apps, the Next.js web app and the Flutter app, send their data writes to the Fastify API, which validates input with Zod and runs the business rules in a transaction before writing to Postgres. The web app's page reads, live updates and file uploads go to the database directly through the Supabase client. In Postgres, triggers keep related records in step.</desc>
         <defs>
           <marker
             id="fig-enderase-arrow"
@@ -276,7 +276,7 @@
         <strong>List the acceptance criteria.</strong> Independent passes listed what customers, providers and admins can do across web, mobile and API; deduplicated, those flows became the acceptance criteria.
       </li>
       <li>
-        <strong>Run them.</strong> Web flows ran in Playwright with API and database assertions, mobile flows in Maestro on an iOS simulator and Android emulators.
+        <strong>Run them.</strong> Web flows ran in Playwright with API and database assertions. About a quarter of the mobile flows ran in Maestro on an iOS simulator and Android emulators; the rest have not run.
       </li>
       <li>
         <strong>Audit the passes.</strong> A second review checked that each passing test proved the screen, the stored data and the side effects, strengthening weak assertions and never weakening one.
@@ -285,21 +285,16 @@
         <strong>Confirm the failures.</strong> Failures were grouped by root cause, and each was challenged by another method, such as replaying API calls and querying the database instead of driving the browser.
       </li>
       <li>
-        <strong>Verify each fix independently.</strong> Fixes ran in waves; within a wave each file belonged to exactly one fix package, so parallel work couldn’t collide. Each fix was then verified independently at runtime.
+        <strong>Verify each fix independently.</strong> Fixes ran in waves; within a wave each file belonged to exactly one fix package, so parallel work could not collide. Each fix was then verified independently at runtime.
       </li>
     </ol>
     <p>
-      The campaign confirmed failing flows, traced them to their defects and fixed them, and each fix was verified at runtime on a working branch. The web flows have since been re-verified end to end; the mobile flows still need their device runs.
+      The campaign confirmed failing flows, traced them to their defects and fixed them, and each fix was verified at runtime on a working branch. The web flows have since been re-verified end to end on that working branch, before a UI migration that still needs its regression run; the mobile flows still need their device runs.
     </p>
 
-    <h2>What I’d change</h2>
+    <h2>What I would change</h2>
     <p>
-      Code ran ahead of verification: the flow-by-flow campaign came months after the first versions of all three parts. The slow part is defining the product precisely enough to build and test against, so next time I’d write the flow list with the first feature and test each feature against it as it lands.
-    </p>
-
-    <h2>Outcome</h2>
-    <p>
-      Enderase is a web app and a Flutter app that share one API for their business rules, in English and Amharic. Its web flows have been re-verified end to end. It’s in development, so there’s no usage to report: payments run only in Chapa’s sandbox, the mobile app isn’t in the app stores, and its flows still need their device runs. What transfers: give each rule one owner, and have a separate check prove each result.
+      The testing came months after the first versions of all three parts. Next time I would write the list of flows with the first feature and test each feature against it as it lands.
     </p>
   </CaseStudy>
 </template>

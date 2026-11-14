@@ -1,32 +1,30 @@
 <script setup lang="ts">
 import { capabilities } from '~/data/capabilities'
 import { education, experience } from '~/data/experience'
-import { facts, mailto, profile } from '~/data/profile'
-import { work } from '~/data/work'
+import { contactLines, facts, mailto, mailtoWith, profile } from '~/data/profile'
+import { projectsIntro, projects, moreWork } from '~/data/work'
 import type { Role } from '~/data/types'
 
 usePageMeta({
-  title: `${profile.name} — ${profile.title}`,
+  title: `${profile.name}, ${profile.title}`,
   description: profile.description,
   type: 'profile',
 })
 
 function period(role: Role) {
   if (role.end === undefined) return `From ${role.start}`
-  return `${role.start} – ${role.end ?? 'present'}`
+  if (role.end === role.start) return role.start
+  return `${role.start} to ${role.end ?? 'present'}`
 }
 
-const featured = work.filter(item => item.featured)
-const more = work.filter(item => !item.featured)
 const [current, ...earlier] = experience
-const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? slug
 </script>
 
 <template>
   <div>
-    <!-- Intro: who I am, what I build and the facts a recruiter checks first. Short on purpose, so the work starts on the first screen. -->
+    <!-- Intro: what I do, the value I bring, and the facts a recruiter checks first. -->
     <section
-      class="wrap pt-9 pb-12 lg:pt-14 lg:pb-14"
+      class="wrap pt-9 pb-12 lg:pt-14 lg:pb-16"
       aria-labelledby="intro"
     >
       <div class="grid gap-10 lg:grid-cols-[minmax(0,1.6fr)_minmax(19rem,1fr)] lg:gap-14 xl:gap-20">
@@ -55,10 +53,10 @@ const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? sl
           <div class="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-7">
             <div class="flex flex-col gap-3 sm:flex-row">
               <a
-                href="#work"
+                href="#projects"
                 class="group inline-flex min-h-12 items-center justify-between gap-6 bg-ink px-5 text-paper no-underline sm:justify-start"
               >
-                <span>See selected work</span>
+                <span>See projects</span>
                 <span
                   aria-hidden="true"
                   class="transition-transform group-hover:translate-y-0.5"
@@ -70,7 +68,8 @@ const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? sl
               >Email me</a>
             </div>
             <div class="flex flex-wrap gap-x-6 gap-y-2">
-              <a :href="profile.resumePdf">Résumé (PDF)</a>
+              <NuxtLink to="/resume">View résumé</NuxtLink>
+              <a :href="profile.resumePdf">Download PDF</a>
               <ExtLink :href="profile.links.github">GitHub</ExtLink>
               <ExtLink
                 v-if="profile.links.linkedin"
@@ -103,112 +102,125 @@ const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? sl
           </div>
         </dl>
       </div>
-    </section>
 
-    <section
-      id="work"
-      class="wrap scroll-mt-4"
-      aria-labelledby="work-title"
-    >
-      <SectionHead
-        id="work-title"
-        number="01"
-        title="Selected work"
+      <ul
+        aria-label="Selected engineering examples"
+        class="mt-8 grid gap-4 border-t border-hair pt-4 text-[0.9375rem] leading-snug sm:grid-cols-3"
       >
-        <p class="text-[0.9375rem] text-muted">
-          Three projects in depth, then the rest.
-        </p>
-      </SectionHead>
-
-      <div class="mt-2">
-        <FeaturedWork
-          v-for="(item, i) in featured"
-          :key="item.slug"
-          :item="item"
-          :number="i + 1"
-        >
-          <SaveGridDemo
-            v-if="item.slug === 'workflow-engineering'"
-            compact
-          >
-            A rebuild with made-up data of the response grid’s autosave. Press “Show conflicting saves” to watch a late save get ignored, or edit cells yourself: arrow keys move, typing edits, Enter saves. Not Acelab’s code or design.
-          </SaveGridDemo>
-          <ClipDemo
-            v-else-if="item.slug === 'browser-extensions'"
-            compact
-          >
-            The public extension’s hand-off, redrawn with made-up products and a simplified clip.
-          </ClipDemo>
-          <EnderaseShots
-            v-else-if="item.slug === 'enderase'"
-            compact
-          />
-        </FeaturedWork>
-      </div>
-
-      <h3 class="label mt-12">
-        More case studies
-      </h3>
-      <ol class="mt-3 border-t border-ink">
-        <li
-          v-for="(item, i) in more"
-          :key="item.slug"
-          class="grid gap-x-10 gap-y-1 border-b border-hair py-4 lg:grid-cols-[3rem_minmax(0,1fr)_16rem]"
-        >
-          <span
-            class="data text-muted max-lg:hidden"
-            aria-hidden="true"
-          >{{ String(featured.length + i + 1).padStart(2, '0') }}</span>
-          <div>
-            <p class="text-[1.0625rem] leading-snug font-semibold">
-              <NuxtLink :to="`/work/${item.slug}`">{{ item.title }}</NuxtLink>
-            </p>
-            <p class="mt-0.5 text-[0.9375rem] leading-snug text-muted">
-              {{ item.context }}
-            </p>
-          </div>
-          <p class="text-[0.9375rem] leading-snug">
-            {{ item.role }} · <span class="data text-muted">{{ item.years }}</span>
-          </p>
+        <li>
+          <NuxtLink to="/work/acelab" class="font-semibold">Acelab: from editor to database</NuxtLink>
+          <p class="mt-1 text-muted">Built a bulk missing-product report across the schedule editor, .NET API and SQL migration.</p>
         </li>
-      </ol>
-      <p class="mt-5 max-w-[44rem] text-[0.9375rem] text-muted">
-        Acelab’s code is private, so its case studies describe my part and the decisions behind it, without proprietary detail. Older public code and experiments are in the <NuxtLink to="/lab">lab</NuxtLink>.
-      </p>
+        <li>
+          <NuxtLink to="/work/frameflow" class="font-semibold">Frameflow: API and background jobs</NuxtLink>
+          <p class="mt-1 text-muted">Built a video pipeline with retryable encoding and private HLS streams published only after processing completes.</p>
+        </li>
+        <li>
+          <NuxtLink to="/work/wayline" class="font-semibold">Wayline: deployment and operations</NuxtLink>
+          <p class="mt-1 text-muted">Set up releases, monitoring and tested restores on my own single-server Kubernetes cluster.</p>
+        </li>
+      </ul>
     </section>
 
     <section
       id="capabilities"
-      class="wrap mt-24 scroll-mt-4 lg:mt-28"
+      class="wrap scroll-mt-4"
       aria-labelledby="capabilities-title"
     >
       <SectionHead
         id="capabilities-title"
-        number="02"
-        title="What you can hand me"
+        number="01"
+        title="What I bring"
       />
-      <ul class="mt-8 grid gap-x-10 gap-y-7 md:grid-cols-2 xl:grid-cols-3">
+      <ol class="sheet-list mt-8 border-t border-hair">
         <li
           v-for="cap in capabilities"
           :key="cap.id"
-          class="border-t border-hair pt-4"
+          class="grid gap-x-12 gap-y-2 border-b border-hair py-5 lg:grid-cols-[minmax(0,1fr)_21rem]"
         >
-          <p class="label">
-            {{ cap.short }}
-          </p>
-          <h3 class="mt-1.5 text-[1.125rem] leading-snug font-semibold">
-            {{ cap.title }}
-          </h3>
-          <p class="mt-2 text-[0.9375rem] leading-[1.5] text-muted">
-            {{ cap.tools.slice(0, 5).join(' · ') }}
-          </p>
+          <div>
+            <h3 class="text-[1.1875rem] leading-snug font-semibold">
+              {{ cap.title }}
+            </h3>
+            <p class="mt-1.5 max-w-[42rem] leading-[1.6]">
+              {{ cap.summary }}
+            </p>
+          </div>
+          <div class="max-w-[42rem] text-[0.9375rem] leading-[1.5]">
+            <p class="text-muted">
+              {{ cap.depth }}
+            </p>
+            <p class="mt-1.5">
+              <span class="label mr-2">See<span class="visually-hidden">: </span></span>
+              <template
+                v-for="(ref, i) in cap.evidence"
+                :key="ref.label"
+              >
+                <span
+                  v-if="i"
+                  class="text-muted"
+                > · </span>
+                <NuxtLink
+                  v-if="ref.work"
+                  :to="`/work/${ref.work}`"
+                >{{ ref.label }}</NuxtLink>
+                <NuxtLink
+                  v-else-if="ref.href?.startsWith('/')"
+                  :to="ref.href"
+                >{{ ref.label }}</NuxtLink>
+                <ExtLink
+                  v-else-if="ref.href"
+                  :href="ref.href"
+                >{{ ref.label }}</ExtLink>
+              </template>
+            </p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section
+      id="projects"
+      class="wrap mt-24 scroll-mt-4 lg:mt-28"
+      aria-labelledby="projects-title"
+    >
+      <SectionHead
+        id="projects-title"
+        number="02"
+        title="Selected projects"
+      />
+      <div class="sheet mt-4">
+        <div />
+        <p class="max-w-[44rem] text-[1.0625rem] leading-[1.6]">
+          {{ projectsIntro }}
+        </p>
+      </div>
+
+      <div class="mt-3">
+        <ProjectFeature
+          v-for="(item, i) in projects"
+          :key="item.slug"
+          :item="item"
+          :number="i + 1"
+        />
+      </div>
+
+      <ul
+        v-if="moreWork.length"
+        class="mt-8 max-w-[44rem] space-y-2"
+      >
+        <li
+          v-for="item in moreWork"
+          :key="item.slug"
+        >
+          <NuxtLink
+            :to="`/work/${item.slug}`"
+            class="font-semibold"
+          >{{ item.title }}</NuxtLink><span class="text-muted"> · </span>{{ item.kicker }}
         </li>
       </ul>
-      <p class="mt-8 max-w-[44rem]">
-        <NuxtLink
-          to="/how-i-work"
-          class="font-semibold"
-        >How I work</NuxtLink>: the six stages from brief to production, each capability with examples, the platform I work in, and the technology I know beyond what I’ve shipped.
+      <p class="mt-4 max-w-[44rem] text-[0.9375rem] text-muted">
+        Older public code and experiments are in the <NuxtLink to="/lab">lab</NuxtLink>.
       </p>
     </section>
 
@@ -237,28 +249,34 @@ const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? sl
           </p>
           <div>
             <h3 class="text-[1.1875rem] leading-snug">
-              <span class="font-semibold">{{ current.org }}</span><span class="text-muted">&nbsp;— </span><span class="inline-block">{{ current.title }}</span>
+              <span class="font-semibold max-sm:block">{{ current.org }}</span><span class="text-muted max-sm:hidden"> · </span><span class="inline-block">{{ current.title }}</span>
             </h3>
             <p class="text-[0.9375rem] text-muted">
               {{ current.location }}
             </p>
-            <p class="mt-2.5 max-w-[40rem]">
+            <p class="mt-2.5 max-w-[42rem]">
               {{ current.summary }}
             </p>
-            <p
-              v-if="current.work?.length"
-              class="mt-3 text-[0.9375rem]"
+            <ul
+              v-if="current.highlights.length"
+              class="mt-3 max-w-[42rem] space-y-1.5"
             >
-              <span class="label mr-2">Case studies<span class="visually-hidden">: </span></span>
-              <template
-                v-for="(slug, i) in current.work"
-                :key="slug"
+              <li
+                v-for="line in current.highlights"
+                :key="line"
+                class="relative pl-4 leading-[1.5] before:absolute before:top-[0.72em] before:left-0 before:h-px before:w-2 before:bg-ink"
               >
-                <NuxtLink :to="`/work/${slug}`">{{ workTitle(slug) }}</NuxtLink><span
-                  v-if="i < current.work.length - 1"
-                  class="text-muted"
-                > · </span>
-              </template>
+                {{ line }}
+              </li>
+            </ul>
+            <p
+              v-if="current.work"
+              class="mt-3"
+            >
+              <NuxtLink
+                :to="`/work/${current.work}`"
+                class="font-semibold"
+              >My work at Acelab, in detail</NuxtLink>
             </p>
           </div>
         </li>
@@ -272,9 +290,9 @@ const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? sl
           </p>
           <div>
             <h3 class="text-[1.0625rem] leading-snug">
-              <span class="font-semibold">{{ role.org }}</span><span class="text-muted">&nbsp;— </span><span class="inline-block">{{ role.title }}</span>
+              <span class="font-semibold max-sm:block">{{ role.org }}</span><span class="text-muted max-sm:hidden"> · </span><span class="inline-block">{{ role.title }}</span>
             </h3>
-            <p class="mt-0.5 max-w-[40rem] text-[0.9375rem] text-muted">
+            <p class="mt-0.5 max-w-[42rem] text-[0.9375rem] text-muted">
               {{ role.summary }}
             </p>
           </div>
@@ -284,7 +302,7 @@ const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? sl
             {{ education.period }}
           </p>
           <h3 class="text-[1.0625rem] leading-snug">
-            <span class="font-semibold">{{ education.school }}</span><span class="text-muted"> — </span>{{ education.degree }}
+            <span class="font-semibold max-sm:block">{{ education.school }}</span><span class="text-muted max-sm:hidden"> · </span>{{ education.degree }}
           </h3>
         </li>
       </ol>
@@ -313,11 +331,11 @@ const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? sl
           class="w-36 border border-hair lg:w-40"
         >
         <div class="prose">
-          <p>
-            I’m a software engineer in Addis Ababa with a software engineering degree from Addis Ababa University. Before Acelab I built full-stack web apps in React, Vue, Angular and Node.js. Since 2023 I’ve worked inside one large Vue and Nuxt product, and in 2026 I followed my features into its API, data pipeline and browser extensions.
-          </p>
-          <p>
-            The work I like best is a feature nobody has fully specified yet, where the interface carries the value and the data has to stay right underneath it. I use AI coding agents every day and treat what they produce as a draft I verify.
+          <p
+            v-for="paragraph in profile.about"
+            :key="paragraph"
+          >
+            {{ paragraph }}
           </p>
         </div>
       </div>
@@ -336,9 +354,19 @@ const workTitle = (slug: string) => work.find(w => w.slug === slug)?.title ?? sl
       <div class="sheet mt-8">
         <div />
         <div>
-          <p class="max-w-[36rem] text-[1.0625rem]">
-            I’m looking for a senior product, full-stack or frontend engineering role, remote and full-time. If you have a product that needs someone to carry features from an unclear brief to production, email me.
-          </p>
+          <ul class="max-w-[36rem] space-y-3 text-[1.0625rem] leading-[1.55]">
+            <li
+              v-for="line in contactLines"
+              :key="line.label"
+            >
+              <span class="label block">{{ line.label }}</span>
+              {{ line.text }}
+              <a
+                :href="mailtoWith(line.subject)"
+                class="mt-1 block font-semibold"
+              >{{ line.cta }}</a>
+            </li>
+          </ul>
           <p class="mt-6 text-[clamp(1.375rem,1rem+1.6vw,2.25rem)] leading-tight font-[470] tracking-[-0.015em] break-words">
             <a :href="mailto">{{ profile.email }}</a>
           </p>

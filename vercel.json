@@ -5,6 +5,38 @@
   "buildCommand": "pnpm build",
   "outputDirectory": ".output/public",
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/work/workflow-engineering",
+      "destination": "/work/acelab",
+      "permanent": true
+    },
+    {
+      "source": "/work/browser-extensions",
+      "destination": "/work/acelab",
+      "permanent": true
+    },
+    {
+      "source": "/work/data-interfaces",
+      "destination": "/work/acelab",
+      "permanent": true
+    },
+    {
+      "source": "/work/realtime-sync",
+      "destination": "/work/acelab",
+      "permanent": true
+    },
+    {
+      "source": "/work/modernization",
+      "destination": "/work/acelab",
+      "permanent": true
+    },
+    {
+      "source": "/how-i-work",
+      "destination": "/#capabilities",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/_nuxt/(.*)",

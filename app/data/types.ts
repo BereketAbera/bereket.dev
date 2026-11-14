@@ -1,48 +1,89 @@
 /**
  * How a piece of work can be verified. Kept explicit so the site never blurs
- * shipped employer work with things built to demonstrate a capability.
+ * employer work, personal projects and work still in development.
  */
 export type EvidenceKind =
-  | 'employer' // shipped in production at an employer; code is private
-  | 'product' // my own product, live in production
-  | 'showcase' // built in public to demonstrate a capability
-  | 'client' // delivered for a client
+  | 'employer' // done at an employer; the code is private
+  | 'project' // my own project, deployed and public
+  | 'product' // my own product, still in development
 
 export interface ExternalLink {
   label: string
   href: string
-  kind: 'live' | 'repo' | 'demo' | 'store' | 'docs' | 'public-page'
+  kind: 'live' | 'repo' | 'demo' | 'store' | 'docs' | 'package' | 'public-page'
 }
+
+/** Where a screenshot came from. The site always says, so a local preview can't pass for the live product. */
+export type ShotSource = 'live' | 'local' | 'monitoring'
+
+export interface Shot {
+  /** Path under /img/projects without the width suffix, e.g. "frameflow/studio". */
+  file: string
+  /** Pixel size of the largest file. */
+  width: number
+  height: number
+  /** Available widths, smallest first. Defaults to 960 and 1600. */
+  widths?: number[]
+  alt: string
+  caption: string
+  source: ShotSource
+  /** Shown on the frame: a hostname, or what the image is. */
+  host: string
+  /** Rendered as a phone rather than a desktop window. */
+  phone?: boolean
+}
+
+/** A technology, and what it made possible. Used instead of a bare stack list. */
+export interface TechNote {
+  tech: string
+  enabled: string
+}
+
+/** Who the underlying software came from, when it wasn't me. */
+export interface Foundation {
+  name: string
+  href: string
+  license: string
+  note: string
+}
+
+/** How much space a project earns on the home page. */
+export type ProjectWeight = 'lead' | 'feature' | 'compact' | 'listed'
 
 export interface Work {
   slug: string
-  /** Short title for lists: the engineering challenge, not the employer feature. */
+  /** Name used in lists and on the card. */
   title: string
-  /** Where it happened, in a line: the original product and feature. */
-  context: string
+  /** One plain line under the name: what kind of thing it is. */
+  kicker: string
   /** Case-study page title (the h1 and the social card). */
   headline: string
   /** Short <title>; " · Bereket Abera" is appended. About 45 characters. */
   metaTitle: string
   /** Meta, og and twitter description: 160 characters at most. */
   metaDescription: string
-  /** One sentence: what changed because of this work. */
-  outcome: string
-  org: string
+  /** What it does and who it serves: understandable in seconds. */
+  summary: string
+  /** What is mine, in exact verbs. */
+  myPart: string
+  /** The one line a hiring manager should remember from this project. */
+  demonstrates: string
+  /** Set when the underlying software is someone else's. */
+  foundation?: Foundation
   evidence: EvidenceKind
-  /** Short role for the work table. */
-  role: string
-  roleDetail: string
+  /** Plain status: "Live", "In development". */
+  status: string
+  statusNote?: string
   period: string
-  /** Compact years for the work table, e.g. "2024–26". */
+  /** Compact years for lists, e.g. "2026". */
   years: string
-  stack: string[]
-  /** The parts of the system the work touched, in plain words, e.g. "Web app", ".NET API". */
-  spans: string[]
+  /** Technologies explained through what they enabled. */
+  built: TechNote[]
   links: ExternalLink[]
-  themes: string[]
-  /** Shown large on the home page with a visual; the rest are listed compactly. */
-  featured?: boolean
+  shots: Shot[]
+  weight: ProjectWeight
+  /** Whether /work/<slug> exists. Case studies are only written where the evidence earns one. */
+  caseStudy: boolean
 }
 
 /** Something a reader can open: a case study (by slug) or a URL / home-page anchor. */
@@ -52,47 +93,13 @@ export interface EvidenceRef {
   href?: string
 }
 
-/** One stage of taking a product from brief to production, backed by something inspectable. */
-export interface Stage {
-  id: string
-  title: string
-  /** The responsibility I take on at this stage. */
-  summary: string
-  /** Concrete examples, one sentence each. */
-  proof: string[]
-  /** A real tradeoff made at this stage, in one sentence. Optional. */
-  decision?: string
-  evidence: EvidenceRef[]
-}
-
-/**
- * One layer of the platform I work in. `platform` is company-wide context;
- * `mine` is my part, worded so the verbs carry the ownership: built, added,
- * ship through, know how it works.
- */
-export interface PlatformLayer {
-  id: string
-  layer: string
-  platform: string
-  mine: string
-}
-
-/** A capability group. Groups are listed most prominent first. */
+/** One thing you can hand me, with how deep it goes and where to check it. */
 export interface Capability {
   id: string
   title: string
-  /** Short label for the résumé's skills column, e.g. "Backend & data". */
-  short: string
   summary: string
-  /** Specific things I have done, one line each. */
-  points: string[]
-  /** Tools I have shipped with, most-used first. Never tools I have only read about. */
-  tools: string[]
-  /**
-   * Platform technology I know how to work with but have not owned: how it works
-   * and how my platform uses it. Kept apart from `tools` on purpose.
-   */
-  workingKnowledge?: string[]
+  /** Honest depth, in words: where this comes from and how far it goes. */
+  depth: string
   /** Every capability must point at something a reader can inspect. */
   evidence: EvidenceRef[]
 }
@@ -106,6 +113,6 @@ export interface Role {
   location: string
   summary: string
   highlights: string[]
-  /** Slugs of case studies that came out of this role. */
-  work?: string[]
+  /** Slug of the case study that came out of this role, if any. */
+  work?: string
 }

@@ -2,20 +2,23 @@ export const profile = {
   name: 'Bereket Abera',
   /** Ge'ez spelling, used once as a signature. */
   nameGeez: 'በረከት አበራ',
-  /** Used in titles, JSON-LD and the footer. The current job title is in `facts`. */
-  title: 'Software Engineer',
-  employer: 'Acelab',
-  eyebrow: 'Software engineer · frontend depth, full-stack delivery',
-  headline: 'I build complex product interfaces, and the API and data behind them.',
-  lede: 'Eight-plus years on the web, the last three on a large product platform for architects and manufacturers. Give me an unclear brief and I’ll pin down what it must do, then build the interface and the API and data behind it, and see it through release.',
-  description: 'Software engineer in Addis Ababa, open to remote roles: 8+ years on the web, deepest in frontend, shipping whole features across API, data and release.',
+  /** Professional positioning used in titles, structured data and the footer. */
+  title: 'Senior Software Engineer',
+  eyebrow: 'Senior Software Engineer',
+  headline: 'I build data-heavy interfaces, APIs, and background jobs.',
+  lede: 'I take features from development to deployment. At Acelab I built Vue and Nuxt workflows and the .NET endpoints and SQL behind them. On my own projects I build Node.js APIs and background workflows and run them with CI/CD and monitoring.',
+  description: 'Senior software engineer in Addis Ababa building product interfaces, APIs and background jobs. Open to remote frontend, backend and full-stack roles.',
+  about: [
+    'I have a software engineering degree from Addis Ababa University. I started on websites and full-stack apps in React, Vue, Angular and Node.js, and from 2023 to 2026 I worked on Acelab\'s Vue and Nuxt product, following my features into its API and data layer.',
+    'The work I like best is a feature nobody has fully specified yet, where the screen has to be easy to use and the data behind it has to stay correct.',
+  ],
   email: 'bereket5042@gmail.com',
   emailSubject: 'Hello from bereket.dev',
   location: 'Addis Ababa, Ethiopia',
   timeZone: 'Africa/Addis_Ababa',
   utcOffset: 'UTC+3',
-  availability: 'Open to senior roles · remote',
-  lookingFor: 'Senior product, full-stack or frontend engineering roles · remote · full-time',
+  availability: 'Open to senior roles and contract work',
+  lookingFor: 'Remote senior frontend, backend and full-stack roles, including contracts.',
   links: {
     github: 'https://github.com/BereketAbera',
     linkedin: 'https://www.linkedin.com/in/bereket-abera-629380180/' as string | null,
@@ -26,11 +29,31 @@ export const profile = {
 
 export const mailto = `mailto:${profile.email}?subject=${encodeURIComponent(profile.emailSubject)}`
 
+export function mailtoWith(subject: string): string {
+  return `mailto:${profile.email}?subject=${encodeURIComponent(subject)}`
+}
+
 /** The résumé reads "Deepest in" by label. */
 export const facts = [
-  { label: 'Now', value: 'Senior Frontend Engineer, Acelab', note: 'Since 2023 · remote' },
-  { label: 'Deepest in', value: 'Vue & Nuxt, in JavaScript and TypeScript' },
-  { label: 'Also ship', value: 'React & Next.js, .NET, Node.js, Python, PostgreSQL', note: 'Plus Chrome extensions, and Flutter in my own product' },
-  { label: 'Based in', value: 'Addis Ababa, Ethiopia', note: 'Remote with a distributed team', clock: true },
-  { label: 'Looking for', value: 'Senior product, full-stack or frontend engineering roles', note: 'Remote · full-time' },
+  { label: 'Now', value: 'Building independent software projects' },
+  { label: 'Deepest in', value: 'Vue and Nuxt, in JavaScript and TypeScript' },
+  { label: 'Also work in', value: 'React, Next.js, .NET, Node.js, Python, PostgreSQL' },
+  { label: 'Based in', value: 'Addis Ababa, Ethiopia', clock: true },
+  { label: 'Open to', value: 'Senior frontend, backend and full-stack roles', note: 'Remote · full-time or contract' },
+] as const
+
+/** The contact section's two audiences, spelled out so neither has to guess. */
+export const contactLines = [
+  {
+    label: 'Full-time roles',
+    text: 'I am open to remote senior frontend, backend and full-stack roles.',
+    cta: 'Email me about a role',
+    subject: 'Full-time role',
+  },
+  {
+    label: 'Contract work',
+    text: 'I take on remote contracts for product interfaces, APIs and background jobs. If you have a project in mind, tell me what you need and when.',
+    cta: 'Email me about a project',
+    subject: 'Contract project',
+  },
 ] as const

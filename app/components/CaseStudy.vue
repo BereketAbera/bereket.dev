@@ -1,20 +1,19 @@
 <script setup lang="ts">
 import { profile } from '~/data/profile'
-import { findWork, work } from '~/data/work'
+import { caseStudies, evidenceLabel, findWork } from '~/data/work'
 
 const props = defineProps<{
   slug: string
-  /** The three-line summary at the top: the pain, my part, and what shipped. */
+  /** The three-line summary at the top: the problem, my part, and the result. */
   problem: string
   part: string
   result: string
 }>()
 
 const item = findWork(props.slug)
-const index = work.findIndex(w => w.slug === props.slug)
-const number = String(index + 1).padStart(2, '0')
-const prev = index > 0 ? work[index - 1] : undefined
-const next = index < work.length - 1 ? work[index + 1] : undefined
+const index = caseStudies.findIndex(w => w.slug === props.slug)
+const prev = index > 0 ? caseStudies[index - 1] : undefined
+const next = index < caseStudies.length - 1 ? caseStudies[index + 1] : undefined
 
 usePageMeta({
   title: item.metaTitle,
@@ -29,6 +28,9 @@ const summary = computed(() => [
   { label: 'My part', text: props.part },
   { label: 'Result', text: props.result },
 ])
+
+const liveLinks = computed(() => item.links.filter(link => link.kind !== 'repo'))
+const repo = computed(() => item.links.find(link => link.kind === 'repo'))
 </script>
 
 <template>
@@ -39,36 +41,27 @@ const summary = computed(() => [
     >
       <ol class="flex gap-2">
         <li>
-          <NuxtLink to="/#work">Work</NuxtLink>
+          <NuxtLink :to="item.evidence === 'employer' ? '/#experience' : '/#projects'">{{ item.evidence === 'employer' ? 'Experience' : 'Projects' }}</NuxtLink>
         </li>
         <li aria-hidden="true">
           /
         </li>
         <li aria-current="page">
-          {{ number }} · {{ item.title }}
+          {{ item.title }}
         </li>
       </ol>
     </nav>
 
     <header class="sheet mt-6 lg:mt-10">
-      <!-- On desktop each part of "Acelab · Material Hub" gets its own line in the narrow rail. -->
       <p class="label max-lg:mb-3 lg:pt-3">
-        <template
-          v-for="(segment, i) in item.org.split(' · ')"
-          :key="segment"
-        >
-          <span
-            v-if="i"
-            class="lg:hidden"
-          > · </span><span class="lg:block">{{ segment }}</span>
-        </template>
+        {{ evidenceLabel[item.evidence] }}
       </p>
       <div>
         <h1 class="max-w-[46rem] text-[clamp(2rem,1.3rem+2.6vw,3.25rem)] leading-[1.08] font-[480] tracking-[-0.02em]">
           {{ item.headline }}
         </h1>
         <p class="mt-5 max-w-[40rem] text-[1.0625rem] leading-[1.6] sm:text-[1.1875rem]">
-          {{ item.outcome }}
+          {{ item.summary }}
         </p>
       </div>
     </header>
@@ -81,9 +74,16 @@ const summary = computed(() => [
         <dl class="border-t border-ink text-[0.9375rem] leading-snug">
           <div class="fact">
             <dt class="label">
-              Role
+              Status
             </dt>
-            <dd>{{ item.roleDetail }}</dd>
+            <dd>
+              <StatusMark :kind="item.evidence" />
+              <span class="mt-1 block">{{ item.status }}</span>
+              <span
+                v-if="item.statusNote"
+                class="mt-1 block text-muted"
+              >{{ item.statusNote }}</span>
+            </dd>
           </div>
           <div class="fact">
             <dt class="label">
@@ -93,30 +93,29 @@ const summary = computed(() => [
               {{ item.period }}
             </dd>
           </div>
-          <div class="fact">
+          <div
+            v-if="item.foundation"
+            class="fact"
+          >
             <dt class="label">
-              Stack
-            </dt>
-            <dd>{{ item.stack.join(', ') }}</dd>
-          </div>
-          <div class="fact">
-            <dt class="label">
-              Spans
-            </dt>
-            <dd>{{ item.spans.join(' · ') }}</dd>
-          </div>
-          <div class="fact">
-            <dt class="label">
-              Evidence
+              Built on
             </dt>
             <dd>
-              <StatusMark :kind="item.evidence" />
-              <ul
-                v-if="item.links.length"
-                class="mt-1.5 space-y-1"
-              >
+              <ExtLink :href="item.foundation.href">{{ item.foundation.name }}</ExtLink>
+              <span class="mt-1 block text-muted">{{ item.foundation.license }} license. {{ item.foundation.note }}</span>
+            </dd>
+          </div>
+          <div
+            v-if="liveLinks.length"
+            class="fact"
+          >
+            <dt class="label">
+              See it
+            </dt>
+            <dd>
+              <ul class="space-y-1">
                 <li
-                  v-for="link in item.links"
+                  v-for="link in liveLinks"
                   :key="link.href"
                 >
                   <ExtLink :href="link.href">{{ link.label }}</ExtLink>
@@ -124,14 +123,19 @@ const summary = computed(() => [
               </ul>
             </dd>
           </div>
-          <div
-            v-if="item.evidence === 'employer' || item.evidence === 'product'"
-            class="fact"
-          >
+          <div class="fact">
             <dt class="label">
               Code
             </dt>
-            <dd>{{ item.evidence === 'employer' ? 'Private (employer)' : 'Private repository' }}</dd>
+            <dd>
+              <ExtLink
+                v-if="repo"
+                :href="repo.href"
+              >{{ repo.label }}</ExtLink>
+              <template v-else>
+                {{ item.evidence === 'employer' ? 'Private (employer)' : item.evidence === 'product' ? 'Private repository' : 'Not linked from this site' }}
+              </template>
+            </dd>
           </div>
         </dl>
       </aside>
@@ -157,18 +161,45 @@ const summary = computed(() => [
         </div>
 
         <section
+          v-if="item.built.length"
+          class="mt-14 max-w-[44rem]"
+          aria-labelledby="built-title"
+        >
+          <h2
+            id="built-title"
+            class="text-[1.375rem] leading-tight font-[560] tracking-[-0.012em]"
+          >
+            What each technology did
+          </h2>
+          <dl class="mt-4 border-t border-ink">
+            <div
+              v-for="note in item.built"
+              :key="note.tech"
+              class="grid gap-1 border-b border-hair py-3 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-5"
+            >
+              <dt class="font-semibold">
+                {{ note.tech }}
+              </dt>
+              <dd class="leading-[1.55]">
+                {{ note.enabled }}
+              </dd>
+            </div>
+          </dl>
+        </section>
+
+        <section
           v-if="item.evidence === 'employer'"
-          class="mt-16 max-w-[38rem] border-t border-hair pt-5 text-[0.9375rem] leading-[1.6] text-muted"
+          class="mt-14 max-w-[38rem] border-t border-hair pt-5 text-[0.9375rem] leading-[1.6] text-muted"
           aria-labelledby="left-out"
         >
           <h2
             id="left-out"
             class="label"
           >
-            What’s left out
+            What is left out
           </h2>
           <p class="mt-2">
-            Acelab’s code and data are private, so the diagrams are redrawn and any interactive demo is a rebuild with made-up data. Names of colleagues, customers and internal tools are left out on purpose. I’m glad to go deeper on any of it in an interview.
+            Acelab's code and data are private, so this page covers my part and what shipped. Colleague, customer and internal tool names are left out on purpose. I am glad to go deeper in an interview.
           </p>
         </section>
 
@@ -195,11 +226,11 @@ const summary = computed(() => [
           </NuxtLink>
           <NuxtLink
             v-else
-            to="/#work"
+            to="/#projects"
             class="group no-underline sm:text-right"
           >
             <span class="label block">Back to</span>
-            <span class="mt-1 block text-balance text-[1.0625rem] font-semibold underline decoration-hair underline-offset-[0.22em] group-hover:decoration-signal">All work</span>
+            <span class="mt-1 block text-balance text-[1.0625rem] font-semibold underline decoration-hair underline-offset-[0.22em] group-hover:decoration-signal">All projects</span>
           </NuxtLink>
         </nav>
       </div>

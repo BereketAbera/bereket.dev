@@ -9,7 +9,7 @@ import { chromium } from '@playwright/test'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { profile } from '../app/data/profile.ts'
-import { work } from '../app/data/work.ts'
+import { caseStudies, evidenceLabel } from '../app/data/work.ts'
 
 const root = new URL('../', import.meta.url)
 const file = path => fileURLToPath(new URL(path, root))
@@ -98,12 +98,12 @@ async function fontsLoaded(page) {
 const pad = n => String(n).padStart(2, '0')
 const cards = [
   { out: 'public/og/home.png', label: profile.eyebrow, headline: profile.headline, meta: `Addis Ababa · ${profile.utcOffset}` },
-  ...work.map((item, i) => ({
+  ...caseStudies.map((item, i) => ({
     out: `public/og/${item.slug}.png`,
     marker: `§ ${pad(i + 1)}`,
     label: 'Case study',
     headline: item.headline,
-    meta: `${item.role} · ${item.years}`,
+    meta: `${evidenceLabel[item.evidence]} · ${item.years}`,
   })),
 ]
 

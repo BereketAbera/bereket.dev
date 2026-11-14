@@ -9,11 +9,11 @@ const props = defineProps<{ compact?: boolean }>()
 interface Shot { src: string, large: string, width: number, height: number, alt: string, kind: 'phone' | 'web' }
 
 const all: Shot[] = [
-  { src: '/img/enderase/m1-provider-profile-en.webp', large: '/img/enderase/m1-provider-profile-en-lg.webp', width: 600, height: 1305, kind: 'phone', alt: 'Mobile app: a carpenter’s profile with rating, hourly rate, the 20% deposit explained, next open slots and a Book Now button.' },
+  { src: '/img/enderase/m1-provider-profile-en.webp', large: '/img/enderase/m1-provider-profile-en-lg.webp', width: 600, height: 1305, kind: 'phone', alt: 'Mobile app: a carpenter profile with rating, hourly rate, the 20% deposit explained, next open slots and a Book Now button.' },
   { src: '/img/enderase/m2-booking-detail-en.webp', large: '/img/enderase/m2-booking-detail-en-lg.webp', width: 600, height: 1305, kind: 'phone', alt: 'Mobile app: a confirmed booking with its progress from requested through deposit to completed, and the payment summary.' },
   { src: '/img/enderase/m5-task-bids-en.webp', large: '/img/enderase/m5-task-bids-en-lg.webp', width: 600, height: 1305, kind: 'phone', alt: 'Mobile app: a posted plumbing task with its budget and three bids, sorted by lowest price.' },
   { src: '/img/enderase/m4-explore-am.webp', large: '/img/enderase/m4-explore-am-lg.webp', width: 600, height: 1305, kind: 'phone', alt: 'Mobile app in Amharic: browsing providers with ratings and rates in birr.' },
-  { src: '/img/enderase/w2-provider-profile-desktop.webp', large: '/img/enderase/w2-provider-profile-desktop-lg.webp', width: 1440, height: 900, kind: 'web', alt: 'Web app on a desktop: a provider’s profile with rating, rate and availability, and a form to request a booking.' },
+  { src: '/img/enderase/w2-provider-profile-desktop.webp', large: '/img/enderase/w2-provider-profile-desktop-lg.webp', width: 1440, height: 900, kind: 'web', alt: 'Web app on a desktop: a provider profile with rating, rate and availability, and a form to request a booking.' },
 ]
 
 // The home page skips the task screen to keep three phones side by side.
@@ -108,7 +108,7 @@ function onDialogClick(event: MouseEvent) {
       >
     </button>
     <figcaption>
-      Development build with staged demo data and fictional names: a provider profile, a confirmed booking{{ compact ? '' : ', a task with bids' }} and the Amharic interface{{ compact ? '' : ', then the web app' }}. Select a screen to see it full size. Payments run in the gateway’s sandbox; the app isn’t in the stores yet.
+      Development build with staged demo data and fictional names: a provider profile, a confirmed booking{{ compact ? '' : ', a task with bids' }} and the Amharic interface{{ compact ? '' : ', then the web app' }}. Select a screen to see it full size. Payments run in a payment sandbox, and the app is not in the stores yet.
     </figcaption>
 
     <dialog

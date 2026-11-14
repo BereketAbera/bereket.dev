@@ -2,11 +2,10 @@
 import { profile } from '~/data/profile'
 
 const nav = [
-  { label: 'Work', to: '/#work' },
-  { label: 'How I work', to: '/how-i-work' },
+  { label: 'What I bring', to: '/#capabilities' },
+  { label: 'Projects', to: '/#projects' },
   { label: 'Experience', to: '/#experience' },
   { label: 'About', to: '/#about' },
-  { label: 'Contact', to: '/#contact' },
 ]
 
 const open = ref(false)
@@ -34,7 +33,7 @@ function onFocusout(event: FocusEvent) {
     @keydown="onKeydown"
     @focusout="onFocusout"
   >
-    <div class="wrap flex items-center justify-between gap-x-8 py-3.5 lg:py-4">
+    <div class="wrap flex items-center justify-between gap-x-8 py-3.5 lg:gap-x-12 lg:py-4">
       <NuxtLink
         to="/"
         class="shrink-0 leading-tight no-underline"
@@ -64,7 +63,7 @@ function onFocusout(event: FocusEvent) {
         class="max-lg:absolute max-lg:inset-x-0 max-lg:top-[calc(100%+1px)] max-lg:z-40 max-lg:border-b max-lg:border-hair max-lg:bg-paper lg:flex lg:flex-1 lg:items-center lg:justify-between lg:gap-8"
         :class="{ 'max-lg:hidden': !open }"
       >
-        <ul class="wrap flex flex-col py-2 text-[1.0625rem] lg:w-auto lg:flex-row lg:gap-7 lg:p-0 lg:text-[0.9375rem]">
+        <ul class="wrap flex flex-col py-2 text-[1.0625rem] lg:mx-0 lg:w-auto lg:flex-row lg:gap-7 lg:p-0 lg:text-[0.9375rem]">
           <li
             v-for="item in nav"
             :key="item.to"
@@ -81,12 +80,18 @@ function onFocusout(event: FocusEvent) {
             >Résumé</NuxtLink>
           </li>
         </ul>
-        <p class="label hidden xl:block">
-          <span
-            class="mr-2 inline-block size-[0.45rem] -translate-y-px rounded-full bg-signal align-middle"
-            aria-hidden="true"
-          />{{ profile.availability }}
-        </p>
+        <div class="wrap flex items-center gap-5 pb-3 lg:mx-0 lg:w-auto lg:p-0">
+          <p class="label hidden xl:block">
+            <span
+              class="mr-2 inline-block size-[0.45rem] -translate-y-px rounded-full bg-signal align-middle"
+              aria-hidden="true"
+            />{{ profile.availability }}
+          </p>
+          <NuxtLink
+            to="/#contact"
+            class="inline-flex min-h-10 items-center border border-ink px-3.5 text-[0.9375rem] no-underline hover:bg-paper-2"
+          >Contact</NuxtLink>
+        </div>
       </nav>
     </div>
   </header>
