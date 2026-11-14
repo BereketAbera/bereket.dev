@@ -183,12 +183,6 @@ const projects = personalProjects.map(item => ({
               {{ item }}
             </li>
           </ul>
-          <p
-            v-if="role.org === 'Acelab'"
-            class="entry-note"
-          >
-            {{ resume.aiNote }}
-          </p>
         </li>
       </ol>
     </section>
@@ -506,7 +500,7 @@ const projects = personalProjects.map(item => ({
     --muted: #333;
     --hair: #b8b8b8;
     --signal: #000;
-    --print-serif: Charter, "Bitstream Charter", Georgia, var(--font-serif);
+    --print-serif: Charter, "Bitstream Charter", Georgia, "DejaVu Serif", serif;
     max-width: none;
     padding: 0;
     color: #000;
