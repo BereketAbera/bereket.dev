@@ -63,12 +63,12 @@ function trackErrors(page: Page): string[] {
 }
 
 test.describe('home page', () => {
-  test('has one h1 with the headline, a title, a description and a canonical URL', async ({ page }) => {
+  test('has one h1 with the name, a title, a description and a canonical URL', async ({ page }) => {
     await visit(page, '/')
     await expect(page.locator('h1')).toHaveCount(1)
-    await expect(page.locator('h1')).toHaveText(profile.headline)
+    await expect(page.locator('h1')).toHaveText(profile.name)
     await expect.poll(() => page.title()).toContain(profile.name)
-    await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', profile.description)
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /^Résumé of Bereket Abera, Senior Software Engineer[.]/)
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', new RegExp(`^${SITE}/?$`))
   })
 
@@ -102,21 +102,26 @@ test.describe('home page', () => {
   })
 })
 
-test('homepage points directly to work, résumé and contact', async ({ page }) => {
+test('homepage renders the résumé with links to work, the PDF and contact', async ({ page }) => {
   await visit(page, '/')
   const main = page.getByRole('main')
-  await expect(main.getByRole('heading', { level: 1, name: 'Senior Software Engineer' })).toBeVisible()
-  await expect(main.getByRole('link', { name: 'View résumé' })).toHaveAttribute('href', '/resume')
-  await expect(main.getByRole('link', { name: 'Explore case studies' })).toHaveAttribute('href', '#projects')
+  await expect(main.getByRole('heading', { level: 1, name: profile.name })).toBeVisible()
+  await expect(main.getByText(profile.title, { exact: true })).toBeVisible()
+  for (const heading of ['Summary', 'Skills', 'Experience', 'Selected projects', 'Education']) {
+    await expect(main.getByRole('heading', { level: 2, name: heading })).toBeVisible()
+  }
   for (const slug of ['acelab', 'frameflow', 'rillmark', 'wayline', 'enderase']) {
     await expect(main.locator(`a[href="/work/${slug}"]`)).toHaveCount(1)
   }
+  for (const id of ['about', 'intro', 'contact', 'capabilities', 'skills', 'experience', 'projects']) {
+    await expect(main.locator(`[id="${id}"]`)).toHaveCount(1)
+  }
   await expect(main.getByRole('img', { name: 'Portrait of Bereket Abera' })).toBeVisible()
-  await expect(main.getByRole('heading', { name: 'Technologies' })).toBeVisible()
-  await expect(main.getByRole('link', { name: 'All skills on my résumé' })).toHaveAttribute('href', '/resume#skills')
+  await expect(main.getByRole('link', { name: 'Download PDF' })).toHaveAttribute('href', profile.resumePdf)
   await expect(main.getByRole('link', { name: /^GitHub/ })).toHaveAttribute('href', profile.links.github)
   await expect(main.getByRole('link', { name: /^LinkedIn/ })).toHaveAttribute('href', profile.links.linkedin ?? '')
-  await expect(page.locator('a[href^="mailto:"]')).toHaveCount(2)
+  await expect(main.getByRole('link', { name: profile.email })).toHaveAttribute('href', /^mailto:/)
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', SITE)
 })
 
 test.describe('navigation', () => {
@@ -218,6 +223,7 @@ test.describe('résumé', () => {
     await visit(page, '/resume')
     await expect(page.locator('h1')).toHaveCount(1)
     await expect(page.locator('h1')).toBeVisible()
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', SITE)
     await expect(page.locator(`a[href="${profile.resumePdf}"]:visible`).first()).toBeVisible()
     await hydrated(page)
     expect(errors, 'console errors').toEqual([])
@@ -350,13 +356,14 @@ test.describe('links and files', () => {
     expect(missing).toEqual([])
   })
 
-  test('sitemap.xml lists every page on the site address', async ({ request }) => {
+  test('sitemap.xml lists the canonical pages on the site address', async ({ request }) => {
     const response = await request.get('/sitemap.xml')
     expect(response.status()).toBe(200)
     const locs = Array.from((await response.text()).matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g), match => match[1] ?? '')
     expect(locs.filter(loc => loc !== SITE && !loc.startsWith(`${SITE}/`)), `URLs outside ${SITE}`).toEqual([])
     const paths = locs.map(loc => normalize(new URL(loc).pathname))
-    expect(paths).toEqual(expect.arrayContaining(pages))
+    expect(paths).toEqual(expect.arrayContaining(pages.filter(path => path !== '/resume')))
+    expect(paths).not.toContain('/resume')
     for (const path of paths) {
       expect((await request.get(path)).status(), `${path} is in the sitemap but not in the build`).toBe(200)
     }

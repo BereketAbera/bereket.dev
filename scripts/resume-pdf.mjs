@@ -71,6 +71,6 @@ if (pages < 1 || pages > maxPages) problems.push(`it has ${pages} pages; the ré
 // not copy or search cleanly, so the print styles use static system serifs.
 if (type3) problems.push(`${type3} Type 3 font${type3 === 1 ? ' is' : 's are'} embedded; print text must use a static font such as Charter or Georgia`)
 if (problems.length) {
-  console.error(`The PDF needs work: ${problems.join('; ')}. See the print styles in app/pages/resume.vue.`)
+  console.error(`The PDF needs work: ${problems.join('; ')}. See the print styles in app/components/ResumeDocument.vue.`)
   process.exitCode = 1
 }

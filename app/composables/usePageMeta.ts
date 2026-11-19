@@ -3,6 +3,8 @@ import { profile } from '~/data/profile'
 interface PageMeta {
   title: string
   description: string
+  /** Use the primary route when this page repeats the same document. */
+  canonicalPath?: string
   /** Path relative to the site root, e.g. "/og/home.png". */
   image?: string
   /** Text alternative for the social card. */
@@ -38,5 +40,6 @@ export function usePageMeta(meta: PageMeta) {
     twitterImage: image,
     twitterImageAlt: imageAlt,
   })
-  useHead({ link: [{ rel: 'canonical', href: url }] })
+  const canonicalUrl = meta.canonicalPath === undefined ? url : `${siteUrl}${meta.canonicalPath === '/' ? '' : meta.canonicalPath}`
+  useHead({ link: [{ rel: 'canonical', href: canonicalUrl }] })
 }

@@ -2,7 +2,7 @@
 
 Source of [bereket.dev](https://bereket.dev), the portfolio of Bereket Abera, a senior software engineer in Addis Ababa, frontend first and full-stack when the feature needs it.
 
-The site is written to be read at three depths. In ten seconds the first screen says what I do and what I am looking for. In thirty seconds the capability list and the project cards show what I bring and how far each thing goes. Over five minutes the case studies cover the architecture, the tradeoffs and what was and was not tested.
+The site is written to be read at three depths. The first screen gives readers my role, contact links and a PDF download. The homepage renders the résumé directly, with links to detailed case studies. The same résumé component also powers the standalone, print-friendly `/resume` page.
 
 ## Stack
 

@@ -2,7 +2,8 @@ import { work } from '../../app/data/work'
 
 export default defineEventHandler((event) => {
   const { siteUrl } = useRuntimeConfig().public
-  const paths = ['/', '/resume', ...work.filter(w => w.caseStudy).map(w => `/work/${w.slug}`), '/lab']
+  // The standalone /resume route remains available, but the homepage is canonical.
+  const paths = ['/', ...work.filter(w => w.caseStudy).map(w => `/work/${w.slug}`), '/lab']
   const urls = paths.map(path => `  <url><loc>${siteUrl}${path === '/' ? '' : path}</loc></url>`).join('\n')
 
   setHeader(event, 'content-type', 'application/xml; charset=utf-8')
