@@ -3,7 +3,7 @@ import { contactLines, mailtoWith, profile } from '~/data/profile'
 
 usePageMeta({
   title: `${profile.name}, ${profile.title}`,
-  description: profile.description,
+  description: 'Senior software engineer building data-heavy web applications, from Vue and React interfaces to APIs and background jobs. Open to remote roles and contracts.',
   type: 'profile',
 })
 
@@ -50,7 +50,7 @@ const technologies = [
           {{ profile.title }}
         </h1>
         <p class="mt-5 max-w-[37rem] text-[1.125rem] leading-[1.6]">
-          I build product interfaces, APIs and background jobs, and take them from development to deployment.
+          I build and ship data-heavy web applications, from Vue and React interfaces to APIs and background jobs.
         </p>
         <div class="mt-7 flex flex-wrap gap-3">
           <a
