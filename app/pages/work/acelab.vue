@@ -27,7 +27,7 @@
 
     <h2>Browser extensions for product data</h2>
     <p>
-      <ExtLink href="https://chromewebstore.google.com/detail/aceclipper/kpljfojfnempmahijdcncjbopekfcjag">AceClipper</ExtLink>, public on the Chrome Web Store, turns a manufacturer's product page into products an architect can paste into a schedule. I built the React extension, the sign-in hand-off that gives it a short-lived, scoped token, the server endpoint that parses pages with an LLM and validates the result, and the import step in the web app. A teammate added the screenshot feature and some build and icon changes.
+      <ExtLink href="https://chromewebstore.google.com/detail/aceclipper/kpljfojfnempmahijdcncjbopekfcjag">AceClipper</ExtLink>, public on the Chrome Web Store, turns a manufacturer's product page into products an architect can paste into a schedule. I built the React extension, the sign-in hand-off that gives it a short-lived, scoped token, the server endpoint that parses pages with an LLM and validates the result, and the import step in the web app. The extension UI uses TypeScript and a shadcn/ui-based design system. A teammate added the screenshot feature and some build and icon changes.
     </p>
     <p>
       I was also the only engineer on an internal extension that collects product files for reviewers, with no LLM at run time. In an offline replay of reviewers' decisions on 23 products, it found 117 of the 164 files they approved (71%). The same products scored 94 (57%) before a round of fixes, so this is not a held-out test. It measures recall, not reviewer time or production impact.

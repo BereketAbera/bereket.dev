@@ -16,7 +16,7 @@ export const experience: Role[] = [
       'Owned the frontend of a workflow that lets architects request product data from manufacturers, and built .NET endpoints for its paging, cancellation and live updates. A teammate led the backend. Acelab markets it as Bulk Vendor RFIs.',
       'Built how cell edits are saved, single-cell undo and redo, and most of the sharing of saved views for a collaborative spreadsheet-style editor. Teammates built the grid itself.',
       'Built a bulk report of missing products end to end, from the editor action through .NET endpoints to a SQL migration.',
-      'Built AceClipper, a public Chrome extension that turns manufacturer web pages into product records, with a scoped sign-in token and server-side LLM parsing.',
+      'Built AceClipper, a public Chrome extension that turns manufacturer web pages into product records, with a scoped sign-in token and server-side LLM parsing. I built its UI in React and TypeScript with a shadcn/ui-based design system.',
       'Major contributor to moving a Vue app of more than 1,000 files from Nuxt 2 to Nuxt 3 while the product kept shipping (merged November 2025).',
     ],
     work: 'acelab',
