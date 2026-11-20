@@ -36,7 +36,7 @@ export function mailtoWith(subject: string): string {
 /** The résumé reads "Deepest in" by label. */
 export const facts = [
   { label: 'Now', value: 'Building independent software projects' },
-  { label: 'Deepest in', value: 'Vue and Nuxt, in JavaScript and TypeScript' },
+  { label: 'Deepest in', value: 'React and Next.js, Vue and Nuxt, in JavaScript and TypeScript' },
   { label: 'Also work in', value: 'React, Next.js, .NET, Node.js, Python, PostgreSQL' },
   { label: 'Based in', value: 'Addis Ababa, Ethiopia', clock: true },
   { label: 'Open to', value: 'Senior frontend, backend and full-stack roles', note: 'Remote · full-time or contract' },
